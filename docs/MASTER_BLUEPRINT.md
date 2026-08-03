@@ -541,4 +541,240 @@ As a startup, we move fast — but not at the cost of quality or learner trust. 
 
 ---
 
-*Sections 5–49 to be written.*
+## 5. Problem Statement
+
+Indian law affects nearly every aspect of daily life — employment contracts, consumer purchases, rental agreements, police encounters, online fraud, family disputes, and workplace harassment. Yet most people in India cannot confidently answer a basic question: *What should I do when this situation happens to me?*
+
+### 5.1 The Legal Literacy Gap
+
+Legal awareness in India is structurally low. Surveys and civic data consistently show that a large majority of citizens lack working knowledge of fundamental rights, common legal remedies, and procedural basics. This is not primarily a problem of missing information — legal resources exist — but of **comprehension, retention, and application**.
+
+People know the law exists. They do not know how to use it.
+
+### 5.2 Why Existing Formats Fail
+
+Current legal learning options fall into three buckets, each with a critical flaw:
+
+| Format | Limitation |
+|---|---|
+| **Textbooks & bare acts** | Accurate but abstract; high cognitive load; no connection to real decisions |
+| **Video courses & lectures** | Passive consumption; poor retention; optimized for syllabus coverage, not situational judgment |
+| **Legal advice & consultations** | High cost, low scalability, inaccessible to mass learners; reactive, not educational |
+
+Law students and aspirants face a parallel problem: they consume enormous volumes of theory but struggle to bridge the gap between **knowing a section** and **spotting its relevance in a fact pattern** — the core skill tested in exams, internships, and practice.
+
+### 5.3 The Application Gap
+
+The central failure mode is consistent across user segments:
+
+> Learners can recall legal concepts in isolation but cannot reliably identify, analyze, or act on legal issues in context.
+
+This application gap manifests as:
+
+- Citizens who tolerate unlawful treatment because they do not recognize a violation
+- Students who memorize IPC sections but freeze on case-based questions
+- Professionals who sign contracts or accept terms without understanding exposure
+- Institutions that run one-off legal awareness workshops with no measurable retention
+
+### 5.4 Why Now
+
+Three forces make this problem urgent and solvable:
+
+1. **Digital adoption** — India’s internet base and mobile-first behavior make scalable legal education delivery viable.
+2. **Rights consciousness** — Younger demographics actively seek practical knowledge about rights, privacy, and consumer protection.
+3. **EdTech maturity** — Interactive, scenario-driven learning formats are proven in other domains but remain underapplied in Indian legal education.
+
+The problem is not that Indians do not want to learn law. The problem is that no product teaches it in the format their brain actually retains.
+
+---
+
+## 6. Market Opportunity
+
+Nyaya Revolution operates at the intersection of legal education, civic literacy, and interactive learning — three markets converging into a single underserved category.
+
+### 6.1 Market Definition
+
+We define our market as **practical legal learning for Indian users** — anyone who needs to understand and apply law in real situations, not only those pursuing formal legal careers.
+
+This includes:
+
+- Formal legal education supplements (law students, CLAT/Judiciary/UPSC Law aspirants)
+- Professional upskilling (HR, compliance, founders, freelancers)
+- Citizen legal literacy (rights awareness, consumer protection, tenancy, police procedure)
+- Institutional legal training (colleges, NGOs, legal aid cells, corporate L&D)
+
+### 6.2 Market Sizing Framework
+
+| Layer | Definition | Directional Estimate |
+|---|---|---|
+| **TAM** | All Indians who could benefit from practical legal awareness | ~400M+ internet users |
+| **SAM** | Digitally reachable learners actively seeking legal knowledge or exam prep | ~25M–40M users |
+| **SOM (3-Year)** | Early adopters: law students, aspirants, civic learners, institutional pilots | ~500K–1M users |
+
+*Note: Precise figures to be validated through primary research, channel testing, and pilot conversion data.*
+
+### 6.3 Segment Attractiveness
+
+| Segment | Need Intensity | Willingness to Pay | Acquisition Channel |
+|---|---|---|---|
+| Law students | High | Medium | Colleges, peer referral, exam communities |
+| Competitive exam aspirants | Very high | Medium–High | Coaching institutes, YouTube, test prep forums |
+| Working professionals | Medium | High | LinkedIn, B2B sales, corporate partnerships |
+| General citizens | Medium | Low–Medium | SEO, social content, NGO partnerships |
+| Institutions (B2B) | High | High | Direct sales, pilot programs, conferences |
+
+### 6.4 Category White Space
+
+India has no dominant platform built around **situation-based legal learning** as a core product primitive. Existing players optimize for:
+
+- Video course libraries
+- Statute search and legal databases
+- One-to-one lawyer marketplaces
+- Exam question banks without contextual pedagogy
+
+Nyaya Revolution occupies the gap between **knowing the law** and **handling a situation** — a category with natural defensibility through content depth, pedagogical design, and learner progress data.
+
+### 6.5 Expansion Vectors
+
+The market opportunity compounds over time through:
+
+- **Language expansion** — Hindi first, then regional languages for Tier 2/3 penetration
+- **Subject expansion** — From foundational rights to specialized tracks (startup law, gig worker rights, cybercrime)
+- **Institutional licensing** — Recurring B2B revenue from colleges and organizations
+- **Certification & credentials** — Validated completion paths for employability and institutional reporting
+
+---
+
+## 7. Target Users
+
+Nyaya Revolution serves learners who need to **recognize legal situations, understand their options, and act with confidence** — not just passively consume legal information.
+
+### 7.1 Primary Users
+
+#### Law Students (LL.B / BA LL.B / LL.M)
+Students who need to supplement classroom theory with practical fact-pattern recognition and decision-based practice. They study law formally but lack enough situational repetition to build intuitive legal reasoning.
+
+#### Competitive Exam Aspirants
+CLAT, Judiciary, APO, UPSC Law optional, and state-level legal exam candidates who must excel at application-style questions — case analysis, issue spotting, and elimination under time pressure.
+
+#### Early-Career Legal Professionals
+Junior advocates, law interns, and paralegals who need structured practice translating academic knowledge into client-facing and courtroom-relevant thinking.
+
+### 7.2 Secondary Users
+
+#### Working Professionals (Non-Lawyers)
+HR managers, startup founders, compliance officers, journalists, and freelancers who encounter contracts, regulatory obligations, or workplace legal issues and need practical awareness without a law degree.
+
+#### General Citizens
+Individuals seeking everyday legal literacy — tenant rights, consumer complaints, online fraud, police encounters, domestic violence awareness, and government scheme eligibility.
+
+### 7.3 Institutional Users
+
+| Institution Type | Use Case |
+|---|---|
+| Law colleges | Supplement moot court and case method with scalable scenario practice |
+| Coaching institutes | Differentiated prep material for application-based exam questions |
+| NGOs & legal aid organizations | Mass legal literacy programs with trackable learner progress |
+| Corporates | Employee awareness training on POSH, contracts, and compliance basics |
+
+### 7.4 Who We Do Not Target (Initial Phase)
+
+- Users seeking formal legal representation (we educate, not advise)
+- Advanced practitioners needing specialized legal research databases
+- Users outside India requiring jurisdiction-specific content we do not yet support
+
+---
+
+## 8. User Personas
+
+### 8.1 Persona: Ananya — The Law Student
+
+| Attribute | Detail |
+|---|---|
+| **Age** | 21 |
+| **Location** | Tier 2 city; studies at a regional law college |
+| **Goal** | Build strong legal reasoning for exams, internships, and moot courts |
+| **Frustration** | Reads textbooks and bare acts but struggles to connect sections to real fact patterns |
+| **Behavior** | Uses YouTube and WhatsApp study groups; limited access to quality coaching |
+| **Success State** | Can read a scenario, identify issues, and articulate legal reasoning confidently |
+| **Nyaya Value** | Affordable, interactive scenario practice grounded in Indian law with instant feedback |
+
+**Key quote:** *"I know the sections — I just don't know when to apply which one."*
+
+---
+
+### 8.2 Persona: Vikram — The Judiciary Aspirant
+
+| Attribute | Detail |
+|---|---|
+| **Age** | 27 |
+| **Location** | Tier 1 city; full-time exam preparation |
+| **Goal** | Crack state Judiciary or APO exam with strong case-analysis speed |
+| **Frustration** | Question banks test recall; mock tests are expensive and inconsistently explained |
+| **Behavior** | High daily study hours; compares multiple prep platforms; values structured progress tracking |
+| **Success State** | Faster issue spotting, fewer elimination errors, measurable improvement week over week |
+| **Nyaya Value** | Branching scenarios with detailed reasoning breakdowns and performance analytics |
+
+**Key quote:** *"I need to practice thinking like a judge, not just memorizing like a student."*
+
+---
+
+### 8.3 Persona: Priya — The HR Manager
+
+| Attribute | Detail |
+|---|---|
+| **Age** | 34 |
+| **Location** | Bengaluru; mid-size tech company |
+| **Goal** | Handle workplace legal situations — POSH complaints, terminations, contractor agreements — without constant external counsel |
+| **Frustration** | Compliance workshops are one-off and forgettable; hard to know if team actually understands |
+| **Behavior** | Buys B2B tools; needs content she can assign to managers and track completion |
+| **Success State** | Team recognizes legal risk early; fewer escalations; documented training completion |
+| **Nyaya Value** | Situation-based modules for workplace law with institutional dashboards and reporting |
+
+**Key quote:** *"I don't need my team to become lawyers — I need them to know when something is legally serious."*
+
+---
+
+### 8.4 Persona: Ramesh — The Everyday Citizen
+
+| Attribute | Detail |
+|---|---|
+| **Age** | 42 |
+| **Location** | Indore; small business owner |
+| **Goal** | Understand rights in daily situations — tenant disputes, consumer refunds, police stops, online scams |
+| **Frustration** | Legal information online is either too complex, too generic, or feels like it is selling lawyer services |
+| **Behavior** | Searches Google and YouTube in Hindi/English mix; trusts simple, practical guidance |
+| **Success State** | Recognizes when his rights are violated and knows the first reasonable steps to take |
+| **Nyaya Value** | Plain-language situations in familiar contexts with clear, non-alarmist guidance |
+
+**Key quote:** *"Just tell me what I should do if this happens to me — in simple words."*
+
+---
+
+### 8.5 Persona: Dr. Mehta — The College Administrator
+
+| Attribute | Detail |
+|---|---|
+| **Age** | 50 |
+| **Location** | Pune; principal of a law college |
+| **Goal** | Improve student outcomes and differentiate the college with modern learning tools |
+| **Frustration** | Existing tools are either too expensive, too foreign (US/UK case law), or lack usage analytics |
+| **Behavior** | Evaluates EdTech through pilot programs; needs faculty buy-in and student engagement proof |
+| **Success State** | Higher student participation, better moot and exam performance, positive feedback in NAAC-style reporting |
+| **Nyaya Value** | India-first scenario library, cohort management, and progress data for institutional reporting |
+
+**Key quote:** *"Show me that students are actually learning to think — not just completing videos."*
+
+---
+
+### 8.6 Anti-Persona: The Legal Research Power User
+
+| Attribute | Detail |
+|---|---|
+| **Profile** | Senior advocate or legal researcher needing comprehensive statute databases, citation tools, and judgment search |
+| **Why Not** | Nyaya Revolution is a learning platform, not a legal research or practice management suite |
+| **Redirect** | Manupatra, SCC Online, Indian Kanoon for research; Nyaya for applied learning and literacy |
+
+---
+
+*Sections 9–49 to be written.*
