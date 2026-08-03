@@ -443,4 +443,102 @@ Intended audience: founders, product, engineering, content, legal, design, growt
 
 ---
 
-*End of Title Page & Table of Contents*
+## 1. Executive Summary
+
+Nyaya Revolution is building India's first situation-based legal learning platform — a product that teaches law the way people actually encounter it: through real-life scenarios, decisions, and consequences.
+
+Today, legal knowledge in India remains inaccessible to most citizens and poorly retained by learners who study it. Textbooks, lecture videos, and static articles explain statutes in abstraction. They do not prepare someone to recognize a legal issue when it appears in daily life — at work, at home, in a consumer dispute, or during a police interaction. Nyaya Revolution closes this gap by turning legal concepts into interactive situations that users read, decide, and learn from.
+
+### 1.1 One-Page Overview
+
+| Dimension | Summary |
+|---|---|
+| **Product** | A web-first learning platform where users progress through curated legal situations — branching scenarios grounded in Indian law — with instant feedback, concept explanations, and skill tracking. |
+| **Problem** | Low legal literacy, poor retention from traditional formats, and a widening gap between knowing the law and applying it in real situations. |
+| **Solution** | Situation-based learning: encounter a scenario → make a decision → understand the legal reasoning → apply knowledge in the next situation. |
+| **Primary Users** | Law students, competitive exam aspirants, working professionals, and everyday citizens seeking practical legal awareness. |
+| **Secondary Users** | Colleges, coaching institutes, NGOs, and legal aid organizations that need scalable legal literacy tools. |
+| **Differentiation** | Purpose-built for Indian legal context; scenario-first pedagogy; designed for clarity, trust, and repeat engagement — not generic course video libraries. |
+| **Business Model** | Freemium B2C subscriptions with institutional B2B licensing for colleges and organizations. |
+| **Stage** | Pre-MVP / foundation — blueprint, content architecture, and core platform in active development. |
+
+### 1.2 Strategic Thesis
+
+Legal education fails when it is separated from context. People do not need more statutes memorized; they need the judgment to identify which law applies, what options exist, and what action is reasonable in a given moment. Situation-based learning is the most natural format for this kind of knowledge transfer — and no dominant Indian platform owns this category today.
+
+Nyaya Revolution will win by combining three layers:
+
+1. **Pedagogy** — Structured scenarios that mirror how legal reasoning actually works.
+2. **Content** — Accurate, India-specific situations reviewed for legal clarity and learner comprehension.
+3. **Product** — A platform that makes learning habitual, measurable, and shareable.
+
+### 1.3 Key Bets & Differentiators
+
+- **Category creation:** Define and own "situation-based legal learning" as a distinct EdTech category in India.
+- **Context over curriculum:** Prioritize practical recognition and decision-making over syllabus coverage alone.
+- **Indian law, Indian situations:** Build for IPC, CrPC, Constitution, consumer rights, tenancy, employment, and everyday civil disputes — not imported case studies.
+- **Trust by design:** Clear educational disclaimers, expert-reviewed content, and transparent sourcing of legal references.
+- **Accessible by default:** Plain language, multilingual roadmap, and mobile-friendly delivery for Tier 2/3 reach.
+- **Institutional leverage:** Colleges and NGOs as distribution partners for scale and credibility.
+
+### 1.4 Success Definition (12 / 24 / 36 Months)
+
+| Horizon | Success Looks Like |
+|---|---|
+| **12 Months** | MVP launched; 50+ curated situations live; 1,000+ registered learners; validated retention on scenario completion; 2–3 institutional pilot partnerships. |
+| **24 Months** | 10,000+ active learners; expanded subject coverage; subscription revenue; recognized brand in legal education communities; Hindi content live. |
+| **36 Months** | Category leader in practical legal learning in India; institutional sales motion established; strong organic growth loop; measurable learning outcomes published. |
+
+---
+
+## 2. Vision
+
+**A legally aware India where every citizen can recognize their rights, understand their options, and act with confidence when the law enters their life.**
+
+We envision a future where legal knowledge is not reserved for lawyers, law students, or those who can afford counsel — but is a basic life skill taught through experience, not intimidation. Nyaya Revolution will become the default way Indians learn law: not by reading sections, but by living through situations until the law feels familiar, fair, and usable.
+
+---
+
+## 3. Mission
+
+**To make Indian law learnable, applicable, and accessible through interactive, situation-based experiences that build real-world legal confidence.**
+
+We do this by:
+
+- Designing learning around real scenarios people face in India
+- Translating complex legal concepts into clear, actionable understanding
+- Meeting learners where they are — students, professionals, and citizens — with paths that match their goals
+- Building a platform that is accurate, trustworthy, and continuously updated as law evolves
+- Partnering with educators and institutions to scale legal literacy beyond our direct audience
+
+---
+
+## 4. Core Values
+
+### 4.1 Clarity Over Complexity
+
+Law is already complicated. We do not add to the confusion. Every situation, explanation, and interface must reduce cognitive load and leave the learner more confident than before.
+
+### 4.2 Context Is the Curriculum
+
+We believe people learn law best when it is tied to a moment that matters. We prioritize situational relevance over abstract completeness.
+
+### 4.3 Accuracy With Integrity
+
+Legal content carries real consequences for trust. We commit to verified sources, expert review, honest disclaimers, and corrections when the law or our content changes.
+
+### 4.4 Access for All
+
+Legal awareness is a public good. We design for affordability, multilingual reach, and inclusive scenarios that reflect the diversity of Indian life.
+
+### 4.5 Empowerment, Not Fear
+
+We teach rights and responsibilities to build agency — not anxiety. Our tone is serious about the law, but never alarmist or exploitative.
+
+### 4.6 Build in the Open, Ship with Discipline
+
+As a startup, we move fast — but not at the cost of quality or learner trust. We document decisions, iterate from feedback, and hold a high bar for what we publish.
+
+---
+
+*Sections 5–49 to be written.*
