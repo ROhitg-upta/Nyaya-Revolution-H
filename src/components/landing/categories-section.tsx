@@ -1,6 +1,7 @@
 import { Reveal } from "@/components/common/reveal";
 import { SectionHeading } from "@/components/common/section-heading";
 import { Section } from "@/components/landing/section";
+import { routes } from "@/constants";
 import { categories } from "@/constants/landing";
 import { ArrowRight } from "@/lib/icons";
 
@@ -21,7 +22,7 @@ export function CategoriesSection() {
             className="h-full"
           >
             <a
-              href={category.href}
+              href={routes.situations}
               className="focus-visible:ring-ring group/card block h-full rounded-2xl focus-visible:ring-2 focus-visible:outline-none"
             >
               <div className="glass glow-hover relative flex h-full flex-col gap-3 overflow-hidden rounded-2xl p-5 hover:-translate-y-1">

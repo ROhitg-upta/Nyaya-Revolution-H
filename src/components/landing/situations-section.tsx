@@ -2,6 +2,7 @@ import { Reveal } from "@/components/common/reveal";
 import { SectionHeading } from "@/components/common/section-heading";
 import { Section } from "@/components/landing/section";
 import { Badge } from "@/components/ui/badge";
+import { routes } from "@/constants";
 import { situations } from "@/constants/landing";
 import { ArrowRight } from "@/lib/icons";
 
@@ -22,7 +23,7 @@ export function SituationsSection() {
             className="h-full"
           >
             <a
-              href={situation.href}
+              href={routes.situations}
               className="focus-visible:ring-ring group/card block h-full rounded-2xl focus-visible:ring-2 focus-visible:outline-none"
             >
               <div className="glass glow-hover relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-2xl p-6 hover:-translate-y-1.5">

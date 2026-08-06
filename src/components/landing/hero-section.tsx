@@ -178,13 +178,15 @@ export function HeroSection() {
               placeholder="Try “my landlord won't return my deposit”"
               className="text-foreground placeholder:text-muted-foreground w-full bg-transparent text-sm outline-none sm:text-base"
             />
-            <Button
-              type="submit"
-              size="lg"
-              className="glow-hover shrink-0 rounded-full"
-            >
-              Explore
-            </Button>
+            <a href={routes.situations}>
+              <Button
+                type="button"
+                size="lg"
+                className="glow-hover shrink-0 rounded-full"
+              >
+                Explore
+              </Button>
+            </a>
           </motion.form>
 
           <motion.div
@@ -197,13 +199,13 @@ export function HeroSection() {
                 <ArrowRight className="transition-transform group-hover/button:translate-x-0.5" />
               </Button>
             </a>
-            <a href="#categories">
+            <a href={routes.situations}>
               <Button
                 size="lg"
                 variant="outline"
                 className="glass w-full rounded-full px-6"
               >
-                Browse categories
+                Explore situations
               </Button>
             </a>
           </motion.div>
