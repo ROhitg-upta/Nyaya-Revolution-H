@@ -10,6 +10,12 @@ export const routes = {
   forgotPassword: "/forgot-password",
   verifyEmail: "/verify-email",
   onboarding: "/onboarding",
+  situations: "/situations",
 } as const;
 
 export type RouteKey = keyof typeof routes;
+
+/** Builds the detail route for a situation slug. */
+export function situationRoute(slug: string): string {
+  return `/situations/${slug}`;
+}
