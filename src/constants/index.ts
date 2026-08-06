@@ -3,3 +3,4 @@
  * consumers can `import { siteConfig } from "@/constants"`.
  */
 export * from "./site";
+export * from "./routes";
