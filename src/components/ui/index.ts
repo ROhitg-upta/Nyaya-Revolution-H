@@ -4,6 +4,7 @@
  * Enables `import { Button, Card, Badge } from "@/components/ui"`. You may also
  * import a component directly from its file if you prefer narrower imports.
  */
+export * from "./accordion";
 export * from "./avatar";
 export * from "./badge";
 export * from "./button";
