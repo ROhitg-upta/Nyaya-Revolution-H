@@ -91,3 +91,28 @@ export {
   X,
   Zap,
 } from "lucide-react";
+
+// Situation Engine icons.
+export {
+  Accessibility,
+  Ban,
+  CircleAlert,
+  CircleHelp,
+  ClipboardCheck,
+  ClipboardList,
+  Download,
+  FileText,
+  Flag,
+  HandCoins,
+  Home,
+  Hospital,
+  Info,
+  ListChecks,
+  MapPin,
+  Phone,
+  PhoneCall,
+  ScrollText,
+  Siren,
+  TriangleAlert,
+  UserRound,
+} from "lucide-react";
