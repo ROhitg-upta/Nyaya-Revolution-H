@@ -7,6 +7,7 @@
 
 export * from "./auth";
 export * from "./onboarding";
+export * from "./situation";
 
 /** Makes all properties of T deeply optional. */
 export type DeepPartial<T> = {
