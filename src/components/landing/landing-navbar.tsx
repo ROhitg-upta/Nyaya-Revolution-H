@@ -11,7 +11,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { siteConfig } from "@/constants";
+import { routes, siteConfig } from "@/constants";
 import { navLinks } from "@/constants/landing";
 import { Menu, Scale } from "@/lib/icons";
 import { cn } from "@/lib/utils";
@@ -70,12 +70,11 @@ export function LandingNavbar() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <Button
-            className="glow-hover hidden rounded-full px-5 md:inline-flex"
-            size="sm"
-          >
-            Log in
-          </Button>
+          <a href={routes.signIn} className="hidden md:inline-flex">
+            <Button className="glow-hover rounded-full px-5" size="sm">
+              Log in
+            </Button>
+          </a>
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger
@@ -105,7 +104,9 @@ export function LandingNavbar() {
                     {link.label}
                   </a>
                 ))}
-                <Button className="mt-3">Log in</Button>
+                <a href={routes.signIn} onClick={() => setOpen(false)}>
+                  <Button className="mt-3 w-full">Log in</Button>
+                </a>
               </div>
             </SheetContent>
           </Sheet>

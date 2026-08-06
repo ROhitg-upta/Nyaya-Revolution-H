@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from "motion/react";
 
 import { Button } from "@/components/ui/button";
+import { routes } from "@/constants";
 import { situations, trustBadges } from "@/constants/landing";
 import { ArrowRight, ChevronDown, Scale, Search, Sparkles } from "@/lib/icons";
 
@@ -190,17 +191,21 @@ export function HeroSection() {
             variants={item}
             className="flex flex-col items-stretch gap-3 sm:flex-row"
           >
-            <Button size="lg" className="glow-hover rounded-full px-6">
-              Start learning free
-              <ArrowRight className="transition-transform group-hover/button:translate-x-0.5" />
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="glass rounded-full px-6"
-            >
-              Browse categories
-            </Button>
+            <a href={routes.signUp}>
+              <Button size="lg" className="glow-hover w-full rounded-full px-6">
+                Start learning free
+                <ArrowRight className="transition-transform group-hover/button:translate-x-0.5" />
+              </Button>
+            </a>
+            <a href="#categories">
+              <Button
+                size="lg"
+                variant="outline"
+                className="glass w-full rounded-full px-6"
+              >
+                Browse categories
+              </Button>
+            </a>
           </motion.div>
 
           <motion.ul
