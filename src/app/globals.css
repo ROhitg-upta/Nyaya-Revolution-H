@@ -133,6 +133,14 @@
   --input: oklch(0.92 0.006 260);
   --ring: oklch(0.55 0.16 256);
 
+  /* Glass + glow + grid (design accents) */
+  --glass-bg: oklch(1 0 0 / 0.65);
+  --glass-border: oklch(0.5 0.02 265 / 0.12);
+  --glass-highlight: oklch(1 0 0 / 0.6);
+  --grid-line: oklch(0.55 0.05 265 / 0.08);
+  --glow-1: oklch(0.6 0.18 258 / 0.18);
+  --glow-2: oklch(0.6 0.16 285 / 0.12);
+
   /* Gradient accent stops (navy → blue) */
   --gradient-from: oklch(0.29 0.07 264);
   --gradient-to: oklch(0.55 0.16 256);
@@ -156,29 +164,29 @@
 }
 
 .dark {
-  /* Surfaces — deep navy near-black */
-  --background: oklch(0.17 0.02 264);
-  --foreground: oklch(0.97 0.005 260);
-  --card: oklch(0.21 0.025 264);
-  --card-foreground: oklch(0.97 0.005 260);
-  --popover: oklch(0.21 0.025 264);
-  --popover-foreground: oklch(0.97 0.005 260);
+  /* Surfaces — cinematic deep navy (~#050816) */
+  --background: oklch(0.09 0.028 266);
+  --foreground: oklch(0.97 0.008 260);
+  --card: oklch(0.15 0.03 265);
+  --card-foreground: oklch(0.97 0.008 260);
+  --popover: oklch(0.13 0.03 265);
+  --popover-foreground: oklch(0.97 0.008 260);
 
   /* Primary — brighter blue so it reads on dark */
   --primary: oklch(0.62 0.15 256);
   --primary-foreground: oklch(0.16 0.02 264);
 
   /* Secondary */
-  --secondary: oklch(0.27 0.02 264);
-  --secondary-foreground: oklch(0.97 0.005 260);
+  --secondary: oklch(0.22 0.03 265);
+  --secondary-foreground: oklch(0.97 0.008 260);
 
   /* Muted */
-  --muted: oklch(0.25 0.02 264);
-  --muted-foreground: oklch(0.7 0.02 260);
+  --muted: oklch(0.19 0.028 265);
+  --muted-foreground: oklch(0.72 0.03 262);
 
   /* Accent */
-  --accent: oklch(0.3 0.03 260);
-  --accent-foreground: oklch(0.97 0.005 260);
+  --accent: oklch(0.26 0.04 262);
+  --accent-foreground: oklch(0.97 0.008 260);
 
   /* Brand */
   --brand: oklch(0.66 0.15 256);
@@ -194,13 +202,21 @@
   --warning-foreground: oklch(0.2 0.03 75);
 
   /* Lines + focus */
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 15%);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 14%);
   --ring: oklch(0.66 0.15 256);
 
+  /* Glass + glow + grid (design accents) */
+  --glass-bg: oklch(0.19 0.03 265 / 0.45);
+  --glass-border: oklch(0.85 0.05 265 / 0.1);
+  --glass-highlight: oklch(0.9 0.05 265 / 0.14);
+  --grid-line: oklch(0.7 0.06 265 / 0.06);
+  --glow-1: oklch(0.55 0.2 260 / 0.35);
+  --glow-2: oklch(0.55 0.18 290 / 0.22);
+
   /* Gradient accent stops */
-  --gradient-from: oklch(0.4 0.12 262);
-  --gradient-to: oklch(0.66 0.15 256);
+  --gradient-from: oklch(0.5 0.16 262);
+  --gradient-to: oklch(0.72 0.14 250);
 
   /* Charts */
   --chart-1: oklch(0.66 0.15 256);
@@ -260,5 +276,62 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+  }
+
+  /* Glassmorphism surface: translucent fill, hairline border, large blur,
+     and a soft top highlight for depth. */
+  .glass {
+    background-color: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    backdrop-filter: blur(16px) saturate(1.4);
+    box-shadow:
+      inset 0 1px 0 0 var(--glass-highlight),
+      var(--shadow-lg);
+  }
+  .glass-strong {
+    background-color: color-mix(in oklch, var(--glass-bg) 100%, black 6%);
+    border: 1px solid var(--glass-border);
+    -webkit-backdrop-filter: blur(28px) saturate(1.5);
+    backdrop-filter: blur(28px) saturate(1.5);
+    box-shadow:
+      inset 0 1px 0 0 var(--glass-highlight),
+      var(--shadow-xl);
+  }
+
+  /* Blue glow — resting subtle, intensifies on hover. */
+  .glow-hover {
+    transition:
+      box-shadow 0.35s ease,
+      transform 0.35s ease,
+      border-color 0.35s ease;
+  }
+  .glow-hover:hover {
+    box-shadow:
+      0 0 0 1px var(--ring),
+      0 14px 50px -12px var(--glow-1);
+  }
+  .glow-brand {
+    box-shadow: 0 10px 40px -10px var(--glow-1);
+  }
+
+  /* Layered background helpers. */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+  .bg-dot-grid {
+    background-image: radial-gradient(var(--grid-line) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .mask-fade-b {
+    -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+    mask-image: linear-gradient(to bottom, black, transparent);
+  }
+  .mask-radial {
+    -webkit-mask-image: radial-gradient(60% 55% at 50% 40%, black, transparent);
+    mask-image: radial-gradient(60% 55% at 50% 40%, black, transparent);
   }
 }
