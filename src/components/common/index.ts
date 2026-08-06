@@ -1,6 +1,8 @@
 /**
- * Reusable, app-specific presentational components composed from primitives
- * (e.g. PageHeader, EmptyState, LoadingSpinner). Keep them generic and
- * feature-agnostic. Re-export each component here.
+ * Reusable, app-specific presentational components composed from primitives.
+ * Re-export each component here so consumers can
+ * `import { EmptyState } from "@/components/common"`.
  */
-export {};
+export * from "./empty-state";
+export * from "./error-state";
+export * from "./loading-state";
