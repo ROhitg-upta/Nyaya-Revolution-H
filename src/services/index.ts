@@ -6,3 +6,4 @@
  * talk to external systems directly.
  */
 export * from "./http";
+export * from "./auth";
