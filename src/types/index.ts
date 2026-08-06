@@ -5,6 +5,9 @@
  * reusable, app-wide types here (utility types, common API envelopes, etc.).
  */
 
+export * from "./auth";
+export * from "./onboarding";
+
 /** Makes all properties of T deeply optional. */
 export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
