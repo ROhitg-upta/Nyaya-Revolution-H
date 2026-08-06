@@ -1,22 +1,38 @@
-import { siteConfig } from "@/constants";
+import {
+  CategoriesSection,
+  FaqSection,
+  FeaturesSection,
+  HeroSection,
+  HowItWorksSection,
+  LandingBackground,
+  LandingFooter,
+  LandingNavbar,
+  SituationsSection,
+  StatsSection,
+  TestimonialsSection,
+} from "@/components/landing";
 
 /**
- * Placeholder home route.
- *
- * This is intentionally minimal — the engineering foundation is in place, but
- * no product UI (landing page, dashboard, etc.) is built yet.
+ * Marketing landing page. Composed entirely from reusable section components;
+ * all content is sourced from `@/constants/landing`. UI-only — no product,
+ * auth, or backend behaviour is wired up here.
  */
 export default function HomePage() {
   return (
-    <main className="flex flex-1 items-center justify-center p-8">
-      <div className="text-center">
-        <h1 className="text-2xl font-semibold tracking-tight">
-          {siteConfig.name}
-        </h1>
-        <p className="text-muted-foreground mt-2 text-sm">
-          Engineering foundation ready.
-        </p>
-      </div>
-    </main>
+    <>
+      <LandingBackground />
+      <LandingNavbar />
+      <main id="main" className="flex flex-col">
+        <HeroSection />
+        <StatsSection />
+        <CategoriesSection />
+        <SituationsSection />
+        <HowItWorksSection />
+        <FeaturesSection />
+        <TestimonialsSection />
+        <FaqSection />
+      </main>
+      <LandingFooter />
+    </>
   );
 }
