@@ -6,6 +6,7 @@
  */
 
 export * from "./auth";
+export * from "./learning";
 export * from "./onboarding";
 export * from "./situation";
 
