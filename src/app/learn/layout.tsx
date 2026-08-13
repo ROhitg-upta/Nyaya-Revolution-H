@@ -3,11 +3,7 @@ import type { ReactNode } from "react";
 import { AppHeader } from "@/components/common";
 import { LandingBackground } from "@/components/landing";
 
-export default function SituationsLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function LearnLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <LandingBackground />
