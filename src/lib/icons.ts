@@ -92,6 +92,22 @@ export {
   Zap,
 } from "lucide-react";
 
+// Learning platform icons.
+export {
+  BarChart3,
+  Bookmark,
+  BookmarkCheck,
+  Clock,
+  Crown,
+  Layers,
+  Lightbulb,
+  Medal,
+  NotebookPen,
+  PencilLine,
+  Play,
+  Timer,
+} from "lucide-react";
+
 // Situation Engine icons.
 export {
   Accessibility,
