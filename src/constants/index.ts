@@ -5,3 +5,4 @@
 export * from "./site";
 export * from "./routes";
 export * from "./situations";
+export * from "./learning";
