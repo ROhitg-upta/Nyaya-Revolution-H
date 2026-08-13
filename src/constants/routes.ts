@@ -11,6 +11,8 @@ export const routes = {
   verifyEmail: "/verify-email",
   onboarding: "/onboarding",
   situations: "/situations",
+  learn: "/learn",
+  learnProfile: "/learn/profile",
 } as const;
 
 export type RouteKey = keyof typeof routes;
@@ -19,3 +21,11 @@ export type RouteKey = keyof typeof routes;
 export function situationRoute(slug: string): string {
   return `/situations/${slug}`;
 }
+
+/** Learning route builders. */
+export const learnRoutes = {
+  journey: (slug: string) => `/learn/${slug}`,
+  lesson: (journey: string, lesson: string) => `/learn/${journey}/${lesson}`,
+  quiz: (journey: string) => `/learn/${journey}/quiz`,
+  certificate: (journey: string) => `/learn/${journey}/certificate`,
+} as const;
