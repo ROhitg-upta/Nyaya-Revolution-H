@@ -2,6 +2,7 @@
  * Reusable, app-specific presentational components composed from primitives.
  * `import { EmptyState, Reveal } from "@/components/common"`.
  */
+export * from "./app-header";
 export * from "./count-up";
 export * from "./empty-state";
 export * from "./error-state";
