@@ -1,162 +1,196 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { AnimatePresence, motion } from "motion/react";
+import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
 
+import { BookmarkButton } from "@/components/learning/bookmark-button";
+import { LessonSidebar } from "@/components/learning/lesson-sidebar";
+import { MiniChallenge } from "@/components/learning/mini-challenge";
+import { XpToast } from "@/components/learning/xp-toast";
 import { Button } from "@/components/ui/button";
-import { adjacentLessons, getLesson, learnRoutes } from "@/constants";
+import {
+  adjacentLessons,
+  getJourney,
+  getLesson,
+  getQuiz,
+  learnRoutes,
+  lessonCount,
+} from "@/constants";
 import {
   ArrowLeft,
   ArrowRight,
-  Bookmark,
-  BookmarkCheck,
-  Check,
-  CheckCircle2,
+  BookOpen,
+  CheckCircle,
+  Clock,
   Lightbulb,
+  ListChecks,
   NotebookPen,
-  ScrollText,
+  Sparkles,
   Target,
-  Timer,
 } from "@/lib/icons";
 import { cn } from "@/lib/utils";
+
+interface LessonReaderProps {
+  journeySlug: string;
+  lessonSlug: string;
+}
 
 function Block({
   icon: Icon,
   title,
   children,
+  className,
 }: {
-  icon: typeof Target;
+  icon: React.ComponentType<{ className?: string }>;
   title: string;
   children: React.ReactNode;
+  className?: string;
 }) {
   return (
-    <section className="glass rounded-2xl p-6">
-      <div className="mb-4 flex items-center gap-2.5">
-        <span className="bg-brand/12 text-brand flex size-9 items-center justify-center rounded-xl">
-          <Icon className="size-5" />
+    <motion.section
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.4 }}
+      className={cn("flex flex-col gap-4", className)}
+    >
+      <div className="flex items-center gap-2.5">
+        <span className="bg-brand/12 flex size-8 items-center justify-center rounded-lg">
+          <Icon className="text-brand size-4" />
         </span>
-        <h2 className="text-foreground text-lg font-semibold">{title}</h2>
+        <h2 className="text-foreground text-lg font-bold">{title}</h2>
       </div>
       {children}
-    </section>
+    </motion.section>
   );
 }
 
-export function LessonReader({
-  journeySlug,
-  lessonSlug,
-}: {
-  journeySlug: string;
-  lessonSlug: string;
-}) {
+export function LessonReader({ journeySlug, lessonSlug }: LessonReaderProps) {
+  const journey = getJourney(journeySlug);
+  const result = getLesson(journeySlug, lessonSlug);
+  const quizQuestions = getQuiz(journeySlug);
+
   const [progress, setProgress] = useState(0);
   const [notes, setNotes] = useState("");
-  const [bookmarked, setBookmarked] = useState(false);
   const [completed, setCompleted] = useState(false);
+  const [showXp, setShowXp] = useState(false);
 
-  useEffect(() => {
-    const onScroll = () => {
-      const el = document.documentElement;
-      const height = el.scrollHeight - el.clientHeight;
-      setProgress(
-        height > 0 ? Math.min(100, (el.scrollTop / height) * 100) : 0,
-      );
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+  const handleScroll = useCallback(() => {
+    const h = document.documentElement;
+    const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+    setProgress(Math.min(100, Math.round(scrolled * 100)));
   }, []);
 
-  const found = getLesson(journeySlug, lessonSlug);
-  if (!found) return null;
-  const { journey, lesson } = found;
-  const { prev, next, index, total } = adjacentLessons(journey, lessonSlug);
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
 
-  function markComplete() {
+  if (!journey || !result) return null;
+
+  const lesson = result.lesson;
+  const { prev, next } = adjacentLessons(journey, lessonSlug);
+  const totalLessons = lessonCount(journey);
+  const lessonIndex =
+    journey.modules
+      .flatMap((m) => m.lessons)
+      .findIndex((l) => l.slug === lessonSlug) + 1;
+  const completedCount = Math.round((journey.progress / 100) * totalLessons);
+  const challengeQuestion = quizQuestions[0];
+
+  const markComplete = () => {
+    if (completed) return;
     setCompleted(true);
-    toast.success("Lesson complete! +20 XP");
-  }
+    setShowXp(true);
+  };
 
   return (
     <>
-      {/* reading progress */}
-      <div className="bg-muted sticky top-16 z-40 h-1 w-full">
-        <div
-          className="bg-gradient-brand h-full transition-[width] duration-150"
+      <XpToast xp={20} show={showXp} onDone={() => setShowXp(false)} />
+
+      {/* Reading progress bar */}
+      <div className="bg-muted/50 fixed top-16 right-0 left-0 z-40 h-1">
+        <motion.div
+          className="bg-gradient-brand h-full"
           style={{ width: `${progress}%` }}
+          transition={{ duration: 0.1 }}
         />
       </div>
 
-      <div className="mx-auto w-full max-w-3xl px-5 py-12 sm:px-8">
-        <a
-          href={learnRoutes.journey(journey.slug)}
-          className="text-muted-foreground hover:text-foreground mb-6 inline-flex items-center gap-1.5 text-sm"
-        >
-          <ArrowLeft className="size-4" />
-          {journey.title}
-        </a>
+      <div className="mx-auto flex w-full max-w-7xl gap-6 px-5 pt-28 pb-24 sm:px-8 lg:pt-32">
+        {/* Sidebar */}
+        <LessonSidebar
+          journeySlug={journeySlug}
+          modules={journey.modules}
+          currentLessonSlug={lessonSlug}
+          completedCount={completedCount}
+        />
 
-        {/* header */}
-        <div className="flex flex-col gap-4">
-          <div className="text-muted-foreground flex items-center gap-3 text-xs">
-            <span>
-              Lesson {index + 1} of {total}
-            </span>
-            <span className="flex items-center gap-1">
-              <Timer className="size-3.5" />
-              {lesson.readingMinutes} min read
-            </span>
-          </div>
-          <div className="flex items-start justify-between gap-4">
-            <h1 className="text-foreground text-3xl font-bold tracking-tight text-balance sm:text-4xl">
-              {lesson.title}
-            </h1>
-            <button
-              type="button"
-              onClick={() => setBookmarked((b) => !b)}
-              aria-pressed={bookmarked}
-              aria-label={bookmarked ? "Remove bookmark" : "Add bookmark"}
-              className="glass hover:ring-brand/40 flex size-10 shrink-0 items-center justify-center rounded-xl transition-all hover:ring-1"
-            >
-              {bookmarked ? (
-                <BookmarkCheck className="text-brand size-5" />
-              ) : (
-                <Bookmark className="text-muted-foreground size-5" />
-              )}
-            </button>
-          </div>
-        </div>
+        {/* Main content */}
+        <article className="flex min-w-0 flex-1 flex-col gap-10">
+          {/* Back link */}
+          <Link
+            href={learnRoutes.journey(journeySlug)}
+            className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm transition-colors"
+          >
+            <ArrowLeft className="size-4" />
+            {journey.title}
+          </Link>
 
-        {/* decorative icon illustration */}
-        <div className="glass-strong relative mt-8 flex h-32 items-center justify-center overflow-hidden rounded-3xl">
-          <div className="bg-brand/25 absolute size-40 rounded-full blur-3xl" />
-          <journey.icon className="text-brand relative size-14" />
-        </div>
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="glass-strong flex flex-col gap-4 rounded-2xl p-6"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex flex-col gap-2">
+                <span className="text-brand text-xs font-semibold tracking-wider uppercase">
+                  Lesson {lessonIndex} of {totalLessons}
+                </span>
+                <h1 className="text-foreground text-2xl font-bold tracking-tight sm:text-3xl">
+                  {lesson.title}
+                </h1>
+              </div>
+              <BookmarkButton />
+            </div>
+            <div className="text-muted-foreground flex items-center gap-4 text-sm">
+              <span className="flex items-center gap-1.5">
+                <Clock className="size-4" />
+                {lesson.readingMinutes} min read
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Sparkles className="text-brand size-4" />
+                +20 XP
+              </span>
+            </div>
+          </motion.div>
 
-        <div className="mt-8 flex flex-col gap-6">
+          {/* Learning objectives */}
           <Block icon={Target} title="Learning objectives">
-            <ul className="flex flex-col gap-2.5">
-              {lesson.objectives.map((o) => (
-                <li key={o} className="flex items-start gap-3">
-                  <span className="bg-success/15 text-success mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full">
-                    <Check className="size-3" />
-                  </span>
-                  <span className="text-muted-foreground text-sm leading-relaxed">
-                    {o}
-                  </span>
-                </li>
+            <div className="flex flex-col gap-2">
+              {lesson.objectives.map((obj) => (
+                <div key={obj} className="flex items-start gap-2.5 text-sm">
+                  <CheckCircle className="mt-0.5 size-4 shrink-0 text-emerald-400" />
+                  <span className="text-foreground">{obj}</span>
+                </div>
               ))}
-            </ul>
+            </div>
           </Block>
 
-          <Block icon={ScrollText} title="Key concepts">
-            <div className="flex flex-col gap-3">
+          {/* Key concepts */}
+          <Block icon={Lightbulb} title="Key concepts">
+            <div className="flex flex-col gap-4">
               {lesson.concepts.map((c) => (
-                <div key={c.title} className="glass rounded-xl p-4">
+                <div
+                  key={c.title}
+                  className="glass flex flex-col gap-2 rounded-xl p-4"
+                >
                   <h3 className="text-foreground text-sm font-semibold">
                     {c.title}
                   </h3>
-                  <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
+                  <p className="text-muted-foreground text-sm leading-relaxed">
                     {c.body}
                   </p>
                 </div>
@@ -164,97 +198,123 @@ export function LessonReader({
             </div>
           </Block>
 
-          <Block icon={Lightbulb} title="Important terms">
-            <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {/* Important terms */}
+          <Block icon={BookOpen} title="Important terms">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {lesson.terms.map((t) => (
-                <div key={t.term} className="glass rounded-xl p-4">
-                  <dt className="text-brand text-sm font-semibold">{t.term}</dt>
-                  <dd className="text-muted-foreground mt-1 text-sm leading-relaxed">
+                <div
+                  key={t.term}
+                  className="glass flex flex-col gap-1.5 rounded-xl p-4"
+                >
+                  <span className="text-brand text-sm font-bold">{t.term}</span>
+                  <span className="text-muted-foreground text-sm leading-relaxed">
                     {t.definition}
-                  </dd>
+                  </span>
                 </div>
               ))}
-            </dl>
+            </div>
           </Block>
 
-          <Block icon={Lightbulb} title="Real-life examples">
+          {/* Real-life examples */}
+          <Block icon={ListChecks} title="Real-life examples">
             <div className="flex flex-col gap-3">
-              {lesson.examples.map((e) => (
+              {lesson.examples.map((ex) => (
                 <div
-                  key={e.title}
-                  className="border-brand/30 bg-brand/5 rounded-xl border-l-2 p-4"
+                  key={ex.title}
+                  className="border-brand/30 rounded-xl border-l-2 py-3 pr-4 pl-5"
                 >
-                  <h3 className="text-foreground text-sm font-semibold">
-                    {e.title}
-                  </h3>
+                  <h4 className="text-foreground text-sm font-semibold">
+                    {ex.title}
+                  </h4>
                   <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
-                    {e.body}
+                    {ex.body}
                   </p>
                 </div>
               ))}
             </div>
           </Block>
 
+          {/* Mini challenge (from quiz questions) */}
+          {challengeQuestion && (
+            <Block icon={Sparkles} title="Quick check">
+              <MiniChallenge
+                question={challengeQuestion.question}
+                options={challengeQuestion.options}
+                correctIndex={challengeQuestion.correctIndex}
+                explanation={challengeQuestion.explanation}
+                xp={challengeQuestion.xp}
+              />
+            </Block>
+          )}
+
+          {/* Notes */}
           <Block icon={NotebookPen} title="Your notes">
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="Jot down anything you want to remember…"
+              placeholder="Write your notes here..."
               rows={4}
-              className="glass text-foreground placeholder:text-muted-foreground focus-visible:ring-ring/50 w-full resize-y rounded-xl p-3.5 text-sm outline-none focus-visible:ring-2"
+              className="glass text-foreground placeholder:text-muted-foreground/50 focus:ring-brand/40 w-full resize-none rounded-xl p-4 text-sm leading-relaxed focus:ring-2 focus:outline-none"
             />
-            <p className="text-muted-foreground/60 mt-2 text-xs">
-              Notes are local to this session (not saved yet).
-            </p>
           </Block>
-        </div>
 
-        {/* completion + nav */}
-        <div className="mt-8 flex flex-col gap-4">
-          <Button
-            size="lg"
-            onClick={markComplete}
-            disabled={completed}
-            className={cn("glow-hover rounded-xl", completed && "opacity-80")}
-          >
-            {completed ? (
-              <>
-                <CheckCircle2 className="size-5" />
-                Completed
-              </>
+          {/* Mark complete */}
+          <AnimatePresence>
+            {!completed ? (
+              <motion.div exit={{ opacity: 0, scale: 0.95 }}>
+                <Button
+                  size="lg"
+                  onClick={markComplete}
+                  className="w-full rounded-xl sm:w-auto"
+                >
+                  <CheckCircle className="mr-1.5 size-4" />
+                  Mark as complete
+                </Button>
+              </motion.div>
             ) : (
-              "Mark as complete"
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="flex items-center gap-2 text-emerald-400"
+              >
+                <CheckCircle className="size-5" />
+                <span className="text-sm font-semibold">
+                  Lesson completed · +20 XP
+                </span>
+              </motion.div>
             )}
-          </Button>
+          </AnimatePresence>
 
-          <div className="flex items-center justify-between gap-3">
+          {/* Navigation */}
+          <div className="border-border flex items-center justify-between border-t pt-6">
             {prev ? (
-              <a href={learnRoutes.lesson(journey.slug, prev.slug)}>
+              <Link href={learnRoutes.lesson(journeySlug, prev.slug)}>
                 <Button variant="outline" className="glass rounded-xl">
-                  <ArrowLeft />
-                  Previous
+                  <ArrowLeft className="mr-1.5 size-4" />
+                  {prev.title}
                 </Button>
-              </a>
+              </Link>
             ) : (
-              <span />
+              <div />
             )}
+
             {next ? (
-              <a href={learnRoutes.lesson(journey.slug, next.slug)}>
+              <Link href={learnRoutes.lesson(journeySlug, next.slug)}>
                 <Button variant="outline" className="glass rounded-xl">
-                  Next
-                  <ArrowRight />
+                  {next.title}
+                  <ArrowRight className="ml-1.5 size-4" />
                 </Button>
-              </a>
+              </Link>
             ) : (
-              <a href={learnRoutes.quiz(journey.slug)}>
-                <Button className="glow-hover rounded-xl">
+              <Link href={learnRoutes.quiz(journeySlug)}>
+                <Button className="rounded-xl">
                   Take the quiz
-                  <ArrowRight />
+                  <ArrowRight className="ml-1.5 size-4" />
                 </Button>
-              </a>
+              </Link>
             )}
           </div>
-        </div>
+        </article>
       </div>
     </>
   );
