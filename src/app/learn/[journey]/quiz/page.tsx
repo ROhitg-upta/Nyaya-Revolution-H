@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { Quiz } from "@/components/learning";
 import { getJourney, journeys } from "@/constants";
+import { Target } from "@/lib/icons";
 
 type Params = { params: Promise<{ journey: string }> };
 
@@ -13,23 +14,32 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { journey } = await params;
   const item = getJourney(journey);
-  return { title: item ? `${item.title} — Quiz` : "Quiz" };
+  if (!item) return { title: "Quiz" };
+  return { title: `Quiz · ${item.title}` };
 }
 
 export default async function QuizPage({ params }: Params) {
   const { journey } = await params;
   const item = getJourney(journey);
   if (!item) notFound();
+
   return (
-    <div className="mx-auto w-full max-w-5xl px-5 py-16 sm:px-8">
-      <div className="mb-10 text-center">
-        <span className="text-brand text-xs font-semibold tracking-wide uppercase">
+    <div className="mx-auto w-full max-w-3xl px-5 pt-28 pb-24 sm:px-8 lg:pt-32">
+      <div className="mb-8 flex flex-col items-center gap-3 text-center">
+        <div className="bg-brand/12 flex size-12 items-center justify-center rounded-2xl">
+          <Target className="text-brand size-6" />
+        </div>
+        <span className="text-brand text-xs font-semibold tracking-wider uppercase">
           {item.title}
         </span>
-        <h1 className="text-foreground mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+        <h1 className="text-foreground text-3xl font-bold tracking-tight">
           Test your knowledge
         </h1>
+        <p className="text-muted-foreground text-sm">
+          Answer the questions to earn XP and unlock your certificate.
+        </p>
       </div>
+
       <Quiz journeySlug={journey} />
     </div>
   );

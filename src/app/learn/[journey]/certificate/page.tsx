@@ -13,11 +13,14 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { journey } = await params;
   const item = getJourney(journey);
-  return { title: item ? `${item.title} — Certificate` : "Certificate" };
+  if (!item) return { title: "Certificate" };
+  return { title: `Certificate · ${item.title}` };
 }
 
 export default async function CertificatePage({ params }: Params) {
   const { journey } = await params;
-  if (!getJourney(journey)) notFound();
+  const item = getJourney(journey);
+  if (!item) notFound();
+
   return <CertificatePreview journeySlug={journey} />;
 }

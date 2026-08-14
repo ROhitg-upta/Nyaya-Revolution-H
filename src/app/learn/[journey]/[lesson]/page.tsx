@@ -2,25 +2,30 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { LessonReader } from "@/components/learning";
-import { getLesson, journeys, journeyLessons } from "@/constants";
+import { getJourney, getLesson, journeys } from "@/constants";
 
 type Params = { params: Promise<{ journey: string; lesson: string }> };
 
 export function generateStaticParams() {
   return journeys.flatMap((j) =>
-    journeyLessons(j).map((l) => ({ journey: j.slug, lesson: l.slug })),
+    j.modules.flatMap((m) =>
+      m.lessons.map((l) => ({ journey: j.slug, lesson: l.slug })),
+    ),
   );
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { journey, lesson } = await params;
-  const found = getLesson(journey, lesson);
-  if (!found) return { title: "Lesson not found" };
-  return { title: found.lesson.title };
+  const result = getLesson(journey, lesson);
+  if (!result) return { title: "Lesson not found" };
+  return { title: result.lesson.title };
 }
 
 export default async function LessonPage({ params }: Params) {
   const { journey, lesson } = await params;
-  if (!getLesson(journey, lesson)) notFound();
+  const j = getJourney(journey);
+  const result = getLesson(journey, lesson);
+  if (!j || !result) notFound();
+
   return <LessonReader journeySlug={journey} lessonSlug={lesson} />;
 }
