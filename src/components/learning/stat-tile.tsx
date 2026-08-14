@@ -1,14 +1,17 @@
+"use client";
+
+import { motion } from "motion/react";
+
 import type { LucideIcon } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 
 interface StatTileProps {
   icon: LucideIcon;
   label: string;
-  value: string | number;
+  value: string;
   className?: string;
 }
 
-/** Compact glass stat used across the learning dashboard. */
 export function StatTile({
   icon: Icon,
   label,
@@ -16,16 +19,18 @@ export function StatTile({
   className,
 }: StatTileProps) {
   return (
-    <div
-      className={cn("glass flex items-center gap-3 rounded-2xl p-4", className)}
+    <motion.div
+      whileHover={{ y: -2 }}
+      className={cn(
+        "glass glow-hover flex flex-col items-center gap-2 rounded-2xl p-4 text-center",
+        className,
+      )}
     >
-      <span className="bg-brand/12 text-brand flex size-10 shrink-0 items-center justify-center rounded-xl">
-        <Icon className="size-5" />
-      </span>
-      <div className="flex flex-col">
-        <span className="text-foreground text-xl font-bold">{value}</span>
-        <span className="text-muted-foreground text-xs">{label}</span>
+      <div className="bg-brand/12 flex size-10 items-center justify-center rounded-xl">
+        <Icon className="text-brand size-5" />
       </div>
-    </div>
+      <span className="text-foreground text-xl font-bold">{value}</span>
+      <span className="text-muted-foreground text-xs">{label}</span>
+    </motion.div>
   );
 }

@@ -1,38 +1,57 @@
-import { BarChart3 } from "@/lib/icons";
-import type { WeeklyActivity as WeeklyActivityData } from "@/types";
+"use client";
 
-/** Bar chart of the last 7 days of learning minutes. */
-export function WeeklyActivity({ data }: { data: WeeklyActivityData[] }) {
+import { motion } from "motion/react";
+
+import { BarChart3 } from "@/lib/icons";
+import type { WeeklyActivity as WeeklyData } from "@/types";
+
+interface WeeklyActivityProps {
+  data: WeeklyData[];
+}
+
+export function WeeklyActivity({ data }: WeeklyActivityProps) {
   const max = Math.max(...data.map((d) => d.minutes), 1);
-  const total = data.reduce((sum, d) => sum + d.minutes, 0);
+  const total = data.reduce((s, d) => s + d.minutes, 0);
 
   return (
-    <div className="glass flex flex-col gap-4 rounded-2xl p-5">
+    <div className="glass-strong flex flex-col gap-4 rounded-2xl p-5">
       <div className="flex items-center justify-between">
-        <h3 className="text-foreground flex items-center gap-2 text-sm font-semibold">
-          <BarChart3 className="text-brand size-4" />
-          Weekly progress
-        </h3>
-        <span className="text-muted-foreground text-xs">{total} min</span>
-      </div>
-      <div className="flex h-28 items-end justify-between gap-2">
-        {data.map((day, index) => (
-          <div
-            key={index}
-            className="flex flex-1 flex-col items-center gap-1.5"
-          >
-            <div className="flex h-full w-full items-end">
-              <div
-                className="bg-gradient-brand w-full rounded-md transition-all duration-500"
-                style={{ height: `${(day.minutes / max) * 100}%` }}
-                aria-label={`${day.day}: ${day.minutes} minutes`}
-              />
-            </div>
-            <span className="text-muted-foreground text-[0.65rem]">
-              {day.day}
-            </span>
+        <div className="flex items-center gap-2.5">
+          <div className="bg-brand/12 flex size-9 items-center justify-center rounded-xl">
+            <BarChart3 className="text-brand size-4" />
           </div>
-        ))}
+          <span className="text-foreground text-sm font-semibold">
+            Weekly activity
+          </span>
+        </div>
+        <span className="text-muted-foreground text-xs">{total} min total</span>
+      </div>
+
+      <div className="flex items-end justify-between gap-2">
+        {data.map((d, i) => {
+          const pct = Math.round((d.minutes / max) * 100);
+          return (
+            <div
+              key={d.day}
+              className="flex flex-1 flex-col items-center gap-1.5"
+            >
+              <span className="text-muted-foreground text-[10px]">
+                {d.minutes > 0 ? `${d.minutes}m` : ""}
+              </span>
+              <div className="bg-muted flex h-24 w-full items-end overflow-hidden rounded-lg">
+                <motion.div
+                  initial={{ height: 0 }}
+                  animate={{ height: `${pct}%` }}
+                  transition={{ duration: 0.5, delay: i * 0.05 }}
+                  className="bg-gradient-brand w-full rounded-lg"
+                />
+              </div>
+              <span className="text-muted-foreground text-[10px] font-medium">
+                {d.day}
+              </span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
