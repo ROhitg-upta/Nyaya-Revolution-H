@@ -97,6 +97,7 @@ export {
   BarChart3,
   Bookmark,
   BookmarkCheck,
+  CheckCircle,
   Clock,
   Crown,
   Layers,
@@ -105,7 +106,9 @@ export {
   NotebookPen,
   PencilLine,
   Play,
+  RotateCcw,
   Timer,
+  XCircle,
 } from "lucide-react";
 
 // Situation Engine icons.
