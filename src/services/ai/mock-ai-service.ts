@@ -156,16 +156,19 @@ const MOCK_RESPONSES: Record<string, StructuredResponse> = {
     authorities: [
       {
         name: "Labour Commissioner",
-        description: "File a complaint for unpaid wages. The office will summon the employer for conciliation.",
+        description:
+          "File a complaint for unpaid wages. The office will summon the employer for conciliation.",
         contact: "District Labour Commissioner Office",
       },
       {
         name: "Labour Court",
-        description: "For recovery of wages and compensation if conciliation fails.",
+        description:
+          "For recovery of wages and compensation if conciliation fails.",
       },
       {
         name: "EPFO (if applicable)",
-        description: "If PF contributions are also unpaid, file a complaint with the Employees' Provident Fund Organisation.",
+        description:
+          "If PF contributions are also unpaid, file a complaint with the Employees' Provident Fund Organisation.",
         contact: "epfindia.gov.in",
       },
     ],
@@ -237,16 +240,19 @@ const MOCK_RESPONSES: Record<string, StructuredResponse> = {
     authorities: [
       {
         name: "Cyber Crime Portal",
-        description: "File online at cybercrime.gov.in — India's official cybercrime reporting platform.",
+        description:
+          "File online at cybercrime.gov.in — India's official cybercrime reporting platform.",
         contact: "1930",
       },
       {
         name: "Local Police Station",
-        description: "File a Zero FIR — they cannot refuse. Carry all evidence.",
+        description:
+          "File a Zero FIR — they cannot refuse. Carry all evidence.",
       },
       {
         name: "Banking Ombudsman (RBI)",
-        description: "If your bank doesn't cooperate with reversal, escalate to the RBI Ombudsman.",
+        description:
+          "If your bank doesn't cooperate with reversal, escalate to the RBI Ombudsman.",
         contact: "cms.rbi.org.in",
       },
     ],
@@ -310,7 +316,8 @@ const DEFAULT_RESPONSE: StructuredResponse = {
   authorities: [
     {
       name: "District Legal Services Authority (DLSA)",
-      description: "Provides free legal aid and advice. Visit your nearest DLSA office.",
+      description:
+        "Provides free legal aid and advice. Visit your nearest DLSA office.",
     },
     {
       name: "National Consumer Helpline",
@@ -341,17 +348,36 @@ const DEFAULT_RESPONSE: StructuredResponse = {
 function matchResponse(question: string): StructuredResponse {
   const q = question.toLowerCase();
 
-  if (q.includes("landlord") || q.includes("deposit") || q.includes("rent") || q.includes("tenant"))
+  if (
+    q.includes("landlord") ||
+    q.includes("deposit") ||
+    q.includes("rent") ||
+    q.includes("tenant")
+  )
     return MOCK_RESPONSES.landlord;
-  if (q.includes("salary") || q.includes("employer") || q.includes("wage") || q.includes("pay"))
+  if (
+    q.includes("salary") ||
+    q.includes("employer") ||
+    q.includes("wage") ||
+    q.includes("pay")
+  )
     return MOCK_RESPONSES.salary;
-  if (q.includes("scam") || q.includes("fraud") || q.includes("fake") || q.includes("phishing") || q.includes("cyber") || q.includes("online"))
+  if (
+    q.includes("scam") ||
+    q.includes("fraud") ||
+    q.includes("fake") ||
+    q.includes("phishing") ||
+    q.includes("cyber") ||
+    q.includes("online")
+  )
     return MOCK_RESPONSES.scam;
 
   return DEFAULT_RESPONSE;
 }
 
-function generateFollowUps(structured: StructuredResponse): FollowUpSuggestion[] {
+function generateFollowUps(
+  structured: StructuredResponse,
+): FollowUpSuggestion[] {
   const followUps: FollowUpSuggestion[] = [];
 
   if (structured.learningJourney) {
@@ -395,7 +421,9 @@ function structuredToText(s: StructuredResponse): string {
 
   if (s.laws.length) {
     lines.push("## Relevant Laws\n");
-    s.laws.forEach((l) => lines.push(`**${l.name}** (${l.section}): ${l.description}`));
+    s.laws.forEach((l) =>
+      lines.push(`**${l.name}** (${l.section}): ${l.description}`),
+    );
     lines.push("");
   }
 
@@ -414,7 +442,9 @@ function structuredToText(s: StructuredResponse): string {
   if (s.authorities.length) {
     lines.push("## Authorities to Contact\n");
     s.authorities.forEach((a) => {
-      lines.push(`**${a.name}**: ${a.description}${a.contact ? ` (${a.contact})` : ""}`);
+      lines.push(
+        `**${a.name}**: ${a.description}${a.contact ? ` (${a.contact})` : ""}`,
+      );
     });
     lines.push("");
   }
@@ -430,7 +460,9 @@ function structuredToText(s: StructuredResponse): string {
     lines.push(s.professionalHelp + "\n");
   }
 
-  lines.push("---\n*This is educational guidance, not legal advice. Always consult a qualified professional for your specific case.*");
+  lines.push(
+    "---\n*This is educational guidance, not legal advice. Always consult a qualified professional for your specific case.*",
+  );
 
   return lines.join("\n");
 }

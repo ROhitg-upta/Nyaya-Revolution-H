@@ -45,6 +45,13 @@ export interface ConversationStore {
   save(conversation: Conversation): void;
   delete(id: string): void;
   pin(id: string, pinned: boolean): void;
-  bookmarkMessage(conversationId: string, messageId: string, bookmarked: boolean): void;
-  getBookmarkedMessages(): { conversation: Conversation; message: import("@/types").ChatMessage }[];
+  bookmarkMessage(
+    conversationId: string,
+    messageId: string,
+    bookmarked: boolean,
+  ): void;
+  getBookmarkedMessages(): {
+    conversation: Conversation;
+    message: import("@/types").ChatMessage;
+  }[];
 }

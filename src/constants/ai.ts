@@ -90,7 +90,8 @@ export const suggestedQuestions: SuggestedQuestion[] = [
     category: "Cyber Crime",
   },
   {
-    question: "My college is charging hidden fees not mentioned in the prospectus",
+    question:
+      "My college is charging hidden fees not mentioned in the prospectus",
     icon: GraduationCap,
     category: "Students",
   },
@@ -115,7 +116,8 @@ export const defaultFollowUps: FollowUpSuggestion[] = [
   {
     type: "situation",
     label: "Explore related situations",
-    description: "Browse similar real-life scenarios and their legal solutions.",
+    description:
+      "Browse similar real-life scenarios and their legal solutions.",
     href: "/situations",
   },
   {
@@ -144,14 +146,59 @@ export interface ResponseSectionMeta {
 }
 
 export const responseSections: ResponseSectionMeta[] = [
-  { key: "situationSummary", title: "Situation Summary", icon: Compass, color: "text-brand" },
-  { key: "rights", title: "Your Rights", icon: ShieldCheck, color: "text-success" },
+  {
+    key: "situationSummary",
+    title: "Situation Summary",
+    icon: Compass,
+    color: "text-brand",
+  },
+  {
+    key: "rights",
+    title: "Your Rights",
+    icon: ShieldCheck,
+    color: "text-success",
+  },
   { key: "laws", title: "Relevant Laws", icon: Gavel, color: "text-brand" },
-  { key: "immediateActions", title: "Immediate Action Steps", icon: Zap, color: "text-warning" },
-  { key: "documentsRequired", title: "Documents Required", icon: FileText, color: "text-muted-foreground" },
-  { key: "authorities", title: "Authorities to Contact", icon: Briefcase, color: "text-brand" },
-  { key: "commonMistakes", title: "Common Mistakes to Avoid", icon: ShieldCheck, color: "text-destructive" },
-  { key: "learningJourney", title: "Related Learning Journey", icon: Brain, color: "text-brand" },
-  { key: "quiz", title: "Practice Quiz", icon: GraduationCap, color: "text-success" },
-  { key: "professionalHelp", title: "Need Professional Help?", icon: Sparkles, color: "text-warning" },
+  {
+    key: "immediateActions",
+    title: "Immediate Action Steps",
+    icon: Zap,
+    color: "text-warning",
+  },
+  {
+    key: "documentsRequired",
+    title: "Documents Required",
+    icon: FileText,
+    color: "text-muted-foreground",
+  },
+  {
+    key: "authorities",
+    title: "Authorities to Contact",
+    icon: Briefcase,
+    color: "text-brand",
+  },
+  {
+    key: "commonMistakes",
+    title: "Common Mistakes to Avoid",
+    icon: ShieldCheck,
+    color: "text-destructive",
+  },
+  {
+    key: "learningJourney",
+    title: "Related Learning Journey",
+    icon: Brain,
+    color: "text-brand",
+  },
+  {
+    key: "quiz",
+    title: "Practice Quiz",
+    icon: GraduationCap,
+    color: "text-success",
+  },
+  {
+    key: "professionalHelp",
+    title: "Need Professional Help?",
+    icon: Sparkles,
+    color: "text-warning",
+  },
 ];

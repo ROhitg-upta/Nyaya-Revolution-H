@@ -8,11 +8,7 @@
 import type { LucideIcon } from "@/lib/icons";
 
 export type ResponseModeId =
-  | "eli15"
-  | "detailed"
-  | "legal"
-  | "summary"
-  | "step-by-step";
+  "eli15" | "detailed" | "legal" | "summary" | "step-by-step";
 
 export interface ResponseMode {
   id: ResponseModeId;

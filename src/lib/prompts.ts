@@ -6,7 +6,12 @@
  * independently composable for future improvements (RAG context, retrieval
  * augmentation, fine-tuning data generation).
  */
-import type { PromptContext, ResponseModeId, UserContext, ChatMessage } from "@/types";
+import type {
+  PromptContext,
+  ResponseModeId,
+  UserContext,
+  ChatMessage,
+} from "@/types";
 
 const SYSTEM_PROMPT = `You are Nyaya, an AI legal education tutor built for Indian citizens. Your purpose is to EDUCATE users about their legal rights — not to provide legal advice for specific cases.
 
@@ -52,12 +57,12 @@ function buildUserContextBlock(ctx: UserContext): string {
   if (ctx.occupation) parts.push(`Occupation: ${ctx.occupation}`);
   if (ctx.ageGroup) parts.push(`Age group: ${ctx.ageGroup}`);
   if (ctx.language) parts.push(`Preferred language: ${ctx.language}`);
-  if (ctx.interests?.length) parts.push(`Interests: ${ctx.interests.join(", ")}`);
-  if (ctx.learningGoals?.length) parts.push(`Learning goals: ${ctx.learningGoals.join(", ")}`);
+  if (ctx.interests?.length)
+    parts.push(`Interests: ${ctx.interests.join(", ")}`);
+  if (ctx.learningGoals?.length)
+    parts.push(`Learning goals: ${ctx.learningGoals.join(", ")}`);
 
-  return parts.length > 0
-    ? `\n\nUser profile:\n${parts.join("\n")}`
-    : "";
+  return parts.length > 0 ? `\n\nUser profile:\n${parts.join("\n")}` : "";
 }
 
 function buildHistoryBlock(messages: ChatMessage[], maxTurns = 10): string {
