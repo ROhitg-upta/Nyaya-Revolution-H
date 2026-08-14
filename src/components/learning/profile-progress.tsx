@@ -1,168 +1,252 @@
+"use client";
+
+import { motion } from "motion/react";
+import Link from "next/link";
+
+import { LevelBadge } from "@/components/learning/level-badge";
 import { ProgressRing } from "@/components/learning/progress-ring";
 import { StatTile } from "@/components/learning/stat-tile";
 import { WeeklyActivity } from "@/components/learning/weekly-activity";
-import { journeys, learnRoutes, learnerProfile } from "@/constants";
-import { Award, Flame, Trophy, Zap } from "@/lib/icons";
+import { Reveal } from "@/components/common/reveal";
+import { Button } from "@/components/ui/button";
+import { journeys, learnRoutes, learnerProfile, routes } from "@/constants";
+import {
+  ArrowLeft,
+  Award,
+  Flame,
+  Medal,
+  Star,
+  Target,
+  Trophy,
+  Zap,
+} from "@/lib/icons";
 import { cn } from "@/lib/utils";
 
 export function ProfileProgress() {
   const p = learnerProfile;
-  const earnedBadges = p.badges.filter((b) => b.earned).length;
-  const earnedCerts = p.certificates.filter((c) => c.earned).length;
   const levelPct = Math.round((p.xpIntoLevel / p.xpForLevel) * 100);
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-5 py-12 sm:px-8">
-      {/* header */}
-      <div className="glass-strong flex flex-col items-center gap-6 rounded-3xl p-8 sm:flex-row sm:items-center sm:gap-8">
-        <ProgressRing value={levelPct} size={112} strokeWidth={8}>
-          <div className="flex flex-col items-center">
-            <span className="text-foreground text-2xl font-bold">
-              {p.level}
-            </span>
-            <span className="text-muted-foreground text-[0.6rem] uppercase">
-              Level
-            </span>
-          </div>
-        </ProgressRing>
-        <div className="flex flex-1 flex-col items-center gap-2 text-center sm:items-start sm:text-left">
-          <span className="text-brand text-xs font-semibold tracking-wide uppercase">
-            {p.levelTitle}
-          </span>
-          <h1 className="text-foreground text-3xl font-bold tracking-tight">
-            {p.name}
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            {p.xpIntoLevel} / {p.xpForLevel} XP to level {p.level + 1}
-          </p>
-          <div className="bg-muted mt-1 h-2 w-full max-w-xs overflow-hidden rounded-full">
-            <div
-              className="bg-gradient-brand h-full rounded-full"
-              style={{ width: `${levelPct}%` }}
-            />
-          </div>
-        </div>
-      </div>
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-5 pt-28 pb-24 sm:px-8 lg:pt-32">
+      {/* Back */}
+      <Link
+        href={routes.learn}
+        className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm transition-colors"
+      >
+        <ArrowLeft className="size-4" />
+        Back to learning
+      </Link>
 
-      {/* stat tiles */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatTile
-          icon={Zap}
-          label="Total XP"
-          value={p.xp.toLocaleString("en-IN")}
-        />
-        <StatTile icon={Flame} label="Day streak" value={p.streakDays} />
-        <StatTile
-          icon={Trophy}
-          label="Badges"
-          value={`${earnedBadges}/${p.badges.length}`}
-        />
-        <StatTile icon={Award} label="Certificates" value={earnedCerts} />
-      </div>
+      {/* Profile header */}
+      <Reveal>
+        <div className="glass-strong relative overflow-hidden rounded-3xl p-6 sm:p-8">
+          <div className="bg-brand/8 absolute -top-20 -right-20 size-56 rounded-full blur-3xl" />
+          <div className="bg-brand/5 absolute -bottom-12 -left-12 size-40 rounded-full blur-2xl" />
 
-      <WeeklyActivity data={p.weekly} />
-
-      {/* badges */}
-      <section className="flex flex-col gap-5">
-        <h2 className="text-foreground text-xl font-bold">Badges</h2>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-          {p.badges.map((badge) => (
-            <div
-              key={badge.id}
-              className={cn(
-                "glass flex flex-col items-center gap-2 rounded-2xl p-4 text-center",
-                !badge.earned && "opacity-50 grayscale",
-              )}
+          <div className="relative flex flex-col items-center gap-6 sm:flex-row sm:items-start sm:gap-8">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 18 }}
             >
-              <span
-                className={cn(
-                  "flex size-12 items-center justify-center rounded-2xl",
-                  badge.earned
-                    ? "bg-gradient-brand text-primary-foreground glow-brand"
-                    : "bg-muted text-muted-foreground",
-                )}
-              >
-                <badge.icon className="size-6" />
-              </span>
-              <span className="text-foreground text-xs font-semibold">
-                {badge.title}
-              </span>
-              <span className="text-muted-foreground text-[0.65rem] leading-tight">
-                {badge.description}
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
+              <ProgressRing value={levelPct} size={112} strokeWidth={8}>
+                <LevelBadge level={p.level} title="" size="md" />
+              </ProgressRing>
+            </motion.div>
 
-      {/* achievements */}
-      <section className="flex flex-col gap-5">
-        <h2 className="text-foreground text-xl font-bold">Achievements</h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {p.achievements.map((a) => {
-            const pct = Math.round((a.current / a.target) * 100);
-            return (
-              <div
-                key={a.title}
-                className="glass flex flex-col gap-3 rounded-2xl p-5"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="bg-brand/12 text-brand flex size-10 items-center justify-center rounded-xl">
-                    <a.icon className="size-5" />
+            <div className="flex flex-1 flex-col items-center gap-3 text-center sm:items-start sm:text-left">
+              <div>
+                <span className="text-brand text-xs font-semibold tracking-wider uppercase">
+                  Level {p.level} · {p.levelTitle}
+                </span>
+                <h1 className="text-foreground mt-1 text-3xl font-bold tracking-tight">
+                  {p.name}
+                </h1>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="bg-muted h-2.5 w-48 overflow-hidden rounded-full">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${levelPct}%` }}
+                    transition={{ duration: 0.8, delay: 0.3 }}
+                    className="bg-gradient-brand h-full rounded-full"
+                  />
+                </div>
+                <span className="text-muted-foreground text-xs">
+                  {p.xpIntoLevel} / {p.xpForLevel} XP
+                </span>
+              </div>
+
+              <p className="text-muted-foreground text-sm">
+                {p.xp.toLocaleString("en-IN")} total XP earned
+              </p>
+            </div>
+          </div>
+        </div>
+      </Reveal>
+
+      {/* Stats grid */}
+      <Reveal>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <StatTile
+            icon={Zap}
+            label="Total XP"
+            value={p.xp.toLocaleString("en-IN")}
+          />
+          <StatTile
+            icon={Flame}
+            label="Day streak"
+            value={String(p.streakDays)}
+          />
+          <StatTile
+            icon={Medal}
+            label="Badges"
+            value={`${p.badges.filter((b) => b.earned).length}/${p.badges.length}`}
+          />
+          <StatTile
+            icon={Award}
+            label="Certificates"
+            value={`${p.certificates.filter((c) => c.earned).length}/${p.certificates.length}`}
+          />
+        </div>
+      </Reveal>
+
+      {/* Weekly activity */}
+      <Reveal>
+        <WeeklyActivity data={p.weekly} />
+      </Reveal>
+
+      {/* Badges */}
+      <Reveal>
+        <section className="flex flex-col gap-5">
+          <h2 className="text-foreground flex items-center gap-2 text-xl font-bold">
+            <Star className="text-brand size-5" />
+            Badges
+          </h2>
+          <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
+            {p.badges.map((badge) => {
+              const BadgeIcon = badge.icon;
+              return (
+                <motion.div
+                  key={badge.id}
+                  whileHover={badge.earned ? { scale: 1.08, rotate: 3 } : {}}
+                  className={cn(
+                    "glass flex flex-col items-center gap-2 rounded-2xl p-4 text-center transition-all",
+                    badge.earned ? "glow-hover" : "opacity-40 grayscale",
+                  )}
+                >
+                  <div
+                    className={cn(
+                      "flex size-12 items-center justify-center rounded-xl",
+                      badge.earned
+                        ? "bg-gradient-brand text-white shadow-lg"
+                        : "bg-muted text-muted-foreground",
+                    )}
+                  >
+                    <BadgeIcon className="size-6" />
+                  </div>
+                  <span className="text-foreground text-xs font-semibold">
+                    {badge.title}
                   </span>
-                  <div className="flex flex-1 flex-col">
-                    <span className="text-foreground text-sm font-semibold">
-                      {a.title}
-                    </span>
+                  <span className="text-muted-foreground text-[10px]">
+                    {badge.description}
+                  </span>
+                </motion.div>
+              );
+            })}
+          </div>
+        </section>
+      </Reveal>
+
+      {/* Achievements */}
+      <Reveal>
+        <section className="flex flex-col gap-5">
+          <h2 className="text-foreground flex items-center gap-2 text-xl font-bold">
+            <Trophy className="text-brand size-5" />
+            Achievements
+          </h2>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {p.achievements.map((a) => {
+              const AIcon = a.icon;
+              const pct = Math.round((a.current / a.target) * 100);
+              return (
+                <div
+                  key={a.title}
+                  className="glass flex items-center gap-4 rounded-2xl p-4"
+                >
+                  <div className="bg-brand/12 flex size-11 shrink-0 items-center justify-center rounded-xl">
+                    <AIcon className="text-brand size-5" />
+                  </div>
+                  <div className="flex flex-1 flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-foreground text-sm font-semibold">
+                        {a.title}
+                      </span>
+                      <span className="text-muted-foreground text-xs">
+                        {a.current}/{a.target}
+                      </span>
+                    </div>
+                    <div className="bg-muted h-1.5 overflow-hidden rounded-full">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${pct}%` }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="bg-gradient-brand h-full rounded-full"
+                      />
+                    </div>
                     <span className="text-muted-foreground text-xs">
                       {a.description}
                     </span>
                   </div>
-                  <span className="text-muted-foreground text-xs font-medium">
-                    {a.current}/{a.target}
-                  </span>
                 </div>
-                <div className="bg-muted h-1.5 overflow-hidden rounded-full">
-                  <div
-                    className="bg-gradient-brand h-full rounded-full"
-                    style={{ width: `${pct}%` }}
-                  />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
+              );
+            })}
+          </div>
+        </section>
+      </Reveal>
 
-      {/* journey progress */}
-      <section className="flex flex-col gap-5">
-        <h2 className="text-foreground text-xl font-bold">Journey progress</h2>
-        <div className="glass flex flex-col divide-y divide-[color:var(--border)] rounded-2xl">
-          {journeys.map((j) => (
-            <a
-              key={j.slug}
-              href={learnRoutes.journey(j.slug)}
-              className="hover:bg-muted/40 flex items-center gap-4 p-4 transition-colors first:rounded-t-2xl last:rounded-b-2xl"
-            >
-              <span className="bg-brand/12 text-brand flex size-9 shrink-0 items-center justify-center rounded-xl">
-                <j.icon className="size-4.5" />
-              </span>
-              <span className="text-foreground flex-1 text-sm font-medium">
-                {j.title}
-              </span>
-              <div className="bg-muted hidden h-1.5 w-32 overflow-hidden rounded-full sm:block">
-                <div
-                  className="bg-gradient-brand h-full rounded-full"
-                  style={{ width: `${j.progress}%` }}
-                />
-              </div>
-              <span className="text-muted-foreground w-9 text-right text-xs font-semibold">
-                {j.progress}%
-              </span>
-            </a>
-          ))}
-        </div>
-      </section>
+      {/* Journey progress */}
+      <Reveal>
+        <section className="flex flex-col gap-5">
+          <h2 className="text-foreground flex items-center gap-2 text-xl font-bold">
+            <Target className="text-brand size-5" />
+            Journey progress
+          </h2>
+          <div className="flex flex-col gap-3">
+            {journeys.map((j) => {
+              const Icon = j.icon;
+              return (
+                <Link
+                  key={j.slug}
+                  href={learnRoutes.journey(j.slug)}
+                  className="glass group hover:ring-brand/40 flex items-center gap-4 rounded-2xl p-4 transition-all hover:ring-1"
+                >
+                  <div className="bg-brand/12 flex size-10 shrink-0 items-center justify-center rounded-xl">
+                    <Icon className="text-brand size-5" />
+                  </div>
+                  <div className="flex flex-1 flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-foreground group-hover:text-brand text-sm font-semibold transition-colors">
+                        {j.title}
+                      </span>
+                      <span className="text-muted-foreground text-xs">
+                        {j.progress}%
+                      </span>
+                    </div>
+                    <div className="bg-muted h-1.5 overflow-hidden rounded-full">
+                      <div
+                        className="bg-gradient-brand h-full rounded-full transition-all"
+                        style={{ width: `${j.progress}%` }}
+                      />
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      </Reveal>
     </div>
   );
 }

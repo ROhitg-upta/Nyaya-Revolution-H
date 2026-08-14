@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -9,130 +10,143 @@ import {
   learnerProfile,
   siteConfig,
 } from "@/constants";
-import {
-  ArrowLeft,
-  Award,
-  Download,
-  PartyPopper,
-  Scale,
-  Sparkles,
-} from "@/lib/icons";
+import { ArrowLeft, Award, Download, PartyPopper, Scale } from "@/lib/icons";
 
-export function CertificatePreview({ journeySlug }: { journeySlug: string }) {
+interface CertificatePreviewProps {
+  journeySlug: string;
+}
+
+export function CertificatePreview({ journeySlug }: CertificatePreviewProps) {
   const journey = getJourney(journeySlug);
-  const reduceMotion = useReducedMotion();
   if (!journey) return null;
 
-  const date = new Date().toLocaleDateString("en-IN", {
+  const p = learnerProfile;
+  const today = new Date().toLocaleDateString("en-IN", {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-8 px-5 py-12 sm:px-8">
-      {/* completion celebration */}
+    <div className="mx-auto flex w-full max-w-2xl flex-col items-center gap-8 px-5 pt-28 pb-24 sm:px-8 lg:pt-32">
+      {/* Celebration header */}
       <motion.div
-        initial={reduceMotion ? false : { opacity: 0, scale: 0.8 }}
+        initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ type: "spring", stiffness: 200, damping: 15 }}
         className="flex flex-col items-center gap-3 text-center"
       >
-        <span className="bg-gradient-brand text-primary-foreground glow-brand flex size-16 items-center justify-center rounded-3xl">
-          <PartyPopper className="size-8" />
-        </span>
-        <h1 className="text-foreground text-3xl font-bold tracking-tight">
+        <motion.div
+          animate={{ rotate: [0, -10, 10, -5, 5, 0] }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+        >
+          <PartyPopper className="text-brand size-12" />
+        </motion.div>
+        <h1 className="text-foreground text-3xl font-bold tracking-tight sm:text-4xl">
           Journey complete!
         </h1>
-        <p className="text-muted-foreground text-sm">
-          You&apos;ve earned your {journey.title} certificate.
+        <p className="text-muted-foreground text-base">
+          You&apos;ve earned a certificate for completing {journey.title}.
         </p>
       </motion.div>
 
-      {/* certificate */}
+      {/* Certificate card */}
       <motion.div
-        initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.15 }}
-        className="glass-strong ring-brand/20 relative w-full overflow-hidden rounded-3xl p-8 ring-1 sm:p-12"
+        initial={{ opacity: 0, y: 30, rotateX: 15 }}
+        animate={{ opacity: 1, y: 0, rotateX: 0 }}
+        transition={{ type: "spring", stiffness: 150, damping: 18, delay: 0.2 }}
+        className="glass-strong glow-brand w-full overflow-hidden rounded-3xl"
       >
-        <div className="bg-brand/15 pointer-events-none absolute -top-24 left-1/2 size-72 -translate-x-1/2 rounded-full blur-3xl" />
-        <div className="relative flex flex-col items-center gap-6 text-center">
-          <div className="flex items-center gap-2">
-            <span className="bg-gradient-brand text-primary-foreground flex size-9 items-center justify-center rounded-xl">
-              <Scale className="size-5" />
-            </span>
-            <span className="text-foreground text-lg font-semibold tracking-tight">
-              {siteConfig.name}
-            </span>
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <span className="text-brand text-xs font-semibold tracking-[0.2em] uppercase">
-              Certificate of Completion
-            </span>
-            <div className="via-brand/40 mx-auto mt-2 h-px w-24 bg-gradient-to-r from-transparent to-transparent" />
-          </div>
-
-          <p className="text-muted-foreground text-sm">This certifies that</p>
-          <p className="text-gradient-brand text-3xl font-bold">
-            {learnerProfile.name}
-          </p>
-          <p className="text-muted-foreground max-w-md text-sm leading-relaxed">
-            has successfully completed the{" "}
-            <span className="text-foreground font-semibold">
-              {journey.title}
-            </span>{" "}
-            learning journey and demonstrated awareness of the associated legal
-            concepts.
-          </p>
-
-          <div className="mt-2 flex items-center gap-2">
-            <Award className="text-warning size-5" />
-            <span className="text-foreground text-sm font-semibold">
-              +{journey.xpReward} XP earned
-            </span>
-          </div>
-
-          <div className="mt-4 flex w-full items-end justify-between gap-6 text-left">
-            <div className="flex flex-col">
-              <span className="text-foreground border-border border-b pb-1 text-sm font-medium">
-                {date}
-              </span>
-              <span className="text-muted-foreground mt-1 text-xs">
-                Date issued
-              </span>
-            </div>
-            <span className="bg-brand/12 text-brand flex size-12 items-center justify-center rounded-full">
-              <Sparkles className="size-6" />
-            </span>
-            <div className="flex flex-col text-right">
-              <span className="text-foreground border-border border-b pb-1 text-sm font-medium">
+        <div className="bg-gradient-brand px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Scale className="size-5 text-white/80" />
+              <span className="text-sm font-semibold text-white/90">
                 {siteConfig.name}
               </span>
-              <span className="text-muted-foreground mt-1 text-xs">
-                Issued by
-              </span>
             </div>
+            <span className="text-xs text-white/60">Certificate</span>
+          </div>
+        </div>
+
+        <div className="flex flex-col items-center gap-8 px-8 py-10 text-center">
+          <div className="flex flex-col items-center gap-2">
+            <span className="text-muted-foreground text-xs font-semibold tracking-widest uppercase">
+              Certificate of Completion
+            </span>
+            <div className="bg-border my-2 h-px w-16" />
+          </div>
+
+          <div className="flex flex-col items-center gap-1">
+            <span className="text-muted-foreground text-sm">
+              This certifies that
+            </span>
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="text-foreground text-2xl font-bold tracking-tight"
+            >
+              {p.name}
+            </motion.span>
+          </div>
+
+          <div className="flex flex-col items-center gap-1">
+            <span className="text-muted-foreground text-sm">
+              has successfully completed
+            </span>
+            <span className="text-brand text-xl font-bold">
+              {journey.title}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-6">
+            <div className="flex flex-col items-center gap-0.5">
+              <span className="text-brand text-lg font-bold">
+                {journey.xpReward}
+              </span>
+              <span className="text-muted-foreground text-xs">XP earned</span>
+            </div>
+            <div className="bg-border h-8 w-px" />
+            <div className="flex flex-col items-center gap-0.5">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, delay: 0.6 }}
+              >
+                <Award className="text-brand size-8" />
+              </motion.div>
+              <span className="text-muted-foreground text-xs">Certified</span>
+            </div>
+            <div className="bg-border h-8 w-px" />
+            <div className="flex flex-col items-center gap-0.5">
+              <span className="text-foreground text-sm font-semibold">
+                {today}
+              </span>
+              <span className="text-muted-foreground text-xs">Date</span>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center gap-1 pt-4">
+            <div className="bg-border h-px w-32" />
+            <span className="text-muted-foreground text-xs">
+              Issued by {siteConfig.name}
+            </span>
           </div>
         </div>
       </motion.div>
 
-      <div className="flex flex-col gap-2.5 sm:flex-row">
-        <Button size="lg" className="glow-hover rounded-xl" disabled>
-          <Download />
-          Download (soon)
+      {/* Actions */}
+      <div className="flex flex-wrap items-center gap-3">
+        <Button disabled className="rounded-xl opacity-50">
+          <Download className="mr-1.5 size-4" />
+          Download (coming soon)
         </Button>
-        <a href={learnRoutes.journey(journey.slug)}>
-          <Button
-            size="lg"
-            variant="outline"
-            className="glass w-full rounded-xl"
-          >
-            <ArrowLeft />
+        <Link href={learnRoutes.journey(journeySlug)}>
+          <Button variant="outline" className="glass rounded-xl">
+            <ArrowLeft className="mr-1.5 size-4" />
             Back to journey
           </Button>
-        </a>
+        </Link>
       </div>
     </div>
   );

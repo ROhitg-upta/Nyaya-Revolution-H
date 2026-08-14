@@ -1,176 +1,262 @@
 "use client";
 
 import { motion } from "motion/react";
+import Link from "next/link";
 
+import { getJourney, learnRoutes, lessonCount } from "@/constants";
 import {
-  type LucideIcon,
   Award,
   BookOpen,
-  Check,
-  ClipboardCheck,
-  Flag,
+  CheckCircle,
+  Circle,
+  Lightbulb,
   Lock,
   Play,
+  Target,
+  Trophy,
   Zap,
 } from "@/lib/icons";
-import { getJourney, journeyLessons, learnRoutes } from "@/constants";
 import { cn } from "@/lib/utils";
 
 type NodeStatus = "done" | "current" | "locked" | "available";
 
-interface RoadmapNodeProps {
-  icon: LucideIcon;
-  title: string;
-  subtitle: string;
+interface RoadmapNode {
+  label: string;
   status: NodeStatus;
-  href?: string;
-  last?: boolean;
-  index: number;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  xp?: number;
+  module?: string;
 }
 
-function statusStyles(status: NodeStatus) {
-  switch (status) {
-    case "done":
-      return "bg-gradient-brand text-primary-foreground glow-brand";
-    case "current":
-      return "bg-brand/15 text-brand ring-2 ring-brand";
-    case "locked":
-      return "bg-muted text-muted-foreground";
-    default:
-      return "bg-brand/12 text-brand";
-  }
-}
+const statusStyles: Record<
+  NodeStatus,
+  { ring: string; bg: string; text: string; line: string }
+> = {
+  done: {
+    ring: "ring-emerald-500/50",
+    bg: "bg-emerald-500/10",
+    text: "text-emerald-400",
+    line: "bg-emerald-500/40",
+  },
+  current: {
+    ring: "ring-brand",
+    bg: "bg-brand/12",
+    text: "text-brand",
+    line: "bg-brand/30",
+  },
+  available: {
+    ring: "ring-muted-foreground/20",
+    bg: "bg-muted",
+    text: "text-muted-foreground",
+    line: "bg-muted",
+  },
+  locked: {
+    ring: "ring-transparent",
+    bg: "bg-muted/50",
+    text: "text-muted-foreground/40",
+    line: "bg-muted/30",
+  },
+};
 
-function RoadmapNode({
-  icon: Icon,
-  title,
-  subtitle,
-  status,
-  href,
-  last,
+function RoadmapNodeRow({
+  node,
   index,
-}: RoadmapNodeProps) {
-  const locked = status === "locked";
-  const NodeIcon = status === "done" ? Check : locked ? Lock : Icon;
+  isLast,
+}: {
+  node: RoadmapNode;
+  index: number;
+  isLast: boolean;
+}) {
+  const s = statusStyles[node.status];
+  const Icon = node.icon;
+  const isClickable = node.status !== "locked";
 
-  const body = (
+  const content = (
     <motion.div
-      initial={{ opacity: 0, x: -12 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.35, delay: (index % 8) * 0.04 }}
+      initial={{ opacity: 0, x: -16 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: index * 0.04, duration: 0.35 }}
       className={cn(
-        "group relative flex items-center gap-4 rounded-2xl p-3 transition-all",
-        href && !locked && "glass glow-hover hover:-translate-y-0.5",
+        "group relative flex items-center gap-4",
+        isClickable && "cursor-pointer",
       )}
     >
-      <span
+      {/* Vertical connector */}
+      {!isLast && (
+        <div
+          className={cn(
+            "absolute top-10 left-5 h-[calc(100%+0.5rem)] w-0.5 -translate-x-1/2",
+            s.line,
+          )}
+        />
+      )}
+
+      {/* Icon node */}
+      <div
         className={cn(
-          "relative z-10 flex size-11 shrink-0 items-center justify-center rounded-2xl",
-          statusStyles(status),
+          "relative z-10 flex size-10 shrink-0 items-center justify-center rounded-xl ring-2 transition-all",
+          s.ring,
+          s.bg,
+          isClickable &&
+            node.status !== "done" &&
+            "group-hover:ring-brand group-hover:scale-105",
         )}
       >
-        <NodeIcon className="size-5" />
-      </span>
-      <div className="flex flex-1 flex-col">
-        <span className="text-foreground text-sm font-semibold">{title}</span>
-        <span className="text-muted-foreground text-xs">{subtitle}</span>
+        {node.status === "done" ? (
+          <CheckCircle className="size-5 text-emerald-400" />
+        ) : node.status === "locked" ? (
+          <Lock className="text-muted-foreground/40 size-4" />
+        ) : (
+          <Icon className={cn("size-5", s.text)} />
+        )}
+
+        {node.status === "current" && (
+          <motion.div
+            animate={{ scale: [1, 1.5, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="bg-brand/30 absolute inset-0 rounded-xl"
+          />
+        )}
       </div>
-      {href && !locked && status !== "done" ? (
-        <Play className="text-brand size-4 opacity-0 transition-opacity group-hover:opacity-100" />
-      ) : null}
+
+      {/* Label */}
+      <div className="flex flex-1 flex-col gap-0.5 py-3">
+        {node.module && (
+          <span className="text-muted-foreground/60 text-[10px] font-semibold tracking-wider uppercase">
+            {node.module}
+          </span>
+        )}
+        <span
+          className={cn(
+            "text-sm font-medium transition-colors",
+            node.status === "locked"
+              ? "text-muted-foreground/40"
+              : "text-foreground",
+            isClickable && "group-hover:text-brand",
+          )}
+        >
+          {node.label}
+        </span>
+      </div>
+
+      {/* XP badge */}
+      {node.xp && node.status !== "locked" && (
+        <span className="text-brand flex items-center gap-1 text-xs font-semibold">
+          <Zap className="size-3" />
+          {node.xp}
+        </span>
+      )}
+
+      {/* Status indicator */}
+      {node.status === "current" && (
+        <span className="bg-brand/12 text-brand rounded-full px-2.5 py-0.5 text-xs font-semibold">
+          Current
+        </span>
+      )}
     </motion.div>
   );
 
-  return (
-    <li className="relative pl-0">
-      {!last ? (
-        <span
-          aria-hidden="true"
-          className="bg-border absolute top-11 left-[2.4rem] h-[calc(100%-1.5rem)] w-px"
-        />
-      ) : null}
-      {href && !locked ? (
-        <a
-          href={href}
-          className="focus-visible:ring-ring block rounded-2xl focus-visible:ring-2 focus-visible:outline-none"
-        >
-          {body}
-        </a>
-      ) : (
-        body
-      )}
-    </li>
-  );
+  if (isClickable) {
+    return <Link href={node.href}>{content}</Link>;
+  }
+  return content;
 }
 
-/** Interactive journey roadmap: lessons grouped by module, then quiz →
- * challenge → completion → certificate. Completion state derives from progress. */
-export function Roadmap({ journeySlug }: { journeySlug: string }) {
+interface RoadmapProps {
+  journeySlug: string;
+}
+
+export function Roadmap({ journeySlug }: RoadmapProps) {
   const journey = getJourney(journeySlug);
   if (!journey) return null;
-  const lessons = journeyLessons(journey);
-  const completed = Math.round((journey.progress / 100) * lessons.length);
 
-  let running = 0;
-  const nodes: RoadmapNodeProps[] = [];
+  const total = lessonCount(journey);
+  const doneCount = Math.round((journey.progress / 100) * total);
 
-  journey.modules.forEach((module, mi) => {
-    module.lessons.forEach((lessonItem) => {
-      const idx = running;
+  const nodes: RoadmapNode[] = [];
+  let globalIdx = 0;
+
+  for (const mod of journey.modules) {
+    for (const lesson of mod.lessons) {
       const status: NodeStatus =
-        idx < completed ? "done" : idx === completed ? "current" : "available";
-      nodes.push({
-        icon: BookOpen,
-        title: lessonItem.title,
-        subtitle: `${module.title} · ${lessonItem.readingMinutes} min read`,
-        status,
-        href: learnRoutes.lesson(journey.slug, lessonItem.slug),
-        index: idx,
-      });
-      running += 1;
-    });
-    void mi;
-  });
+        globalIdx < doneCount
+          ? "done"
+          : globalIdx === doneCount
+            ? "current"
+            : "available";
 
-  const allDone = completed >= lessons.length;
+      nodes.push({
+        label: lesson.title,
+        status,
+        href: learnRoutes.lesson(journeySlug, lesson.slug),
+        icon: BookOpen,
+        xp: 20,
+        module: lesson === mod.lessons[0] ? mod.title : undefined,
+      });
+      globalIdx++;
+    }
+  }
+
+  const quizStatus: NodeStatus =
+    journey.progress === 100
+      ? "done"
+      : doneCount >= total
+        ? "current"
+        : "locked";
+  const certStatus: NodeStatus = journey.progress === 100 ? "done" : "locked";
+
   nodes.push({
-    icon: ClipboardCheck,
-    title: "Journey quiz",
-    subtitle: "Test what you've learned",
-    status: allDone ? "current" : "available",
-    href: learnRoutes.quiz(journey.slug),
-    index: running++,
+    label: "Journey quiz",
+    status: quizStatus,
+    href: learnRoutes.quiz(journeySlug),
+    icon: Target,
+    xp: 50,
   });
   nodes.push({
-    icon: Zap,
-    title: "Mini challenge",
-    subtitle: "Apply it to a real scenario",
-    status: "available",
-    href: learnRoutes.quiz(journey.slug),
-    index: running++,
+    label: "Mini challenge",
+    status: certStatus,
+    href: learnRoutes.quiz(journeySlug),
+    icon: Lightbulb,
+    xp: 30,
   });
   nodes.push({
-    icon: Flag,
-    title: "Completion",
-    subtitle: allDone ? "Journey complete!" : "Finish all steps to complete",
-    status: allDone ? "done" : "locked",
-    index: running++,
+    label: "Completion",
+    status: certStatus,
+    href: learnRoutes.certificate(journeySlug),
+    icon: Trophy,
   });
   nodes.push({
+    label: "Earn certificate",
+    status: certStatus,
+    href: learnRoutes.certificate(journeySlug),
     icon: Award,
-    title: "Certificate",
-    subtitle: "Earn your shareable certificate",
-    status: allDone ? "available" : "locked",
-    href: learnRoutes.certificate(journey.slug),
-    index: running++,
   });
 
   return (
-    <ol className="flex flex-col gap-2">
-      {nodes.map((node, i) => (
-        <RoadmapNode key={i} {...node} last={i === nodes.length - 1} />
-      ))}
-    </ol>
+    <section className="flex flex-col gap-5">
+      <div className="flex items-center justify-between">
+        <h2 className="text-foreground flex items-center gap-2 text-lg font-bold">
+          <Play className="text-brand size-5" />
+          Learning roadmap
+        </h2>
+        <span className="text-muted-foreground text-sm">
+          {doneCount}/{total + 4} steps
+        </span>
+      </div>
+
+      <div className="glass rounded-2xl p-5">
+        <div className="flex flex-col gap-1">
+          {nodes.map((node, i) => (
+            <RoadmapNodeRow
+              key={`${node.label}-${i}`}
+              node={node}
+              index={i}
+              isLast={i === nodes.length - 1}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
