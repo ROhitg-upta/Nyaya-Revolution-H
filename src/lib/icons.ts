@@ -111,6 +111,9 @@ export {
   XCircle,
 } from "lucide-react";
 
+// AI Learning Companion icons.
+export { ExternalLink, Hash, Pin, Plus, Square, Trash2 } from "lucide-react";
+
 // Situation Engine icons.
 export {
   Accessibility,
