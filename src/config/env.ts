@@ -27,6 +27,12 @@ export const publicEnv = {
     "http://localhost:3000",
 } as const;
 
+/** Server-only AI configuration (NOT bundled into the browser). */
+export const serverEnv = {
+  geminiApiKey: process.env.GEMINI_API_KEY ?? "",
+  geminiModel: process.env.GEMINI_MODEL ?? "gemini-2.0-flash",
+} as const;
+
 /** Convenience runtime flags. */
 export const env = {
   ...publicEnv,
