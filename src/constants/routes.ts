@@ -13,6 +13,8 @@ export const routes = {
   situations: "/situations",
   learn: "/learn",
   learnProfile: "/learn/profile",
+  ai: "/ai",
+  aiBookmarks: "/ai/bookmarks",
 } as const;
 
 export type RouteKey = keyof typeof routes;
@@ -23,6 +25,10 @@ export function situationRoute(slug: string): string {
 }
 
 /** Learning route builders. */
+export const aiRoutes = {
+  chat: (id: string) => `/ai/chat/${id}`,
+} as const;
+
 export const learnRoutes = {
   journey: (slug: string) => `/learn/${slug}`,
   lesson: (journey: string, lesson: string) => `/learn/${journey}/${lesson}`,
