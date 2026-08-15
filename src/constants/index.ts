@@ -6,3 +6,4 @@ export * from "./site";
 export * from "./routes";
 export * from "./situations";
 export * from "./learning";
+export * from "./ai";

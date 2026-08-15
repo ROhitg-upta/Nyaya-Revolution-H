@@ -6,6 +6,7 @@ import { Scale } from "@/lib/icons";
 const links = [
   { label: "Situations", href: routes.situations },
   { label: "Learn", href: routes.learn },
+  { label: "AI Tutor", href: routes.ai },
 ];
 
 /**
