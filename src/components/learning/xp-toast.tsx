@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { Sparkles } from "@/lib/icons";
 import { cn } from "@/lib/utils";
@@ -14,13 +14,9 @@ interface XpToastProps {
 }
 
 export function XpToast({ xp, show, onDone, className }: XpToastProps) {
-  const [visible, setVisible] = useState(false);
-
   useEffect(() => {
     if (!show) return;
-    setVisible(true);
     const t = setTimeout(() => {
-      setVisible(false);
       onDone?.();
     }, 2000);
     return () => clearTimeout(t);
@@ -28,7 +24,7 @@ export function XpToast({ xp, show, onDone, className }: XpToastProps) {
 
   return (
     <AnimatePresence>
-      {visible && (
+      {show && (
         <motion.div
           initial={{ opacity: 0, y: 20, scale: 0.8 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}

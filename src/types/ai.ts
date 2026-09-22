@@ -6,9 +6,10 @@
  * responses (Gemini, OpenAI, etc.) into these shapes.
  */
 import type { LucideIcon } from "@/lib/icons";
+import type { ContentSource } from "./legal-content";
 
 export type ResponseModeId =
-  "eli15" | "detailed" | "legal" | "summary" | "step-by-step";
+  | "eli15" | "detailed" | "legal" | "summary" | "step-by-step";
 
 export interface ResponseMode {
   id: ResponseModeId;
@@ -33,15 +34,44 @@ export interface ChatMessage {
 
 export interface StructuredResponse {
   situationSummary: string;
+  relevantConcept?: string;
+  whatYouShouldUnderstand?: string[];
   rights: string[];
   laws: LawReference[];
   immediateActions: string[];
+  possibleGeneralNextSteps?: string[];
   documentsRequired: string[];
   authorities: AuthorityContact[];
   commonMistakes: string[];
+  practiceQuestion?: {
+    question: string;
+    options: string[];
+    correctIndex: number;
+    explanation: string;
+    xp?: number;
+  };
   learningJourney?: LearningJourneyRef;
   quiz?: QuizRef;
+  source?: ContentSource;
   professionalHelp?: string;
+
+  // Grounding & verification indicators
+  isGroundingVerified?: boolean;
+  groundedArticles?: {
+    slug: string;
+    title: string;
+    articleOrSection: string;
+  }[];
+  groundedLaws?: {
+    slug: string;
+    title: string;
+    shortTitle: string;
+  }[];
+  groundedCases?: {
+    slug: string;
+    title: string;
+    citation: string;
+  }[];
 }
 
 export interface LawReference {

@@ -20,14 +20,17 @@ function delay(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-function generateId(): string {
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-}
-
 const MOCK_RESPONSES: Record<string, StructuredResponse> = {
   landlord: {
     situationSummary:
       "Your landlord is withholding your security deposit after you've vacated the premises. Under Indian law, tenants have clear rights regarding the return of security deposits, and there are established legal channels to recover your money.",
+    relevantConcept:
+      "Statutory 30-Day Refund Mandate & Prohibition of Arbitrary Deductions",
+    whatYouShouldUnderstand: [
+      "Under Section 13 of the Model Tenancy Act, the landlord must refund the deposit within one month after taking possession.",
+      "Arbitrary maintenance or repainting deductions are illegal unless explicitly agreed upon in writing with proof of tenant-caused damage.",
+      "Commercial PG operators can be held liable before District Consumer Commissions for 'Deficiency in Service'.",
+    ],
     rights: [
       "Right to receive your security deposit back within a reasonable period after vacating",
       "Right to receive an itemised list of deductions, if any",
@@ -63,6 +66,11 @@ const MOCK_RESPONSES: Record<string, StructuredResponse> = {
       "File a complaint with the Rent Authority in your district",
       "As a last resort, file a civil suit in the appropriate court",
     ],
+    possibleGeneralNextSteps: [
+      "Issue a formal legal demand notice via Registered Post AD and Email giving 15 days.",
+      "File an online consumer complaint on e-Daakhil or approach the local Rent Authority.",
+      "Keep payment proofs and move-out inspection checklists as primary documentary evidence.",
+    ],
     documentsRequired: [
       "Original rent/lease agreement",
       "Deposit payment receipt or bank transfer proof",
@@ -95,6 +103,15 @@ const MOCK_RESPONSES: Record<string, StructuredResponse> = {
       "Waiting too long to take action — there are limitation periods",
       "Signing a 'no claims' document at move-out under pressure",
     ],
+    practiceQuestion: {
+      question:
+        "What is the maximum timeline under the Model Tenancy Act for a landlord to refund your security deposit after vacating?",
+      options: ["Within 1 month", "Within 90 days", "Within 6 months", "No fixed limit"],
+      correctIndex: 0,
+      explanation:
+        "Section 13 of the Model Tenancy Act, 2021 mandates refund of the security deposit within one month of the tenant vacating.",
+      xp: 25,
+    },
     learningJourney: {
       title: "Tenant Rights Mastery",
       slug: "tenant-rights",
@@ -104,6 +121,26 @@ const MOCK_RESPONSES: Record<string, StructuredResponse> = {
       title: "Test Your Tenant Rights Knowledge",
       questions: 5,
       slug: "tenant-rights-quiz",
+    },
+    isGroundingVerified: true,
+    groundedArticles: [
+      {
+        slug: "article-21-protection-of-life-and-personal-liberty",
+        title: "Article 21: Life & Personal Liberty",
+        articleOrSection: "Article 21",
+      },
+    ],
+    groundedLaws: [
+      {
+        slug: "consumer-protection-act-2019",
+        title: "Consumer Protection Act, 2019",
+        shortTitle: "CPA 2019",
+      },
+    ],
+    source: {
+      title: "Model Tenancy Act, 2021 — Ministry of Housing & Urban Affairs",
+      url: "https://mohua.gov.in/",
+      publisher: "Government of India",
     },
     professionalHelp:
       "If the deposit amount is significant (above ₹50,000) or the landlord is being aggressive, consult a property lawyer. Many offer free initial consultations. You can also reach out to local legal aid services if you cannot afford a lawyer.",
@@ -263,6 +300,31 @@ const MOCK_RESPONSES: Record<string, StructuredResponse> = {
       "Not informing your bank immediately about the unauthorised transaction",
       "Sharing the incident on social media before filing an FIR (can complicate the case)",
     ],
+    relevantConcept: "RBI Zero Liability Doctrine & Cyber Freezing Mechanisms",
+    whatYouShouldUnderstand: [
+      "Under RBI guidelines, notifying the bank within 3 working days of an unauthorized electronic transaction grants 100% Zero Liability.",
+      "Calling Helpline 1930 immediately triggers CFCFRMS to freeze funds in the fraudster's wallet or account in real time.",
+      "Banks cannot deny your claim merely because an OTP was generated if you reported the breach promptly without contributory negligence.",
+    ],
+    possibleGeneralNextSteps: [
+      "Dial 1930 immediately to freeze transactions across beneficiary payment gateways.",
+      "Submit a written dispute form to your bank manager requesting a shadow credit within 10 days.",
+      "File a Zero FIR at any cyber police station with complete transaction hash IDs.",
+    ],
+    practiceQuestion: {
+      question:
+        "Under RBI circular guidelines, what is customer liability if an unauthorized electronic debit is reported within 3 working days?",
+      options: [
+        "Zero Liability (Full bank reimbursement)",
+        "50% of the lost amount",
+        "Full customer liability",
+        "Subject to bank discretion",
+      ],
+      correctIndex: 0,
+      explanation:
+        "Under RBI's 2017 Customer Protection circular, prompt reporting within 3 working days guarantees zero liability for the customer.",
+      xp: 25,
+    },
     learningJourney: {
       title: "Cyber Safety Essentials",
       slug: "cyber-safety",
@@ -273,6 +335,26 @@ const MOCK_RESPONSES: Record<string, StructuredResponse> = {
       questions: 5,
       slug: "cyber-scam-quiz",
     },
+    isGroundingVerified: true,
+    groundedLaws: [
+      {
+        slug: "it-act-2000",
+        title: "Information Technology Act, 2000",
+        shortTitle: "IT Act 2000",
+      },
+    ],
+    groundedCases: [
+      {
+        slug: "puttaswamy-privacy-2017",
+        title: "Justice K.S. Puttaswamy (2017)",
+        citation: "(2017) 10 SCC 1",
+      },
+    ],
+    source: {
+      title: "Reserve Bank of India — Customer Protection Circular (2017)",
+      url: "https://www.rbi.org.in/",
+      publisher: "Reserve Bank of India",
+    },
     professionalHelp:
       "If you've lost a significant amount (above ₹25,000), consider hiring a cyber-crime lawyer. The National Legal Services Authority (NALSA) provides free legal aid. For bank dispute resolution, the RBI Ombudsman process is free.",
   },
@@ -281,6 +363,12 @@ const MOCK_RESPONSES: Record<string, StructuredResponse> = {
 const DEFAULT_RESPONSE: StructuredResponse = {
   situationSummary:
     "Based on your question, here's a general overview of the legal landscape in India that applies to your situation. Understanding your rights is the first step toward resolving any issue.",
+  relevantConcept: "Fundamental Rights & Statutory Due Process",
+  whatYouShouldUnderstand: [
+    "Article 21 guarantees that no person can be deprived of life or personal liberty except under fair procedure established by law.",
+    "Article 39A mandates the State to provide free legal aid through DLSA to ensure justice is not denied by reason of economic disability.",
+    "Every citizen has the right to formal written notices before any adverse governmental or contractual action is taken.",
+  ],
   rights: [
     "Right to access justice through courts and tribunals",
     "Right to legal aid if you cannot afford a lawyer (Article 39A)",
@@ -307,6 +395,11 @@ const DEFAULT_RESPONSE: StructuredResponse = {
     "Consult with a legal professional or visit your nearest Legal Aid Centre",
     "File a formal complaint with the appropriate authority",
   ],
+  possibleGeneralNextSteps: [
+    "Document the chronological timeline of events with dates and names.",
+    "Gather receipts, notices, agreements, and message threads.",
+    "Visit the nearest District Legal Services Authority (DLSA) or file an online RTI if public records are withheld.",
+  ],
   documentsRequired: [
     "Identity proof (Aadhaar, PAN, or Voter ID)",
     "Address proof",
@@ -319,27 +412,37 @@ const DEFAULT_RESPONSE: StructuredResponse = {
       description:
         "Provides free legal aid and advice. Visit your nearest DLSA office.",
     },
-    {
-      name: "National Consumer Helpline",
-      description: "For consumer-related grievances.",
-      contact: "1800-11-4000",
-    },
   ],
   commonMistakes: [
-    "Not documenting events and communications in writing",
-    "Ignoring legal timelines and limitation periods",
-    "Not seeking professional legal advice early enough",
-    "Relying solely on verbal agreements or promises",
+    "Delaying action until statutory limitation periods expire",
+    "Failing to maintain written receipts and transaction records",
   ],
-  learningJourney: {
-    title: "Know Your Fundamental Rights",
-    slug: "fundamental-rights",
-    lessons: 5,
+  practiceQuestion: {
+    question:
+      "Which Constitutional Article directs the State to provide free legal aid to underprivileged citizens?",
+    options: ["Article 14", "Article 19", "Article 21", "Article 39A"],
+    correctIndex: 3,
+    explanation:
+      "Article 39A directs the State to ensure that the operation of the legal system promotes justice on a basis of equal opportunity and free legal aid.",
+    xp: 20,
   },
-  quiz: {
-    title: "Fundamental Rights Quiz",
-    questions: 5,
-    slug: "fundamental-rights-quiz",
+  isGroundingVerified: true,
+  groundedArticles: [
+    {
+      slug: "article-14-equality-before-law",
+      title: "Article 14: Equality Before Law",
+      articleOrSection: "Article 14",
+    },
+    {
+      slug: "article-21-protection-of-life-and-personal-liberty",
+      title: "Article 21: Life and Personal Liberty",
+      articleOrSection: "Article 21",
+    },
+  ],
+  source: {
+    title: "Constitution of India — Ministry of Law & Justice",
+    url: "https://legislative.gov.in/",
+    publisher: "Government of India",
   },
   professionalHelp:
     "You can access free legal aid through the District Legal Services Authority (DLSA) in your district. Alternatively, many lawyers offer free initial consultations. For online assistance, visit nalsa.gov.in.",

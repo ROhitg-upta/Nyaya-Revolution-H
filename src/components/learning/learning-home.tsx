@@ -7,7 +7,6 @@ import { ContinueCard } from "@/components/learning/continue-card";
 import { DailyChallengeCard } from "@/components/learning/daily-challenge-card";
 import { JourneyCard } from "@/components/learning/journey-card";
 import { LevelBadge } from "@/components/learning/level-badge";
-import { ProgressRing } from "@/components/learning/progress-ring";
 import { SectionRow } from "@/components/learning/section-row";
 import { StreakCard } from "@/components/learning/streak-card";
 import { WeeklyActivity } from "@/components/learning/weekly-activity";
@@ -28,9 +27,11 @@ import {
   Award,
   Bookmark,
   BookmarkCheck,
+  Brain,
   Compass,
   Flame,
   Play,
+  Scale,
   Sparkles,
   Star,
   TrendingUp,
@@ -92,12 +93,26 @@ export function LearningHome() {
             </div>
           </div>
 
-          <Link href={routes.learnProfile}>
-            <Button variant="outline" className="glass rounded-xl">
-              <User className="mr-1.5 size-4" />
-              View profile
-            </Button>
-          </Link>
+          <div className="flex flex-wrap items-center gap-2.5">
+            <Link href={routes.knowledge}>
+              <Button className="rounded-xl gap-1.5 shadow-sm">
+                <Brain className="size-4" />
+                My Legal Knowledge
+              </Button>
+            </Link>
+            <Link href={routes.scenarios}>
+              <Button variant="outline" className="glass rounded-xl gap-1.5">
+                <Scale className="size-4" />
+                Scenarios
+              </Button>
+            </Link>
+            <Link href={routes.learnProfile}>
+              <Button variant="outline" className="glass rounded-xl gap-1.5">
+                <User className="size-4" />
+                Profile
+              </Button>
+            </Link>
+          </div>
         </div>
       </motion.div>
 

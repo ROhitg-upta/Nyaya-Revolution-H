@@ -56,6 +56,7 @@ function lesson(
   concepts: [string, string][],
   terms: [string, string][],
   examples: [string, string][],
+  extra?: Partial<Lesson>,
 ): Lesson {
   return {
     slug,
@@ -65,6 +66,7 @@ function lesson(
     concepts: concepts.map(([t, body]) => ({ title: t, body })),
     terms: terms.map(([term, definition]) => ({ term, definition })),
     examples: examples.map(([t, body]) => ({ title: t, body })),
+    ...extra,
   };
 }
 
@@ -74,9 +76,9 @@ export const journeys: Journey[] = [
     title: "Student Rights",
     tagline: "Ragging, fees, and campus protections.",
     description:
-      "Understand the rights that protect you through admissions, campus life, and exams.",
+      "A complete guide to your rights on campus — from fee disputes and anti-ragging protections to disciplinary hearings and transcript access.",
     icon: GraduationCap,
-    category: "Students",
+    category: "Campus & Education",
     difficulty: "beginner",
     estimatedMinutes: 45,
     xpReward: 300,
@@ -94,33 +96,130 @@ export const journeys: Journey[] = [
             [
               "Identify the core rights students hold on campus.",
               "Know where to raise a grievance.",
+              "Distinguish legal reality from administrative intimidation.",
             ],
             [
               [
                 "You have a right to a safe campus",
-                "Institutions must prevent ragging and ensure a safe environment.",
+                "Institutions must prevent ragging and ensure an environment free from psychological harassment.",
               ],
               [
-                "Grievance mechanisms exist",
-                "Every affiliated institution should have a grievance cell you can approach.",
+                "Grievance mechanisms are statutory",
+                "Every affiliated institution must maintain a Student Grievance Redressal Committee (SGRC) under UGC regulations.",
               ],
             ],
             [
               [
-                "Grievance cell",
-                "An internal body that receives and resolves student complaints.",
+                "SGRC",
+                "Student Grievance Redressal Committee — statutory campus body for student complaints.",
               ],
               [
-                "UGC",
-                "The regulator overseeing higher-education standards in India.",
+                "UGC e-Samadhan",
+                "The centralized online dispute resolution portal for higher education disputes.",
               ],
             ],
             [
               [
-                "Unfair detention",
-                "A college withholding results over a disputed fee can be challenged through the grievance cell.",
+                "Withholding examination admit cards",
+                "A college withholding hall tickets over disputed non-academic fee dues violates UGC circulars and can be challenged.",
               ],
             ],
+            {
+              lessonType: "myth_vs_fact",
+              mythVsFacts: [
+                {
+                  myth: "A college can keep your original 10th and 12th certificates until you finish the 4-year degree.",
+                  fact: "UGC guidelines strictly prohibit institutions from retaining original academic certificates.",
+                  explanation: "Colleges may only physically inspect original certificates at admission and must immediately return them to the student.",
+                },
+                {
+                  myth: "Colleges can expel a student without any hearing if management decides.",
+                  fact: "Principles of Natural Justice (Audi Alteram Partem) mandate a fair inquiry and written explanation before any expulsion.",
+                  explanation: "Arbitrary rustication without hearing can be stayed by the High Court under Article 226.",
+                },
+              ],
+              dosAndDonts: {
+                dos: [
+                  "Always get written receipts with seal for every rupee paid to administration.",
+                  "Submit all formal grievances via email to create a permanent timestamped record.",
+                  "Quote UGC (Grievance Redressal) Regulations in official communications.",
+                ],
+                donts: [
+                  "Do not surrender original certificates without a written handover receipt.",
+                  "Do not pay cash under vague heads like 'development fund' without approval.",
+                  "Do not sign pre-typed confession letters under pressure from disciplinary panels.",
+                ],
+              },
+              processSteps: [
+                {
+                  stepNumber: 1,
+                  title: "Submit Written Complaint to SGRC",
+                  description: "File a formal letter to the College Student Grievance Redressal Committee.",
+                  expectedTimeline: "15 Days",
+                  authority: "College SGRC",
+                },
+                {
+                  stepNumber: 2,
+                  title: "Escalate to University Ombudsman",
+                  description: "If unaddressed within 15 days, appeal to the University Ombudsman.",
+                  expectedTimeline: "30 Days",
+                  authority: "University Ombudsman",
+                },
+                {
+                  stepNumber: 3,
+                  title: "Lodge on UGC e-Samadhan Portal",
+                  description: "File an online grievance on samadhan.ugc.ac.in for central regulatory intervention.",
+                  expectedTimeline: "Direct Monitoring",
+                  authority: "UGC e-Samadhan",
+                },
+              ],
+              interactiveScenario: {
+                context: "You applied to withdraw from college 10 days after admission started, before classes began. The college accounts office refuses to refund your ₹80,000 tuition fee, pointing to a sign saying 'Fees once paid will not be refunded'.",
+                prompt: "What is your best immediate legal action?",
+                options: [
+                  {
+                    id: "a",
+                    label: "Accept the loss since you signed the admission form with that clause.",
+                    feedback: "Incorrect. Under UGC norms and Consumer Protection law, unilateral forfeiture clauses are illegal.",
+                    isOptimal: false,
+                    legalConsequence: "You lose your money unnecessarily.",
+                  },
+                  {
+                    id: "b",
+                    label: "Send a written demand quoting the UGC Fee Refund Policy and file a grievance on e-Samadhan & NCH.",
+                    feedback: "Correct! UGC mandates a full refund (minus max ₹1,000 processing fee) if withdrawal is made prior to the formal cutoff.",
+                    isOptimal: true,
+                    legalConsequence: "Statutory backing compels colleges to process the refund or risk affiliation penalty.",
+                  },
+                  {
+                    id: "c",
+                    label: "Block the college gate with friends in protest.",
+                    feedback: "Incorrect. Unlawful physical agitation can lead to campus disciplinary suspension or criminal nuisance action.",
+                    isOptimal: false,
+                    legalConsequence: "Risks disciplinary rustication without solving the financial refund.",
+                  },
+                ],
+              },
+              flashcards: [
+                {
+                  front: "What is the fee deduction limit for admission withdrawals under UGC norms?",
+                  back: "Maximum ₹1,000 as processing fee if withdrawn within notified schedules.",
+                  context: "UGC Fee Refund Policy Notification",
+                },
+                {
+                  front: "Can a college withhold original marksheets for pending dues?",
+                  back: "No. Retaining original student credentials is strictly illegal.",
+                  context: "UGC Document Retention Circular",
+                },
+              ],
+              source: {
+                title: "UGC (Redressal of Grievances of Students) Regulations, 2023",
+                publisher: "University Grants Commission, New Delhi",
+                url: "https://www.ugc.gov.in",
+              },
+              verificationStatus: "verified",
+              lastVerifiedAt: "2025-01-15",
+            },
           ),
           lesson(
             "fees-and-refunds",

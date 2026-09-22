@@ -158,7 +158,34 @@ export function Quiz({ journeySlug }: QuizProps) {
             transition={{ duration: 0.3 }}
             className="glass-strong flex flex-col gap-6 rounded-2xl p-6"
           >
-            <h2 className="text-foreground text-lg leading-snug font-bold">
+            {/* Question Header: Type & Difficulty */}
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <span className="bg-brand/12 text-brand rounded-md px-2.5 py-0.5 text-[11px] font-bold tracking-wider uppercase">
+                  {q.type ? q.type.replace("_", " ") : "Question"}
+                </span>
+                {q.difficulty && (
+                  <span className="bg-muted text-muted-foreground rounded-md px-2 py-0.5 text-[11px] font-semibold capitalize">
+                    {q.difficulty}
+                  </span>
+                )}
+              </div>
+              {q.relatedConcept && (
+                <span className="text-muted-foreground text-xs italic">
+                  Concept: {q.relatedConcept}
+                </span>
+              )}
+            </div>
+
+            {/* Context (if scenario or case study based) */}
+            {q.context && (
+              <div className="border-border/60 bg-muted/20 text-muted-foreground rounded-xl border p-3.5 text-xs leading-relaxed">
+                <strong className="text-foreground font-semibold">Scenario Context: </strong>
+                {q.context}
+              </div>
+            )}
+
+            <h2 className="text-foreground text-lg font-bold leading-snug">
               {q.question}
             </h2>
 
@@ -220,18 +247,46 @@ export function Quiz({ journeySlug }: QuizProps) {
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   className={cn(
-                    "flex items-start gap-2.5 rounded-xl border px-4 py-3 text-sm",
+                    "flex flex-col gap-2 rounded-xl border p-4 text-sm",
                     selected === q.correctIndex
                       ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
                       : "border-red-500/30 bg-red-500/10 text-red-300",
                   )}
                 >
-                  {selected === q.correctIndex ? (
-                    <CheckCircle className="mt-0.5 size-4 shrink-0" />
-                  ) : (
-                    <XCircle className="mt-0.5 size-4 shrink-0" />
+                  <div className="flex items-start gap-2.5">
+                    {selected === q.correctIndex ? (
+                      <CheckCircle className="mt-0.5 size-4 shrink-0" />
+                    ) : (
+                      <XCircle className="mt-0.5 size-4 shrink-0" />
+                    )}
+                    <span className="font-medium leading-relaxed">{q.explanation}</span>
+                  </div>
+
+                  {(q.source || q.articleRef || q.caseRef) && (
+                    <div className="border-emerald-500/20 text-muted-foreground mt-2 flex flex-wrap items-center gap-3 border-t pt-2 text-xs">
+                      {q.source && (
+                        <span>
+                          Source: <strong className="text-foreground">{q.source.title}</strong>
+                        </span>
+                      )}
+                      {q.articleRef && (
+                        <Link
+                          href={`/laws/${q.articleRef}`}
+                          className="text-brand font-medium underline hover:text-foreground"
+                        >
+                          View Constitutional Article &rarr;
+                        </Link>
+                      )}
+                      {q.caseRef && (
+                        <Link
+                          href={`/case-studies/${q.caseRef}`}
+                          className="text-brand font-medium underline hover:text-foreground"
+                        >
+                          Read Case Precedent &rarr;
+                        </Link>
+                      )}
+                    </div>
                   )}
-                  <span>{q.explanation}</span>
                 </motion.div>
               )}
             </AnimatePresence>

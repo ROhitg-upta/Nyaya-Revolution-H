@@ -1,17 +1,22 @@
 import { ThemeToggle } from "@/components/common/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { routes, siteConfig } from "@/constants";
-import { Scale } from "@/lib/icons";
+import { Scale, Search } from "@/lib/icons";
 
 const links = [
   { label: "Situations", href: routes.situations },
+  { label: "Laws", href: routes.laws },
   { label: "Learn", href: routes.learn },
+  { label: "Scenarios", href: routes.scenarios },
+  { label: "Precedents", href: routes.caseStudies },
+  { label: "Knowledge", href: routes.knowledge },
+  { label: "Glossary", href: routes.glossary },
   { label: "AI Tutor", href: routes.ai },
 ];
 
 /**
- * Slim app-wide header used on in-product pages (situations, learn). Distinct
- * from the marketing `LandingNavbar` — no scroll anchors, just top-level nav.
+ * Slim app-wide header used on in-product pages (situations, laws, learn, glossary).
+ * Distinct from the marketing `LandingNavbar` — no scroll anchors, just top-level nav.
  */
 export function AppHeader() {
   return (
@@ -40,6 +45,14 @@ export function AppHeader() {
           </ul>
         </div>
         <div className="flex items-center gap-2">
+          <a
+            href={routes.search}
+            className="text-muted-foreground hover:text-foreground hover:bg-muted flex size-9 items-center justify-center rounded-lg transition-colors"
+            title="Unified Search"
+            aria-label="Search"
+          >
+            <Search className="size-4.5" />
+          </a>
           <ThemeToggle />
           <a href={routes.signIn}>
             <Button size="sm" className="glow-hover rounded-full px-5">

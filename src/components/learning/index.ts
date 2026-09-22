@@ -22,3 +22,5 @@ export * from "./stat-tile";
 export * from "./streak-card";
 export * from "./weekly-activity";
 export * from "./xp-toast";
+export * from "./mode-selector";
+export * from "./knowledge-dashboard";

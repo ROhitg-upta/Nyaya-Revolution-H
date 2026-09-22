@@ -8,7 +8,6 @@ import {
   Award,
   BookOpen,
   CheckCircle,
-  Circle,
   Lightbulb,
   Lock,
   Play,

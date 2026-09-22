@@ -8,7 +8,6 @@ import { ProgressRing } from "@/components/learning/progress-ring";
 import { StatTile } from "@/components/learning/stat-tile";
 import { WeeklyActivity } from "@/components/learning/weekly-activity";
 import { Reveal } from "@/components/common/reveal";
-import { Button } from "@/components/ui/button";
 import { journeys, learnRoutes, learnerProfile, routes } from "@/constants";
 import {
   ArrowLeft,

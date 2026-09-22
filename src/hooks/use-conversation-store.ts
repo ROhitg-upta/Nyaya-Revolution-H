@@ -8,12 +8,11 @@ function generateId(): string {
 }
 
 const STORAGE_KEY = "nyaya-conversations";
-const BOOKMARKS_KEY = "nyaya-bookmarks";
 
 type Listener = () => void;
 
 let conversations: Conversation[] = [];
-let listeners: Set<Listener> = new Set();
+const listeners: Set<Listener> = new Set();
 
 function emit() {
   listeners.forEach((l) => l());

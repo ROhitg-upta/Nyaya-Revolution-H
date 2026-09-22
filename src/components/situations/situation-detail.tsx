@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { ActionChecklist } from "@/components/situations/action-checklist";
 import { EmergencyCard } from "@/components/situations/emergency-card";
 import { LawCard } from "@/components/situations/law-card";
@@ -16,11 +17,17 @@ import {
   situationDisclaimer,
 } from "@/constants";
 import {
+  getRelatedCaseStudiesForSituation,
+  getRelatedLawsForSituation,
+} from "@/lib/legal-graph";
+import {
   ArrowLeft,
   Ban,
+  BookMarked,
   ClipboardCheck,
   Download,
   FileText,
+  Gavel,
   Info,
   Landmark,
   ListChecks,
@@ -34,6 +41,8 @@ export function SituationDetail({ slug }: { slug: string }) {
   const situation = getSituation(slug);
   if (!situation) return null;
   const category = getCategory(situation.category);
+  const { articles } = getRelatedLawsForSituation(slug);
+  const cases = getRelatedCaseStudiesForSituation(slug);
 
   return (
     <div className="mx-auto w-full max-w-6xl px-5 pt-28 pb-24 sm:px-8 lg:pt-32">
@@ -132,6 +141,65 @@ export function SituationDetail({ slug }: { slug: string }) {
               ))}
             </ul>
           </SectionBlock>
+
+          {articles.length > 0 && (
+            <SectionBlock icon={BookMarked} title="Constitutional rights & protections">
+              <div className="flex flex-col gap-3">
+                {articles.map((art) => (
+                  <Link
+                    key={art.slug}
+                    href={`/laws/${art.slug}`}
+                    className="glass group rounded-xl p-4 transition-colors hover:border-primary/40 block"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-foreground text-sm font-semibold group-hover:text-primary transition-colors">
+                        {art.articleOrSection}: {art.title}
+                      </span>
+                      <span className="text-xs text-primary font-medium">
+                        Understand article &rarr;
+                      </span>
+                    </div>
+                    <p className="text-muted-foreground mt-1.5 text-sm leading-relaxed line-clamp-2">
+                      {art.simpleExplanation}
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            </SectionBlock>
+          )}
+
+          {cases.length > 0 && (
+            <SectionBlock icon={Gavel} title="Landmark Supreme Court rulings">
+              <div className="flex flex-col gap-3">
+                {cases.map((cs) => (
+                  <div key={cs.slug} className="glass rounded-xl p-4">
+                    <div className="flex flex-wrap items-center justify-between gap-1 text-xs text-muted-foreground mb-1.5">
+                      <span className="font-semibold text-foreground">{cs.court} ({cs.year})</span>
+                      <span className="text-primary font-mono text-xs">{cs.citation}</span>
+                    </div>
+                    <h4 className="text-foreground text-sm font-semibold mb-1">
+                      {cs.title}
+                    </h4>
+                    <p className="text-muted-foreground text-sm leading-relaxed mb-3">
+                      {cs.problem}
+                    </p>
+                    <div className="rounded-lg bg-primary/5 border border-primary/15 p-3 text-xs text-foreground/90 space-y-1">
+                      <p>
+                        <strong className="text-primary font-semibold">Core Ruling: </strong>
+                        {cs.verifiedOutcome}
+                      </p>
+                      {cs.citizenLearning.length > 0 && (
+                        <p className="text-muted-foreground pt-1 border-t border-primary/10">
+                          <strong className="text-foreground font-medium">Citizen Takeaway: </strong>
+                          {cs.citizenLearning[0]}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </SectionBlock>
+          )}
         </div>
 
         {/* Sidebar */}

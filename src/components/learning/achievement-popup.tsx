@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { Award } from "@/lib/icons";
 import { cn } from "@/lib/utils";
@@ -21,13 +21,9 @@ export function AchievementPopup({
   onDone,
   className,
 }: AchievementPopupProps) {
-  const [visible, setVisible] = useState(false);
-
   useEffect(() => {
     if (!show) return;
-    setVisible(true);
     const t = setTimeout(() => {
-      setVisible(false);
       onDone?.();
     }, 3500);
     return () => clearTimeout(t);
@@ -35,7 +31,7 @@ export function AchievementPopup({
 
   return (
     <AnimatePresence>
-      {visible && (
+      {show && (
         <motion.div
           initial={{ opacity: 0, scale: 0.5, y: 40 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
