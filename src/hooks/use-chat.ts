@@ -2,7 +2,6 @@
 
 import { useCallback, useRef, useState } from "react";
 import type {
-  AIStreamChunk,
   ChatMessage,
   FollowUpSuggestion,
   PromptContext,
@@ -15,7 +14,7 @@ import { MockAIService } from "@/services/ai/mock-ai-service";
 const aiService = new MockAIService();
 
 interface UseChatOptions {
-  conversationId: string;
+  conversationId?: string;
   responseMode: ResponseModeId;
   messages: ChatMessage[];
   onAddMessage: (msg: Omit<ChatMessage, "id" | "timestamp">) => ChatMessage;
@@ -23,7 +22,6 @@ interface UseChatOptions {
 }
 
 export function useChat({
-  conversationId,
   responseMode,
   messages,
   onAddMessage,
@@ -47,7 +45,7 @@ export function useChat({
 
       onAddMessage({ role: "user", content: content.trim() });
 
-      const assistantMsg = onAddMessage({
+      onAddMessage({
         role: "assistant",
         content: "",
       });
@@ -63,6 +61,8 @@ export function useChat({
       };
 
       let fullContent = "";
+      let latestStructured: StructuredResponse | null = null;
+      let latestFollowUps: FollowUpSuggestion[] = [];
 
       try {
         const stream = aiService.streamMessage(ctx);
@@ -76,10 +76,12 @@ export function useChat({
               setStreamedContent(fullContent);
               break;
             case "structured":
-              setStructured(chunk.structured ?? null);
+              latestStructured = chunk.structured ?? null;
+              setStructured(latestStructured);
               break;
             case "follow-ups":
-              setFollowUps(chunk.followUps ?? []);
+              latestFollowUps = chunk.followUps ?? [];
+              setFollowUps(latestFollowUps);
               break;
             case "done":
               break;
@@ -92,8 +94,8 @@ export function useChat({
 
         onUpdateAssistant({
           content: fullContent,
-          structured: structured ?? undefined,
-          followUps: followUps.length > 0 ? followUps : undefined,
+          structured: latestStructured ?? undefined,
+          followUps: latestFollowUps.length > 0 ? latestFollowUps : undefined,
         });
       } catch {
         onUpdateAssistant({

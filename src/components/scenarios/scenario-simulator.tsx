@@ -318,7 +318,7 @@ export function ScenarioSimulator({ scenario }: ScenarioSimulatorProps) {
                 : undefined
             }
             deeperLabel="Relevant Statutory Act"
-            precedentHref="/case-studies/puttaswamy-privacy-2017"
+            precedentHref="/case-studies/puttaswamy-v-union-of-india-2017"
             precedentLabel="Related Landmark Precedents"
           />
         </motion.div>

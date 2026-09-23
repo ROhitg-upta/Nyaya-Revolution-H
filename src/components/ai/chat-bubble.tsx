@@ -113,6 +113,7 @@ function MessageContent({ content }: { content: string }) {
         elements.push(
           <pre
             key={`code-${i}`}
+            data-language={codeLang || undefined}
             className="bg-muted/50 border-border/50 my-2 overflow-x-auto rounded-lg border p-3"
           >
             <code className="text-xs">{codeLines.join("\n")}</code>

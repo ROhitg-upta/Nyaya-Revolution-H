@@ -29,7 +29,7 @@ export function DosAndDontsBlock({ data }: DosAndDontsProps) {
         </div>
         <ul className="flex flex-col gap-2.5 pt-1">
           {data.dos.map((item, idx) => (
-            <li key={idx} className="flex items-start gap-2.5 text-sm leading-relaxed text-foreground">
+            <li key={`do-${idx}`} className="flex items-start gap-2.5 text-sm leading-relaxed text-foreground">
               <span className="bg-success text-success-foreground mt-1 flex size-1.5 shrink-0 rounded-full" />
               <span>{item}</span>
             </li>
@@ -53,7 +53,7 @@ export function DosAndDontsBlock({ data }: DosAndDontsProps) {
         </div>
         <ul className="flex flex-col gap-2.5 pt-1">
           {data.donts.map((item, idx) => (
-            <li key={idx} className="flex items-start gap-2.5 text-sm leading-relaxed text-foreground">
+            <li key={`dont-${idx}`} className="flex items-start gap-2.5 text-sm leading-relaxed text-foreground">
               <span className="bg-destructive text-destructive-foreground mt-1 flex size-1.5 shrink-0 rounded-full" />
               <span>{item}</span>
             </li>

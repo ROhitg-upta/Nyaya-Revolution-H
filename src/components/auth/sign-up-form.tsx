@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -45,12 +46,12 @@ export function SignUpForm() {
       footer={
         <>
           Already have an account?{" "}
-          <a
+          <Link
             href={routes.signIn}
             className="text-brand font-medium hover:underline"
           >
             Sign in
-          </a>
+          </Link>
         </>
       }
     >

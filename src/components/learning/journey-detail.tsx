@@ -2,6 +2,7 @@
 
 import { JourneyHero } from "@/components/learning/journey-hero";
 import { Roadmap } from "@/components/learning/roadmap";
+import { Container } from "@/components/layout";
 import { getJourney } from "@/constants";
 
 interface JourneyDetailProps {
@@ -13,12 +14,12 @@ export function JourneyDetail({ journeySlug }: JourneyDetailProps) {
   if (!journey) return null;
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-5 pt-28 pb-24 sm:px-8 lg:pt-32">
+    <Container size="default" gutter="page">
       <JourneyHero journey={journey} />
 
       <section className="mt-12">
         <Roadmap journeySlug={journeySlug} />
       </section>
-    </div>
+    </Container>
   );
 }

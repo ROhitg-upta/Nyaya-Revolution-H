@@ -196,6 +196,12 @@ export function SituationDetail({ slug }: { slug: string }) {
                         </p>
                       )}
                     </div>
+                    <Link
+                      href={`/case-studies/${cs.slug}`}
+                      className="text-brand hover:underline mt-3 inline-flex items-center gap-1 text-xs font-semibold"
+                    >
+                      Read full precedent analysis &rarr;
+                    </Link>
                   </div>
                 ))}
               </div>

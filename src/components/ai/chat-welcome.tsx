@@ -7,7 +7,6 @@ import {
   suggestedQuestions,
   quickTopics,
 } from "@/constants/ai";
-import { siteConfig } from "@/constants";
 
 interface ChatWelcomeProps {
   onSelectQuestion: (question: string) => void;

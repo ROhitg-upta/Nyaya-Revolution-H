@@ -164,7 +164,7 @@ export function StructuredResponseView({ data }: StructuredResponseViewProps) {
           </span>
           <ol className="space-y-1.5 text-sm text-muted-foreground">
             {data.possibleGeneralNextSteps.map((step, idx) => (
-              <li key={idx} className="flex items-start gap-2">
+              <li key={`next-step-${idx}`} className="flex items-start gap-2">
                 <span className="text-brand font-bold">{idx + 1}.</span>
                 <span className="text-foreground/90 leading-relaxed">{step}</span>
               </li>
@@ -178,7 +178,7 @@ export function StructuredResponseView({ data }: StructuredResponseViewProps) {
         <ResponseSection sectionKey="documentsRequired">
           <ul className="space-y-1.5">
             {data.documentsRequired.map((doc, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm">
+              <li key={`doc-${i}`} className="flex items-start gap-2 text-sm">
                 <span className="text-muted-foreground mt-0.5 text-xs">📄</span>
                 <span className="text-foreground/90">{doc}</span>
               </li>
@@ -190,10 +190,10 @@ export function StructuredResponseView({ data }: StructuredResponseViewProps) {
       {/* Authorities */}
       {data.authorities.length > 0 && (
         <ResponseSection sectionKey="authorities">
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {data.authorities.map((auth, i) => (
               <div
-                key={i}
+                key={`auth-${auth.name}-${i}`}
                 className="glass border-border/30 rounded-lg border p-3"
               >
                 <p className="text-foreground text-sm font-medium">
@@ -218,7 +218,7 @@ export function StructuredResponseView({ data }: StructuredResponseViewProps) {
         <ResponseSection sectionKey="commonMistakes">
           <ul className="space-y-1.5">
             {data.commonMistakes.map((m, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm">
+              <li key={`mistake-${i}`} className="flex items-start gap-2 text-sm">
                 <span className="text-destructive mt-0.5 text-xs">✕</span>
                 <span className="text-foreground/90">{m}</span>
               </li>
@@ -256,7 +256,7 @@ export function StructuredResponseView({ data }: StructuredResponseViewProps) {
               }
               return (
                 <button
-                  key={i}
+                  key={`opt-${i}`}
                   type="button"
                   disabled={selectedAnswer !== null}
                   onClick={() => setSelectedAnswer(i)}

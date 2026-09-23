@@ -5,13 +5,14 @@ import Link from "next/link";
 import { ArrowLeft, Bookmark, BookmarkCheck, MessageCircle } from "@/lib/icons";
 import { useConversationStore } from "@/hooks/use-conversation-store";
 import { Reveal } from "@/components/common/reveal";
+import { Container } from "@/components/layout";
 
 export function BookmarksView() {
   const store = useConversationStore();
   const bookmarks = store.getBookmarkedMessages();
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-5 pt-28 pb-24 sm:px-8 lg:pt-32">
+    <Container size="narrow" gutter="page">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
@@ -87,6 +88,6 @@ export function BookmarksView() {
           ))
         )}
       </div>
-    </div>
+    </Container>
   );
 }

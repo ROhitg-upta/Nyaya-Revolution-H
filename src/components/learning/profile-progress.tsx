@@ -8,6 +8,7 @@ import { ProgressRing } from "@/components/learning/progress-ring";
 import { StatTile } from "@/components/learning/stat-tile";
 import { WeeklyActivity } from "@/components/learning/weekly-activity";
 import { Reveal } from "@/components/common/reveal";
+import { Container } from "@/components/layout";
 import { journeys, learnRoutes, learnerProfile, routes } from "@/constants";
 import {
   ArrowLeft,
@@ -26,7 +27,7 @@ export function ProfileProgress() {
   const levelPct = Math.round((p.xpIntoLevel / p.xpForLevel) * 100);
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-5 pt-28 pb-24 sm:px-8 lg:pt-32">
+    <Container size="narrow" gutter="page" className="flex flex-col gap-10">
       {/* Back */}
       <Link
         href={routes.learn}
@@ -246,6 +247,6 @@ export function ProfileProgress() {
           </div>
         </section>
       </Reveal>
-    </div>
+    </Container>
   );
 }

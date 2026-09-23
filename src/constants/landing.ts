@@ -329,33 +329,35 @@ export const footerLinkGroups: FooterLinkGroup[] = [
   {
     title: "Learn",
     links: [
-      { label: "Categories", href: "#categories" },
-      { label: "Real situations", href: "#situations" },
-      { label: "How it works", href: "#how-it-works" },
+      { label: "Real Situations", href: "/situations" },
+      { label: "Learning Journeys", href: "/learn" },
+      { label: "Scenario Simulator", href: "/learn/scenarios" },
+      { label: "My Knowledge", href: "/learn/knowledge" },
     ],
   },
   {
-    title: "Product",
+    title: "Knowledge",
+    links: [
+      { label: "Constitution & Acts", href: "/laws" },
+      { label: "Landmark Cases", href: "/case-studies" },
+      { label: "Citizen Glossary", href: "/glossary" },
+      { label: "AI Guidance", href: "/ai" },
+    ],
+  },
+  {
+    title: "Explore",
     links: [
       { label: "Features", href: "#features" },
+      { label: "How It Works", href: "#how-it-works" },
       { label: "FAQ", href: "#faq" },
-      { label: "Community", href: "#" },
     ],
   },
   {
-    title: "Company",
+    title: "Account",
     links: [
-      { label: "About", href: "#" },
-      { label: "Mission", href: "#" },
-      { label: "Contact", href: "#" },
-    ],
-  },
-  {
-    title: "Legal",
-    links: [
-      { label: "Privacy", href: "#" },
-      { label: "Terms", href: "#" },
-      { label: "Disclaimer", href: "#" },
+      { label: "Search", href: "/search" },
+      { label: "Learner Profile", href: "/learn/profile" },
+      { label: "Sign In", href: "/sign-in" },
     ],
   },
 ];

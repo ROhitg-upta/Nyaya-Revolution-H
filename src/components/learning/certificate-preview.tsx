@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import { Container } from "@/components/layout";
 import {
   getJourney,
   learnRoutes,
@@ -28,7 +29,7 @@ export function CertificatePreview({ journeySlug }: CertificatePreviewProps) {
   });
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col items-center gap-8 px-5 pt-28 pb-24 sm:px-8 lg:pt-32">
+    <Container size="narrow" gutter="page" className="flex flex-col items-center gap-8">
       {/* Celebration header */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
@@ -148,6 +149,6 @@ export function CertificatePreview({ journeySlug }: CertificatePreviewProps) {
           </Button>
         </Link>
       </div>
-    </div>
+    </Container>
   );
 }

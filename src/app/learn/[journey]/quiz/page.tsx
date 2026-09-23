@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { Quiz } from "@/components/learning";
+import { Container } from "@/components/layout";
 import { getJourney, journeys } from "@/constants";
 import { Target } from "@/lib/icons";
 
@@ -24,7 +25,7 @@ export default async function QuizPage({ params }: Params) {
   if (!item) notFound();
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-5 pt-28 pb-24 sm:px-8 lg:pt-32">
+    <Container size="narrow" gutter="page">
       <div className="mb-8 flex flex-col items-center gap-3 text-center">
         <div className="bg-brand/12 flex size-12 items-center justify-center rounded-2xl">
           <Target className="text-brand size-6" />
@@ -41,6 +42,6 @@ export default async function QuizPage({ params }: Params) {
       </div>
 
       <Quiz journeySlug={journey} />
-    </div>
+    </Container>
   );
 }

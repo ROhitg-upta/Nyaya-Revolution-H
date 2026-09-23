@@ -18,9 +18,9 @@ import {
   quickTopics,
   welcomeMessage,
 } from "@/constants/ai";
-import { siteConfig } from "@/constants";
 import { useConversationStore } from "@/hooks/use-conversation-store";
 import { Reveal } from "@/components/common/reveal";
+import { Container } from "@/components/layout";
 
 export function AIHome() {
   const router = useRouter();
@@ -38,7 +38,7 @@ export function AIHome() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-5 pt-28 pb-24 sm:px-8 lg:pt-32">
+    <Container size="default" gutter="page">
       {/* Hero */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
@@ -233,6 +233,6 @@ export function AIHome() {
       <p className="text-muted-foreground/50 mt-12 text-center text-xs">
         {welcomeMessage.disclaimer}
       </p>
-    </div>
+    </Container>
   );
 }

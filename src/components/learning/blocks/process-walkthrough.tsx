@@ -18,7 +18,7 @@ export function ProcessWalkthroughBlock({ steps }: ProcessWalkthroughProps) {
 
       {steps.map((step, idx) => (
         <motion.div
-          key={step.stepNumber || idx}
+          key={`step-${step.stepNumber}-${idx}`}
           initial={{ opacity: 0, x: -10 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}

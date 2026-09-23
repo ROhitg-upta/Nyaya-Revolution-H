@@ -31,7 +31,7 @@ export function ActionChecklist({ items }: ActionChecklistProps) {
         {items.map((item, index) => {
           const checked = done.has(index);
           return (
-            <li key={item}>
+            <li key={`${item}-${index}`}>
               <button
                 type="button"
                 aria-pressed={checked}

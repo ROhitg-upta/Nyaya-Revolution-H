@@ -1,6 +1,7 @@
+import Link from "next/link";
 import { Reveal } from "@/components/common/reveal";
 import { Button } from "@/components/ui/button";
-import { siteConfig } from "@/constants";
+import { routes, siteConfig } from "@/constants";
 import { footerLinkGroups } from "@/constants/landing";
 import {
   type LucideIcon,
@@ -48,14 +49,16 @@ export function LandingFooter() {
               Join a movement making legal awareness accessible to every
               citizen.
             </p>
-            <Button
-              size="lg"
-              variant="secondary"
-              className="glow-hover rounded-full px-7"
-            >
-              Start learning free
-              <ArrowRight />
-            </Button>
+            <Link href={routes.learn}>
+              <Button
+                size="lg"
+                variant="secondary"
+                className="glow-hover rounded-full px-7"
+              >
+                Start learning free
+                <ArrowRight />
+              </Button>
+            </Link>
           </div>
         </Reveal>
       </div>
@@ -98,12 +101,21 @@ export function LandingFooter() {
               <ul className="flex flex-col gap-2.5">
                 {group.links.map((link) => (
                   <li key={link.label}>
-                    <a
-                      href={link.href}
-                      className="text-muted-foreground hover:text-foreground text-sm transition-colors"
-                    >
-                      {link.label}
-                    </a>
+                    {link.href.startsWith("/") ? (
+                      <Link
+                        href={link.href}
+                        className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    ) : (
+                      <a
+                        href={link.href}
+                        className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                      >
+                        {link.label}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>

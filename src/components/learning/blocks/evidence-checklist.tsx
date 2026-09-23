@@ -15,7 +15,7 @@ export function EvidenceChecklistBlock({ items }: EvidenceChecklistProps) {
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
       {items.map((item, idx) => (
         <motion.div
-          key={idx}
+          key={`${item.document}-${idx}`}
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}

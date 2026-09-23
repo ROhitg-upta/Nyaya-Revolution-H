@@ -149,7 +149,7 @@ export function SearchView() {
                 <div className="border-border/30 mt-4 flex flex-wrap gap-1.5 border-t pt-3 text-xs">
                   {item.tags.map((tag, i) => (
                     <span
-                      key={i}
+                      key={`${tag}-${i}`}
                       className="bg-muted text-muted-foreground rounded px-2 py-0.5 text-[11px]"
                     >
                       #{tag}

@@ -12,8 +12,8 @@ export function PointList({ items, tone = "positive" }: PointListProps) {
   const danger = tone === "danger";
   return (
     <ul className="flex flex-col gap-3">
-      {items.map((item) => (
-        <li key={item} className="flex items-start gap-3">
+      {items.map((item, idx) => (
+        <li key={`${item}-${idx}`} className="flex items-start gap-3">
           <span
             className={cn(
               "mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full",

@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -45,12 +46,12 @@ export function SignInForm() {
       footer={
         <>
           New to Nyaya Revolution?{" "}
-          <a
+          <Link
             href={routes.signUp}
             className="text-brand font-medium hover:underline"
           >
             Create an account
-          </a>
+          </Link>
         </>
       }
     >
@@ -87,12 +88,12 @@ export function SignInForm() {
             error={errors.password?.message}
             {...register("password")}
           />
-          <a
+          <Link
             href={routes.forgotPassword}
             className="text-muted-foreground hover:text-foreground self-end text-xs"
           >
             Forgot password?
-          </a>
+          </Link>
         </div>
 
         <Button

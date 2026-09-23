@@ -234,7 +234,7 @@ export function GlossaryView() {
                         <strong className="text-foreground">Codified in: </strong>
                         {term.relatedLaws.map((law, i) => (
                           <span
-                            key={i}
+                            key={`${law}-${i}`}
                             className="bg-brand/10 text-brand rounded px-2 py-0.5 font-medium"
                           >
                             {law}

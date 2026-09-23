@@ -34,6 +34,7 @@ import {
 } from "@/components/learning/blocks";
 import { ModeSelector } from "@/components/learning/mode-selector";
 import { ContentDiscovery } from "@/components/common/content-discovery";
+import { Container } from "@/components/layout";
 import {
   ArrowLeft,
   ArrowRight,
@@ -143,7 +144,7 @@ export function LessonReader({ journeySlug, lessonSlug }: LessonReaderProps) {
         />
       </div>
 
-      <div className="mx-auto flex w-full max-w-7xl gap-6 px-5 pt-28 pb-24 sm:px-8 lg:pt-32">
+      <Container size="wide" gutter="page" className="flex gap-6">
         {/* Sidebar */}
         <LessonSidebar
           journeySlug={journeySlug}
@@ -624,7 +625,7 @@ export function LessonReader({ journeySlug, lessonSlug }: LessonReaderProps) {
             deeperLabel="Article 21 & Due Process"
             practiceHref="/learn/scenarios/pg-deposit-refusal"
             practiceLabel="Deposit Recovery Simulation"
-            precedentHref="/case-studies/puttaswamy-privacy-2017"
+            precedentHref="/case-studies/puttaswamy-v-union-of-india-2017"
             precedentLabel="Puttaswamy (2017) Judgment"
           />
 
@@ -658,7 +659,7 @@ export function LessonReader({ journeySlug, lessonSlug }: LessonReaderProps) {
             )}
           </div>
         </article>
-      </div>
+      </Container>
     </>
   );
 }
