@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { authService } from "@/services/auth";
 import type {
   AuthResult,
@@ -44,6 +45,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setSession(s);
       setStatus(s ? "authenticated" : "unauthenticated");
     });
+
+    const supabase = getSupabaseBrowserClient();
+    if (supabase) {
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((_event, supabaseSession) => {
+        if (!active) return;
+        if (supabaseSession) {
+          setSession({
+            user: {
+              id: supabaseSession.user.id,
+              email: supabaseSession.user.email ?? "",
+              name:
+                (supabaseSession.user.user_metadata?.full_name as string) ??
+                (supabaseSession.user.user_metadata?.name as string) ??
+                undefined,
+              emailVerified: !!supabaseSession.user.email_confirmed_at,
+            },
+            accessToken: supabaseSession.access_token,
+          });
+          setStatus("authenticated");
+        } else {
+          setSession(null);
+          setStatus("unauthenticated");
+        }
+      });
+
+      return () => {
+        active = false;
+        subscription.unsubscribe();
+      };
+    }
+
     return () => {
       active = false;
     };

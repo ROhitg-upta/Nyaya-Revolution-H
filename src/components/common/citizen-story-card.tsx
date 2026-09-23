@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toggleStoryHelpfulAction } from "@/actions/community.actions";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Bookmark, CheckCircle2, HeartHandshake } from "@/lib/icons";
@@ -22,6 +23,7 @@ export interface CitizenStory {
   timeAgo: string;
 }
 
+
 export interface CitizenStoryCardProps {
   story: CitizenStory;
   className?: string;
@@ -34,11 +36,12 @@ export function CitizenStoryCard({ story, className }: CitizenStoryCardProps) {
 
   const toggleHelpful = () => {
     if (helpful) {
-      setCount((c) => c - 1);
+      setCount((c) => Math.max(0, c - 1));
       setHelpful(false);
     } else {
       setCount((c) => c + 1);
       setHelpful(true);
+      void toggleStoryHelpfulAction(story.id);
     }
   };
 

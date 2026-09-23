@@ -14,8 +14,9 @@ import {
 } from "@/components/ui/sheet";
 import { routes, siteConfig } from "@/constants";
 import { navLinks } from "@/constants/landing";
-import { Menu, Scale } from "@/lib/icons";
+import { LogOut, Menu, Scale, User } from "@/lib/icons";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/providers/auth-provider";
 
 function Logo() {
   return (
@@ -36,6 +37,8 @@ function Logo() {
 export function LandingNavbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { user, status, signOut } = useAuth();
+  const isAuthenticated = status === "authenticated";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -71,12 +74,46 @@ export function LandingNavbar() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <Link href={routes.signIn} className="hidden md:inline-flex">
-            <Button className="glow-hover rounded-full px-5" size="sm">
-              Log in
-            </Button>
-          </Link>
 
+          {/* Authenticated State vs Log In (Desktop) */}
+          {isAuthenticated ? (
+            <div className="hidden items-center gap-2 md:inline-flex">
+              <Link href={routes.learnProfile}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="glass flex items-center gap-2 rounded-full px-3 text-xs font-medium"
+                >
+                  <span className="bg-brand/20 text-brand flex size-5 items-center justify-center rounded-full text-[10px] font-bold">
+                    {user?.name?.[0]?.toUpperCase() ||
+                      user?.email?.[0]?.toUpperCase() ||
+                      "C"}
+                  </span>
+                  <span className="max-w-[120px] truncate">
+                    {user?.name || user?.email?.split("@")[0] || "Profile"}
+                  </span>
+                </Button>
+              </Link>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => signOut()}
+                className="text-muted-foreground hover:text-foreground size-8 p-0"
+                title="Sign out"
+              >
+                <LogOut className="size-4" />
+                <span className="sr-only">Sign out</span>
+              </Button>
+            </div>
+          ) : (
+            <Link href={routes.signIn} className="hidden md:inline-flex">
+              <Button className="glow-hover rounded-full px-5" size="sm">
+                Log in
+              </Button>
+            </Link>
+          )}
+
+          {/* Mobile Navigation Drawer */}
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger
               render={
@@ -105,9 +142,44 @@ export function LandingNavbar() {
                     {link.label}
                   </a>
                 ))}
-                <Link href={routes.signIn} onClick={() => setOpen(false)}>
-                  <Button className="mt-3 w-full">Log in</Button>
-                </Link>
+
+                {/* Mobile Drawer Auth Button */}
+                {isAuthenticated ? (
+                  <div className="mt-4 flex flex-col gap-2 border-t border-border/60 pt-3">
+                    <Link
+                      href={routes.learnProfile}
+                      onClick={() => setOpen(false)}
+                      className="w-full"
+                    >
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start gap-2.5 rounded-xl"
+                      >
+                        <User className="size-4 text-brand" />
+                        <span className="truncate">
+                          {user?.name ||
+                            user?.email?.split("@")[0] ||
+                            "My Profile"}
+                        </span>
+                      </Button>
+                    </Link>
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        signOut();
+                        setOpen(false);
+                      }}
+                      className="w-full justify-start gap-2 rounded-xl text-destructive hover:bg-destructive/10"
+                    >
+                      <LogOut className="size-4" />
+                      Sign out
+                    </Button>
+                  </div>
+                ) : (
+                  <Link href={routes.signIn} onClick={() => setOpen(false)}>
+                    <Button className="mt-3 w-full">Log in</Button>
+                  </Link>
+                )}
               </div>
             </SheetContent>
           </Sheet>
@@ -116,3 +188,5 @@ export function LandingNavbar() {
     </header>
   );
 }
+
+export default LandingNavbar;

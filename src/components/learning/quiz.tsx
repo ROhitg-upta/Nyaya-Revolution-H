@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useState } from "react";
-
+import { submitQuizAttemptAction } from "@/actions/quiz.actions";
 import { QuizResultCard } from "@/components/learning/quiz-result-card";
 import { XpToast } from "@/components/learning/xp-toast";
 import { Button } from "@/components/ui/button";
@@ -58,6 +58,14 @@ export function Quiz({ journeySlug }: QuizProps) {
   const handleNext = () => {
     if (index + 1 >= total) {
       setFinished(true);
+      void submitQuizAttemptAction({
+        journeySlug,
+        lessonSlug: "final-quiz",
+        score: correctCount,
+        totalQuestions: total,
+        xpEarned: xp,
+        answers: [],
+      });
       return;
     }
     setIndex((prev) => prev + 1);

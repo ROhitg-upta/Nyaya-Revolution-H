@@ -25,12 +25,20 @@ export const publicEnv = {
     process.env.NEXT_PUBLIC_SITE_URL ??
     process.env.NEXT_PUBLIC_APP_URL ??
     "http://localhost:3000",
+  supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
+  supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
+  isSupabaseConfigured: Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  ),
 } as const;
 
-/** Server-only AI configuration (NOT bundled into the browser). */
+/** Server-only backend configuration (NOT bundled into the browser). */
 export const serverEnv = {
   geminiApiKey: process.env.GEMINI_API_KEY ?? "",
   geminiModel: process.env.GEMINI_MODEL ?? "gemini-2.0-flash",
+  supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY ?? "",
+  databaseUrl: process.env.DATABASE_URL ?? "",
 } as const;
 
 /** Convenience runtime flags. */

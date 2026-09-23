@@ -9,7 +9,7 @@
 import type { LucideIcon } from "@/lib/icons";
 import type { QuizQuestion } from "./learning";
 
-export type VerificationStatus = "draft" | "needs_review" | "verified";
+export type VerificationStatus = "draft" | "needs_review" | "verified" | "published" | "archived";
 
 export interface ContentSource {
   title: string;

@@ -1,3 +1,4 @@
+import { Slot } from "@radix-ui/react-slot";
 import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { cva, type VariantProps } from "class-variance-authority";
 
@@ -53,6 +54,7 @@ const buttonVariants = cva(
 export interface ButtonProps
   extends ButtonPrimitive.Props,
     VariantProps<typeof buttonVariants> {
+  asChild?: boolean;
   isLoading?: boolean;
 }
 
@@ -61,15 +63,32 @@ function Button({
   variant = "default",
   size = "default",
   isLoading = false,
+  asChild = false,
   disabled,
   children,
+  style,
   ...props
 }: ButtonProps) {
+  if (asChild) {
+    const slotStyle = typeof style === "function" ? undefined : style;
+    return (
+      <Slot
+        data-slot="button"
+        className={cn(buttonVariants({ variant, size, className }))}
+        style={slotStyle}
+        {...(props as React.HTMLAttributes<HTMLElement>)}
+      >
+        {children}
+      </Slot>
+    );
+  }
+
   return (
     <ButtonPrimitive
       data-slot="button"
       disabled={disabled || isLoading}
       className={cn(buttonVariants({ variant, size, className }))}
+      style={style}
       {...props}
     >
       {isLoading ? (

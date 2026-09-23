@@ -1,17 +1,22 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import {
+  ImageStreamHero,
+  type StreamImage,
+} from "@/components/ui/image-stream-hero";
 import { routes } from "@/constants";
-import { situations, trustBadges } from "@/constants/landing";
-import { ArrowRight, ChevronDown, Scale, Search, Sparkles } from "@/lib/icons";
+import { trustBadges } from "@/constants/landing";
+import { ArrowRight, ChevronDown, Search, Sparkles } from "@/lib/icons";
 
 const container = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
 };
+
 const item = {
   hidden: { opacity: 0, y: 16 },
   visible: {
@@ -21,229 +26,204 @@ const item = {
   },
 };
 
-/** Floating glass card used in the hero visual composition. */
-function FloatingCard({
-  icon: Icon,
-  title,
-  subtitle,
-  className,
-  delay = 0,
-  float = true,
-}: {
-  icon: typeof Scale;
-  title: string;
-  subtitle: string;
-  className?: string;
-  delay?: number;
-  float?: boolean;
-}) {
-  const reduceMotion = useReducedMotion();
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9, y: 12 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
-      className={className}
-    >
-      <motion.div
-        animate={
-          reduceMotion || !float
-            ? undefined
-            : {
-                y: [0, -10, 0],
-                transition: {
-                  duration: 6,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                },
-              }
-        }
-        className="glass flex items-center gap-3 rounded-2xl p-3.5"
-      >
-        <span className="bg-brand/15 text-brand ring-brand/20 flex size-9 items-center justify-center rounded-xl ring-1">
-          <Icon className="size-4.5" />
-        </span>
-        <div className="flex flex-col">
-          <span className="text-foreground text-sm font-semibold">{title}</span>
-          <span className="text-muted-foreground text-xs">{subtitle}</span>
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-}
-
-function HeroVisual() {
-  const reduceMotion = useReducedMotion();
-  return (
-    <div className="relative hidden h-[30rem] lg:block">
-      {/* Central emblem */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.85 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-      >
-        <div className="bg-brand/20 absolute inset-0 rounded-full blur-3xl" />
-        <motion.div
-          animate={
-            reduceMotion
-              ? undefined
-              : {
-                  y: [0, -14, 0],
-                  transition: {
-                    duration: 7,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  },
-                }
-          }
-          className="glass-strong relative flex size-52 items-center justify-center rounded-[2rem]"
-        >
-          <div className="bg-gradient-brand glow-brand flex size-28 items-center justify-center rounded-3xl">
-            <Scale className="text-primary-foreground size-14" />
-          </div>
-        </motion.div>
-      </motion.div>
-
-      <FloatingCard
-        icon={situations[0].icon}
-        title="Tenant rights"
-        subtitle="Deposit disputes"
-        delay={0.3}
-        className="absolute top-6 -left-2"
-      />
-      <FloatingCard
-        icon={situations[1].icon}
-        title="Cyber fraud"
-        subtitle="Report & recover"
-        delay={0.45}
-        className="absolute top-24 right-0"
-      />
-      <FloatingCard
-        icon={Sparkles}
-        title="AI Tutor"
-        subtitle="Coming soon"
-        delay={0.6}
-        className="absolute bottom-8 left-6"
-      />
-    </div>
-  );
-}
+/** Curated legal & civic situation imagery cycling through the 3D perspective corridor. */
+const HERO_STREAM_IMAGES: StreamImage[] = [
+  {
+    src: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=800&q=80",
+    alt: "Scales of justice symbol of constitutional rights and law",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&w=800&q=80",
+    alt: "Legal library and statutory law references",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1575505586569-646b2ca898fc?auto=format&fit=crop&w=800&q=80",
+    alt: "Pillars of justice neoclassical court architecture",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=800&q=80",
+    alt: "Gavel resting on an open legal statute book",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80",
+    alt: "College students learning campus rights and consumer safety",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80",
+    alt: "Keys to tenant apartment and rental agreement protections",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80",
+    alt: "Cyber fraud protection and digital security lock",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80",
+    alt: "Citizens and legal advocates in collaborative discussion",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1556742049-0a67c5574f73?auto=format&fit=crop&w=800&q=80",
+    alt: "Consumer making digital payment with transaction rights",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80",
+    alt: "Modern civic architecture reflecting rule of law",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80",
+    alt: "Citizen reviewing employment agreement and contract terms",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=800&q=80",
+    alt: "Road transport safety and traffic regulation awareness",
+  },
+];
 
 export function HeroSection() {
   return (
     <section id="top" className="relative isolate overflow-hidden">
-      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 px-5 pt-28 pb-24 sm:px-8 lg:grid-cols-2 lg:pt-36 lg:pb-32">
-        <motion.div
-          variants={container}
-          initial="hidden"
-          animate="visible"
-          className="flex flex-col items-start gap-7 text-left"
-        >
-          <motion.span
-            variants={item}
-            className="glass text-muted-foreground inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium"
-          >
-            <span className="bg-brand size-1.5 animate-pulse rounded-full" />
-            Situation-first legal learning for every citizen
-          </motion.span>
-
-          <motion.h1
-            variants={item}
-            className="text-foreground text-5xl leading-[1.05] font-bold tracking-tight text-balance sm:text-6xl lg:text-7xl"
-          >
-            Understand your{" "}
-            <span className="text-gradient-brand">legal rights</span>, one real
-            situation at a time.
-          </motion.h1>
-
-          <motion.p
-            variants={item}
-            className="text-muted-foreground max-w-xl text-lg leading-relaxed text-pretty"
-          >
-            Nyaya Revolution turns confusing laws into clear, practical guidance
-            — so you always know your rights and your next step.
-          </motion.p>
-
-          {/* Search bar — UI only */}
-          <motion.form
-            variants={item}
-            onSubmit={(event) => event.preventDefault()}
-            role="search"
-            className="glass focus-within:ring-ring/50 flex w-full max-w-xl items-center gap-2 rounded-full p-1.5 pl-4 transition focus-within:ring-2"
-          >
-            <Search className="text-muted-foreground size-5 shrink-0" />
-            <input
-              type="text"
-              aria-label="Search legal situations"
-              placeholder="Try “my landlord won't return my deposit”"
-              className="text-foreground placeholder:text-muted-foreground w-full bg-transparent text-sm outline-none sm:text-base"
-            />
-            <Link href={routes.situations}>
-              <Button
-                type="button"
-                size="lg"
-                className="glow-hover shrink-0 rounded-full"
-              >
-                Explore
-              </Button>
-            </Link>
-          </motion.form>
-
-          <motion.div
-            variants={item}
-            className="flex flex-col items-stretch gap-3 sm:flex-row"
-          >
-            <Link href={routes.signUp}>
-              <Button size="lg" className="glow-hover w-full rounded-full px-6">
-                Start learning free
-                <ArrowRight className="transition-transform group-hover/button:translate-x-0.5" />
-              </Button>
-            </Link>
-            <Link href={routes.situations}>
-              <Button
-                size="lg"
-                variant="outline"
-                className="glass w-full rounded-full px-6"
-              >
-                Explore situations
-              </Button>
-            </Link>
-          </motion.div>
-
-          <motion.ul
-            variants={item}
-            className="text-muted-foreground flex flex-wrap items-center gap-x-6 gap-y-2 text-sm"
-          >
-            {trustBadges.map((badge) => (
-              <li key={badge.label} className="flex items-center gap-1.5">
-                <badge.icon className="text-brand size-4" />
-                {badge.label}
-              </li>
-            ))}
-          </motion.ul>
-        </motion.div>
-
-        <HeroVisual />
-      </div>
-
-      {/* Scroll indicator */}
-      <motion.a
-        href="#categories"
-        aria-label="Scroll to explore"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
-        className="text-muted-foreground hover:text-foreground absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-1 transition-colors sm:flex"
+      <ImageStreamHero
+        images={HERO_STREAM_IMAGES}
+        cards={10}
+        speed={22}
+        axis={50}
+        className="relative flex min-h-[92dvh] w-full items-center justify-center border-b border-border/40 bg-background pt-28 pb-20 sm:pt-36 sm:pb-24 lg:pt-40 lg:pb-32"
       >
-        <span className="text-xs">Scroll to explore</span>
-        <motion.span
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+        {/* Soft radial backdrop to keep typography readable while keeping corridor 3D depth visible on the sides */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse at 50% 50%, var(--color-background) 0%, color-mix(in srgb, var(--color-background) 85%, transparent) 45%, color-mix(in srgb, var(--color-background) 35%, transparent) 100%)",
+          }}
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent"
+        />
+
+        <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center px-5 text-center sm:px-8">
+          <motion.div
+            variants={container}
+            initial="hidden"
+            animate="visible"
+            className="flex flex-col items-center gap-7"
+          >
+            {/* Pill badge */}
+            <motion.span
+              variants={item}
+              className="glass text-muted-foreground inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-medium"
+            >
+              <span className="bg-brand size-1.5 animate-pulse rounded-full" />
+              <Sparkles className="text-brand size-3.5" />
+              Situation-first legal learning for every citizen
+            </motion.span>
+
+            {/* Main Headline */}
+            <motion.h1
+              variants={item}
+              className="text-foreground text-balance text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl"
+            >
+              Understand your{" "}
+              <span className="text-gradient-brand">legal rights</span>,
+              <br />
+              front and centre.
+            </motion.h1>
+
+            {/* Description */}
+            <motion.p
+              variants={item}
+              className="text-muted-foreground max-w-2xl text-balance text-base leading-relaxed sm:text-lg"
+            >
+              Nyaya Revolution turns confusing laws into clear, practical
+              guidance — so you always know your rights and your next step.
+            </motion.p>
+
+            {/* Search bar */}
+            <motion.form
+              variants={item}
+              onSubmit={(event) => event.preventDefault()}
+              role="search"
+              className="glass focus-within:ring-ring/50 flex w-full max-w-xl items-center gap-2 rounded-full p-1.5 pl-4 transition focus-within:ring-2"
+            >
+              <Search className="text-muted-foreground size-5 shrink-0" />
+              <input
+                type="text"
+                aria-label="Search legal situations"
+                placeholder="Try “my landlord won't return my deposit”"
+                className="text-foreground placeholder:text-muted-foreground w-full bg-transparent text-sm outline-none sm:text-base"
+              />
+              <Link href={routes.situations}>
+                <Button
+                  type="button"
+                  size="lg"
+                  className="glow-hover shrink-0 rounded-full"
+                >
+                  Explore
+                </Button>
+              </Link>
+            </motion.form>
+
+            {/* Primary & secondary CTA actions */}
+            <motion.div
+              variants={item}
+              className="flex w-full flex-col items-stretch justify-center gap-3 sm:w-auto sm:flex-row"
+            >
+              <Link href={routes.signUp}>
+                <Button
+                  size="lg"
+                  className="glow-hover w-full rounded-full px-6 sm:w-auto"
+                >
+                  Start learning free
+                  <ArrowRight className="transition-transform group-hover/button:translate-x-0.5" />
+                </Button>
+              </Link>
+              <Link href={routes.situations}>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="glass w-full rounded-full px-6 sm:w-auto"
+                >
+                  Explore situations
+                </Button>
+              </Link>
+            </motion.div>
+
+            {/* Trust badges */}
+            <motion.ul
+              variants={item}
+              className="text-muted-foreground flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm"
+            >
+              {trustBadges.map((badge) => (
+                <li key={badge.label} className="flex items-center gap-1.5">
+                  <badge.icon className="text-brand size-4" />
+                  {badge.label}
+                </li>
+              ))}
+            </motion.ul>
+          </motion.div>
+        </div>
+
+        {/* Scroll indicator */}
+        <motion.a
+          href="#categories"
+          aria-label="Scroll to explore"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+          className="text-muted-foreground hover:text-foreground absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-1 transition-colors sm:flex"
         >
-          <ChevronDown className="size-5" />
-        </motion.span>
-      </motion.a>
+          <span className="text-xs">Scroll to explore</span>
+          <motion.span
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <ChevronDown className="size-5" />
+          </motion.span>
+        </motion.a>
+      </ImageStreamHero>
     </section>
   );
 }
+
+export default HeroSection;

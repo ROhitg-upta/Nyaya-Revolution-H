@@ -17,15 +17,18 @@ import {
   BookOpen,
   Brain,
   Compass,
+  FileText,
   Gavel,
+  LogOut,
   Menu,
   Scale,
   Search,
   Sparkles,
   Target,
-  FileText,
+  User,
 } from "@/lib/icons";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/providers/auth-provider";
 
 const navItems = [
   { label: "Situations", href: routes.situations, icon: Compass },
@@ -41,6 +44,8 @@ const navItems = [
 export function AppHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const { user, status, signOut } = useAuth();
+  const isAuthenticated = status === "authenticated";
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
@@ -81,7 +86,9 @@ export function AppHeader() {
                       active
                         ? "text-brand bg-brand/10 font-semibold"
                         : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
-                      item.highlight && !active && "text-brand/90 hover:text-brand",
+                      item.highlight &&
+                        !active &&
+                        "text-brand/90 hover:text-brand",
                     )}
                   >
                     {item.label}
@@ -111,16 +118,47 @@ export function AppHeader() {
 
           <ThemeToggle />
 
-          {/* Log In (Desktop) */}
-          <Link href={routes.signIn} className="hidden sm:inline-flex">
-            <Button
-              size="sm"
-              variant="default"
-              className="glow-hover rounded-full px-4 text-xs font-semibold"
-            >
-              Log in
-            </Button>
-          </Link>
+          {/* Authenticated State vs Log In (Desktop) */}
+          {isAuthenticated ? (
+            <div className="hidden items-center gap-1.5 sm:inline-flex">
+              <Link href={routes.learnProfile}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="glass flex items-center gap-2 rounded-full px-3 text-xs font-medium"
+                >
+                  <span className="bg-brand/20 text-brand flex size-5 items-center justify-center rounded-full text-[10px] font-bold">
+                    {user?.name?.[0]?.toUpperCase() ||
+                      user?.email?.[0]?.toUpperCase() ||
+                      "C"}
+                  </span>
+                  <span className="max-w-[110px] truncate">
+                    {user?.name || user?.email?.split("@")[0] || "Profile"}
+                  </span>
+                </Button>
+              </Link>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => signOut()}
+                className="text-muted-foreground hover:text-foreground size-8 p-0"
+                title="Sign out"
+              >
+                <LogOut className="size-4" />
+                <span className="sr-only">Sign out</span>
+              </Button>
+            </div>
+          ) : (
+            <Link href={routes.signIn} className="hidden sm:inline-flex">
+              <Button
+                size="sm"
+                variant="default"
+                className="glow-hover rounded-full px-4 text-xs font-semibold"
+              >
+                Log in
+              </Button>
+            </Link>
+          )}
 
           {/* Mobile Drawer Trigger (lg:hidden) */}
           <Sheet open={open} onOpenChange={setOpen}>
@@ -129,21 +167,26 @@ export function AppHeader() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="lg:hidden text-foreground hover:bg-muted"
+                  className="text-foreground hover:bg-muted lg:hidden"
                   aria-label="Open mobile navigation menu"
                 />
               }
             >
               <Menu className="size-5" />
             </SheetTrigger>
-            <SheetContent side="right" className="flex w-72 flex-col justify-between p-6">
+            <SheetContent
+              side="right"
+              className="flex w-72 flex-col justify-between p-6"
+            >
               <div className="flex flex-col gap-6">
                 <SheetHeader className="p-0 text-left">
                   <SheetTitle className="flex items-center gap-2.5">
                     <span className="bg-gradient-brand text-primary-foreground flex size-8 items-center justify-center rounded-lg shadow-sm">
                       <Scale className="size-4" />
                     </span>
-                    <span className="font-bold tracking-tight">{siteConfig.name}</span>
+                    <span className="font-bold tracking-tight">
+                      {siteConfig.name}
+                    </span>
                   </SheetTitle>
                 </SheetHeader>
 
@@ -181,18 +224,56 @@ export function AppHeader() {
               </div>
 
               {/* Bottom Actions inside drawer */}
-              <div className="flex flex-col gap-3 pt-4 border-t border-border/50">
+              <div className="border-border/50 flex flex-col gap-3 border-t pt-4">
                 <Link
                   href={routes.search}
                   onClick={() => setOpen(false)}
-                  className="glass flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-medium text-foreground hover:bg-muted/40 transition-colors"
+                  className="glass text-foreground hover:bg-muted/40 flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-medium transition-colors"
                 >
                   <Search className="size-4" />
                   Search Everything
                 </Link>
-                <Link href={routes.signIn} onClick={() => setOpen(false)} className="w-full">
-                  <Button className="w-full rounded-xl">Log in</Button>
-                </Link>
+
+                {isAuthenticated ? (
+                  <div className="flex flex-col gap-2">
+                    <Link
+                      href={routes.learnProfile}
+                      onClick={() => setOpen(false)}
+                      className="w-full"
+                    >
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start gap-2.5 rounded-xl"
+                      >
+                        <User className="text-brand size-4" />
+                        <span className="truncate">
+                          {user?.name ||
+                            user?.email?.split("@")[0] ||
+                            "My Profile"}
+                        </span>
+                      </Button>
+                    </Link>
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        signOut();
+                        setOpen(false);
+                      }}
+                      className="text-destructive hover:bg-destructive/10 w-full justify-start gap-2 rounded-xl"
+                    >
+                      <LogOut className="size-4" />
+                      Sign out
+                    </Button>
+                  </div>
+                ) : (
+                  <Link
+                    href={routes.signIn}
+                    onClick={() => setOpen(false)}
+                    className="w-full"
+                  >
+                    <Button className="w-full rounded-xl">Log in</Button>
+                  </Link>
+                )}
               </div>
             </SheetContent>
           </Sheet>
@@ -201,3 +282,5 @@ export function AppHeader() {
     </header>
   );
 }
+
+export default AppHeader;
