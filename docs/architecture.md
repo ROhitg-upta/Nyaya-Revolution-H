@@ -136,6 +136,33 @@ Staff/Admin reviews via CMS/Admin Dashboard -> Marks `moderation_status = 'appro
 Public queries now return approved story via GIN-indexed feed
 ```
 
+### 3.3 Grounded AI Learning Engine Data Flow (RAG)
+```
+Citizen Question (Natural / Hindi / Hinglish)
+         │
+         ▼
+`QueryNormalizer` -> Canonical Legal Concepts & Sensitivity Classification
+         │
+         ▼
+`KnowledgeRetrievalService` -> Multi-source Lexical & FTS Retrieval across:
+  ├── `law_articles` (Constitutional guarantees)
+  ├── `situations` (500+ citizen action plans)
+  ├── `case_studies` (Supreme Court ratio decidendi)
+  └── `statutory_acts` (Central Acts & remedies)
+         │
+         ▼
+`ContextBuilder` -> Token-budgeted context with [SOURCE-N] citation anchors
+         │
+         ▼
+`GeminiClient` (Server-only GEMINI_API_KEY) -> Structured JSON generation
+         │
+         ▼
+`StructuredResponseValidator` -> Zod validation, markdown stripping & safe fallback
+         │
+         ├── Returns validated `AILearningResponse` with verified sources
+         └── Appends conversation/message in Supabase `ai_conversations` (RLS protected)
+```
+
 ---
 
 ## 4. Multi-Tenant User Isolation & Row-Level Security

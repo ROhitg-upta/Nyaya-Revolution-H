@@ -86,3 +86,76 @@ export type CitizenStoryValues = z.infer<typeof citizenStorySchema>;
 export type ProgressUpdateValues = z.infer<typeof progressUpdateSchema>;
 export type BookmarkValues = z.infer<typeof bookmarkSchema>;
 export type ContentFeedbackValues = z.infer<typeof contentFeedbackSchema>;
+
+export const aiQuerySchema = z.object({
+  query: z.string().min(2, "Query must be at least 2 characters").max(1500, "Query cannot exceed 1500 characters"),
+  responseMode: z.enum(["eli15", "detailed", "legal", "summary", "step-by-step"]).default("eli15"),
+  situationSlug: z.string().optional(),
+  journeySlug: z.string().optional(),
+  lessonSlug: z.string().optional(),
+});
+
+export const aiSourceReferenceSchema = z.object({
+  id: z.string(),
+  type: z.enum(["article", "situation", "case_study", "act", "lesson", "glossary"]),
+  title: z.string(),
+  citationOrSection: z.string().optional(),
+  publisher: z.string().optional(),
+  url: z.string().optional(),
+  verificationStatus: z.enum(["verified", "published"]).default("verified"),
+  relevanceScore: z.number().optional(),
+});
+
+export const aiLearningResponseSchema = z.object({
+  summary: z.string().min(5),
+  explanation: z.string().optional(),
+  keyPoints: z.array(z.string()).optional().default([]),
+  relevantConcepts: z.array(z.string()).optional().default([]),
+  suggestedLessons: z
+    .array(
+      z.object({
+        title: z.string(),
+        journeySlug: z.string(),
+        lessonSlug: z.string(),
+      })
+    )
+    .optional()
+    .default([]),
+  possibleNextSteps: z.array(z.string()).optional().default([]),
+  thingsToKeepInMind: z.array(z.string()).optional().default([]),
+  practiceQuestion: z
+    .object({
+      question: z.string(),
+      options: z.array(z.string()),
+      correctIndex: z.number().int().min(0),
+      explanation: z.string(),
+      xp: z.number().int().optional().default(25),
+    })
+    .optional(),
+  sources: z.array(aiSourceReferenceSchema).default([]),
+  educationalNotice: z.string().optional(),
+  isSensitive: z.boolean().optional().default(false),
+  professionalHelpRecommended: z.boolean().optional().default(false),
+});
+
+export const explainConceptSchema = z.object({
+  conceptOrSlug: z.string().min(2),
+  detailLevel: z.enum(["beginner", "intermediate", "deep_dive"]).default("beginner"),
+});
+
+export const simplifyLessonSchema = z.object({
+  journeySlug: z.string().min(1),
+  lessonSlug: z.string().min(1),
+  targetLevel: z.enum(["citizen_basic", "student", "practical"]).default("citizen_basic"),
+});
+
+export const generateScenarioSchema = z.object({
+  conceptSlug: z.string().min(1),
+  difficulty: z.enum(["beginner", "intermediate", "advanced"]).default("beginner"),
+});
+
+export type AIQueryValues = z.infer<typeof aiQuerySchema>;
+export type AILearningResponseValues = z.infer<typeof aiLearningResponseSchema>;
+export type ExplainConceptValues = z.infer<typeof explainConceptSchema>;
+export type SimplifyLessonValues = z.infer<typeof simplifyLessonSchema>;
+export type GenerateScenarioValues = z.infer<typeof generateScenarioSchema>;

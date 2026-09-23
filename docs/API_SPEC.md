@@ -168,6 +168,27 @@ Allows citizens or legal professionals to report factual issues, typos, or outda
 
 ---
 
+### 2.4 AI Learning Engine Actions (`src/actions/ai.actions.ts`)
+
+#### `askAILearningEngineAction(rawInput: AIQueryValues): Promise<ActionResult<AILearningResponse>>`
+Performs normalized query analysis, verified knowledge retrieval, and grounded Gemini 2.0 reasoning.
+- **Input:** `{ query: string, responseMode?: "eli15" | "detailed" | "legal" | "summary" | "step-by-step" }`
+- **Output:** Validated `AILearningResponse` with summary, keyPoints, legal concepts, practice question, and `sources` array.
+
+#### `explainConceptAction(rawInput: ExplainConceptValues): Promise<ActionResult<AILearningResponse>>`
+Generates beginner or intermediate explanations for legal doctrines and articles.
+
+#### `simplifyLessonAction(rawInput: SimplifyLessonValues): Promise<ActionResult<AILearningResponse>>`
+Synthesizes dense statutory lesson content into citizen takeaways and myth checks.
+
+#### `getRecommendationsAction(context?: RecommendationContext): Promise<ActionResult<LearningRecommendation[]>>`
+Deterministic and situation-driven recommendations for next lessons and practice scenarios.
+
+#### `generatePracticeScenarioAction(rawInput: GenerateScenarioValues): Promise<ActionResult<GeneratedScenarioResult>>`
+Creates 4-option practice scenarios. Automatically marked as `governanceStatus: "draft"` awaiting human review.
+
+---
+
 ## 3. Data Service Contracts (`src/services/db/`)
 
 ### 3.1 `SituationsService`

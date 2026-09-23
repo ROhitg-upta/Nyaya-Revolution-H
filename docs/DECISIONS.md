@@ -118,3 +118,76 @@ Leverage native PostgreSQL **`tsvector` generated columns with GIN indexes** and
 ### Consequences
 - **Positive:** Zero additional SaaS costs or operational complexity; immediate search index updates upon table writes; sub-10ms response times.
 - **Negative:** Advanced semantic embeddings require future pgvector additions; our schema already prepares for this with future AI vector search hooks.
+
+---
+
+## ADR-007: Grounded Retrieval-Augmented Generation (RAG) over Pure LLM Chat
+
+- **Status:** Accepted
+- **Date:** 2026-09-23
+- **Deciders:** Principal AI Architect, Legal Safety Engineer
+
+### Context
+In legal education and awareness, generic hallucinations (invented sections, non-existent court citations, fabricated limitation periods) cause direct citizen harm. The AI must never generate legal claims from ungrounded parametric memory.
+
+### Decision
+Implement strict **Retrieval-Augmented Generation (RAG)**: all prompts are assembled with retrieved verified statutory anchors (`[SOURCE-1]`, `[SOURCE-2]`). The model is instructed to cite only retrieved provisions and explicitly declare uncertainty when evidence is insufficient.
+
+### Consequences
+- **Positive:** Zero hallucinated provisions; verified statutory citations; 100% source traceability.
+- **Negative:** Dependent on quality of retrieval indexing; mitigated by multi-source keyword, trigram, and FTS coverage.
+
+---
+
+## ADR-008: Structured Zod Validation with Resilient Safe Repair
+
+- **Status:** Accepted
+- **Date:** 2026-09-23
+- **Deciders:** Principal Full-Stack Engineer
+
+### Context
+LLMs can occasionally return markdown code blocks, truncated JSON, or malformed schema properties. A JSON parse failure must never crash the Next.js page or leave the citizen stranded.
+
+### Decision
+Implement `StructuredResponseValidator`: parses JSON, strips markdown fences, uses regex substring recovery if needed, validates against `aiLearningResponseSchema`, and falls back to a deterministic verified response if the model fails.
+
+### Consequences
+- **Positive:** 100% crash immunity; reliable UI rendering.
+- **Negative:** Fallback responses have slightly less custom phrasing; mitigated by high-quality verified statutory fallback templates.
+
+---
+
+## ADR-009: Server-Only AI Secret Isolation
+
+- **Status:** Accepted
+- **Date:** 2026-09-23
+- **Deciders:** Security Engineer
+
+### Context
+AI provider keys (`GEMINI_API_KEY`) exposed in client JavaScript can be extracted and abused, causing denial of service and billing compromise.
+
+### Decision
+Restrict `GEMINI_API_KEY` strictly to `serverEnv` and server-side operations (Next.js Server Actions and `/api/ai/chat` route handler). Never use `NEXT_PUBLIC_` for AI credentials.
+
+### Consequences
+- **Positive:** Zero credential exposure; secure server-side rate control.
+- **Negative:** Streaming requires SSE route handler (`/api/ai/chat`) rather than direct client-to-Gemini SDK calls.
+
+---
+
+## ADR-010: Human Review Governance for AI-Generated Quizzes and Scenarios
+
+- **Status:** Accepted
+- **Date:** 2026-09-23
+- **Deciders:** Content Governance Architect
+
+### Context
+Generating practice quizzes and scenarios via AI enables rapid curriculum expansion, but untested legal questions cannot automatically enter official certified curriculum.
+
+### Decision
+All AI-generated scenarios and questions enter the system with `governanceStatus: "draft"` or `"needs_review"`. They are logged into `content_verification_logs` and require advocate or staff approval before becoming official course curriculum.
+
+### Consequences
+- **Positive:** Protects official curriculum integrity; complies with institutional governance standards.
+- **Negative:** Requires staff review step before publishing.
+

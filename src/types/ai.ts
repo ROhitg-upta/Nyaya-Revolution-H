@@ -140,3 +140,90 @@ export interface PromptContext {
   currentQuestion: string;
   situationSlug?: string;
 }
+
+export interface AISourceReference {
+  id: string;
+  type: "article" | "situation" | "case_study" | "act" | "lesson" | "glossary";
+  title: string;
+  citationOrSection?: string;
+  publisher?: string;
+  url?: string;
+  verificationStatus: "verified" | "published";
+  relevanceScore?: number;
+}
+
+export interface SituationClassification {
+  categoryIds: string[];
+  conceptIds: string[];
+  situationType?: string;
+  confidence?: number;
+  missingContext?: string[];
+  isSensitive?: boolean;
+}
+
+export interface AILearningResponse {
+  summary: string;
+  explanation?: string;
+  keyPoints?: string[];
+  relevantConcepts?: string[];
+  suggestedLessons?: {
+    title: string;
+    journeySlug: string;
+    lessonSlug: string;
+  }[];
+  possibleNextSteps?: string[];
+  thingsToKeepInMind?: string[];
+  practiceQuestion?: {
+    question: string;
+    options: string[];
+    correctIndex: number;
+    explanation: string;
+    xp?: number;
+  };
+  sources: AISourceReference[];
+  educationalNotice?: string;
+  isSensitive?: boolean;
+  professionalHelpRecommended?: boolean;
+}
+
+export interface LearningRecommendation {
+  type: "next_lesson" | "revision" | "practice_quiz" | "scenario";
+  title: string;
+  description: string;
+  journeySlug: string;
+  lessonSlug?: string;
+  quizSlug?: string;
+  rationale: string;
+  xpReward?: number;
+}
+
+export interface PracticeScenario {
+  id: string;
+  title: string;
+  concept: string;
+  statutoryBacking?: string;
+  situationText: string;
+  options: {
+    id: string;
+    text: string;
+    isRecommended: boolean;
+    rationale: string;
+  }[];
+  learningTakeaway: string;
+  governanceStatus: "draft" | "needs_review" | "approved";
+}
+
+export interface RetrievedKnowledgeItem {
+  id: string;
+  type: "article" | "situation" | "case_study" | "act" | "lesson" | "glossary";
+  title: string;
+  slug: string;
+  snippet: string;
+  fullText?: string;
+  category?: string;
+  citation?: string;
+  publisher?: string;
+  url?: string;
+  verificationStatus: "verified" | "published";
+  score: number;
+}

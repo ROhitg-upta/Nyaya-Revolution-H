@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import type {
+  AIStreamChunk,
   ChatMessage,
   FollowUpSuggestion,
   PromptContext,
@@ -11,7 +12,7 @@ import type {
 } from "@/types";
 import { MockAIService } from "@/services/ai/mock-ai-service";
 
-const aiService = new MockAIService();
+const fallbackAiService = new MockAIService();
 
 interface UseChatOptions {
   conversationId?: string;
@@ -19,6 +20,51 @@ interface UseChatOptions {
   messages: ChatMessage[];
   onAddMessage: (msg: Omit<ChatMessage, "id" | "timestamp">) => ChatMessage;
   onUpdateAssistant: (update: Partial<ChatMessage>) => void;
+}
+
+async function* fetchChatStream(
+  message: string,
+  responseMode: ResponseModeId,
+  history: ChatMessage[],
+  signal: AbortSignal
+): AsyncIterable<AIStreamChunk> {
+  const res = await fetch("/api/ai/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message, responseMode, conversationHistory: history }),
+    signal,
+  });
+
+  if (!res.ok || !res.body) {
+    throw new Error(`Chat API error: ${res.status}`);
+  }
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder("utf-8");
+  let buffer = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split("\n");
+    buffer = lines.pop() ?? "";
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (trimmed.startsWith("data: ")) {
+        const dataStr = trimmed.slice(6);
+        if (dataStr === "[DONE]") return;
+        try {
+          const chunk: AIStreamChunk = JSON.parse(dataStr);
+          yield chunk;
+        } catch {
+          // Ignore partial JSON
+        }
+      }
+    }
+  }
 }
 
 export function useChat({
@@ -31,27 +77,25 @@ export function useChat({
   const [streamedContent, setStreamedContent] = useState("");
   const [structured, setStructured] = useState<StructuredResponse | null>(null);
   const [followUps, setFollowUps] = useState<FollowUpSuggestion[]>([]);
-  const abortRef = useRef(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const sendMessage = useCallback(
     async (content: string) => {
       if (!content.trim() || isStreaming) return;
 
-      abortRef.current = false;
+      abortControllerRef.current = new AbortController();
       setIsStreaming(true);
       setStreamedContent("");
       setStructured(null);
       setFollowUps([]);
 
       onAddMessage({ role: "user", content: content.trim() });
-
       onAddMessage({
         role: "assistant",
         content: "",
       });
 
       const userContext: UserContext = {};
-
       const ctx: PromptContext = {
         systemPrompt: "",
         userContext,
@@ -65,30 +109,60 @@ export function useChat({
       let latestFollowUps: FollowUpSuggestion[] = [];
 
       try {
-        const stream = aiService.streamMessage(ctx);
+        let streamReceived = false;
 
-        for await (const chunk of stream) {
-          if (abortRef.current) break;
+        try {
+          const sseStream = fetchChatStream(
+            content.trim(),
+            responseMode,
+            messages,
+            abortControllerRef.current.signal
+          );
 
-          switch (chunk.type) {
-            case "text":
-              fullContent += chunk.content ?? "";
-              setStreamedContent(fullContent);
-              break;
-            case "structured":
-              latestStructured = chunk.structured ?? null;
-              setStructured(latestStructured);
-              break;
-            case "follow-ups":
-              latestFollowUps = chunk.followUps ?? [];
-              setFollowUps(latestFollowUps);
-              break;
-            case "done":
-              break;
-            case "error":
-              fullContent += `\n\n**Error:** ${chunk.error}`;
-              setStreamedContent(fullContent);
-              break;
+          for await (const chunk of sseStream) {
+            streamReceived = true;
+            switch (chunk.type) {
+              case "text":
+                fullContent += chunk.content ?? "";
+                setStreamedContent(fullContent);
+                break;
+              case "structured":
+                latestStructured = chunk.structured ?? null;
+                setStructured(latestStructured);
+                break;
+              case "follow-ups":
+                latestFollowUps = chunk.followUps ?? [];
+                setFollowUps(latestFollowUps);
+                break;
+              case "done":
+                break;
+              case "error":
+                fullContent += `\n\n*Notice:* ${chunk.error}`;
+                setStreamedContent(fullContent);
+                break;
+            }
+          }
+        } catch (apiErr) {
+          // If server SSE fails or is aborted early, fall back to offline mock service
+          if (!streamReceived) {
+            console.warn("API route stream unavailable, using grounded fallback service:", apiErr);
+            const fallbackStream = fallbackAiService.streamMessage(ctx);
+            for await (const chunk of fallbackStream) {
+              switch (chunk.type) {
+                case "text":
+                  fullContent += chunk.content ?? "";
+                  setStreamedContent(fullContent);
+                  break;
+                case "structured":
+                  latestStructured = chunk.structured ?? null;
+                  setStructured(latestStructured);
+                  break;
+                case "follow-ups":
+                  latestFollowUps = chunk.followUps ?? [];
+                  setFollowUps(latestFollowUps);
+                  break;
+              }
+            }
           }
         }
 
@@ -100,17 +174,20 @@ export function useChat({
       } catch {
         onUpdateAssistant({
           content:
-            fullContent || "I'm sorry, something went wrong. Please try again.",
+            fullContent || "Unable to complete request. Please review verified statutes or try again.",
         });
       } finally {
         setIsStreaming(false);
+        abortControllerRef.current = null;
       }
     },
-    [isStreaming, messages, responseMode, onAddMessage, onUpdateAssistant],
+    [isStreaming, messages, responseMode, onAddMessage, onUpdateAssistant]
   );
 
   const stopStreaming = useCallback(() => {
-    abortRef.current = true;
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
   }, []);
 
   return {
