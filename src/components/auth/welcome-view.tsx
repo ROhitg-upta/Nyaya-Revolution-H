@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { routes, siteConfig } from "@/constants";
@@ -53,13 +54,13 @@ export function WelcomeView() {
       </div>
 
       <motion.div variants={item} className="flex w-full flex-col gap-3">
-        <a href={routes.signUp} className="w-full">
+        <Link href={routes.signUp} className="w-full">
           <Button size="lg" className="glow-hover w-full rounded-xl">
             Create your account
             <ArrowRight />
           </Button>
-        </a>
-        <a href={routes.signIn} className="w-full">
+        </Link>
+        <Link href={routes.signIn} className="w-full">
           <Button
             size="lg"
             variant="outline"
@@ -67,16 +68,17 @@ export function WelcomeView() {
           >
             I already have an account
           </Button>
-        </a>
+        </Link>
       </motion.div>
 
-      <motion.a
-        variants={item}
-        href={routes.home}
-        className="text-muted-foreground hover:text-foreground text-sm"
-      >
-        Explore without an account
-      </motion.a>
+      <motion.div variants={item}>
+        <Link
+          href={routes.home}
+          className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+        >
+          Explore without an account
+        </Link>
+      </motion.div>
 
       <motion.ul
         variants={item}

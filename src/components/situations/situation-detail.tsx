@@ -36,6 +36,7 @@ import {
   ShieldCheck,
   Siren,
 } from "@/lib/icons";
+import { Container } from "@/components/layout";
 
 export function SituationDetail({ slug }: { slug: string }) {
   const situation = getSituation(slug);
@@ -45,14 +46,14 @@ export function SituationDetail({ slug }: { slug: string }) {
   const cases = getRelatedCaseStudiesForSituation(slug);
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-5 pt-28 pb-24 sm:px-8 lg:pt-32">
-      <a
+    <Container size="default" gutter="page">
+      <Link
         href={routes.situations}
-        className="text-muted-foreground hover:text-foreground mb-6 inline-flex items-center gap-1.5 text-sm"
+        className="text-muted-foreground hover:text-foreground mb-6 inline-flex items-center gap-1.5 text-sm transition-colors"
       >
         <ArrowLeft className="size-4" />
         All situations
-      </a>
+      </Link>
 
       {/* Header */}
       <header className="glass-strong relative overflow-hidden rounded-3xl p-8 sm:p-10">
@@ -250,6 +251,6 @@ export function SituationDetail({ slug }: { slug: string }) {
       <p className="text-muted-foreground/60 mt-12 text-center text-xs">
         {situationDisclaimer}
       </p>
-    </div>
+    </Container>
   );
 }

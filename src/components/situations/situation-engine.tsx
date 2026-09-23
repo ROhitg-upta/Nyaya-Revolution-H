@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "motion/react";
 import { useState } from "react";
 
 import { EmptyState } from "@/components/common/empty-state";
@@ -16,6 +15,8 @@ import {
 } from "@/constants";
 import { Search, Sparkles } from "@/lib/icons";
 import type { SituationCategoryId } from "@/types";
+
+import { Container, PageHeader } from "@/components/layout";
 
 export function SituationEngine() {
   const [query, setQuery] = useState("");
@@ -35,44 +36,19 @@ export function SituationEngine() {
   });
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-5 pt-28 pb-24 sm:px-8 lg:pt-32">
+    <Container size="default" gutter="page">
       {/* Heading + search */}
-      <div className="mx-auto max-w-3xl text-center">
-        <motion.span
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="glass text-muted-foreground mx-auto inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium"
-        >
-          <Sparkles className="text-brand size-3.5" />
-          The Situation Engine
-        </motion.span>
-        <motion.h1
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.05 }}
-          className="text-foreground mt-5 text-4xl font-bold tracking-tight text-balance sm:text-5xl"
-        >
-          What happened with you today?
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.12 }}
-          className="text-muted-foreground mx-auto mt-3 max-w-xl text-base text-pretty sm:text-lg"
-        >
-          Describe your situation in your own words, or pick a category.
-          We&apos;ll show you your rights and exactly what to do next.
-        </motion.p>
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.18 }}
-          className="mt-8"
-        >
-          <SituationSearch value={query} onChange={setQuery} />
-        </motion.div>
-      </div>
+      <PageHeader
+        eyebrow="The Situation Engine"
+        eyebrowIcon={Sparkles}
+        title="What happened with you today?"
+        description="Describe your situation in your own words, or pick a category. We'll show you your rights and exactly what to do next."
+        actions={
+          <div className="w-full max-w-xl mx-auto mt-2">
+            <SituationSearch value={query} onChange={setQuery} />
+          </div>
+        }
+      />
 
       {/* Categories */}
       <div className="mt-14">
@@ -173,6 +149,6 @@ export function SituationEngine() {
       <p className="text-muted-foreground/60 mt-12 text-center text-xs">
         {situationDisclaimer}
       </p>
-    </div>
+    </Container>
   );
 }

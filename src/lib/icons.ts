@@ -144,3 +144,16 @@ export {
   TriangleAlert,
   UserRound,
 } from "lucide-react";
+
+// Aliases for Base UI / Shadcn conventions
+export {
+  Check as CheckIcon,
+  ChevronDown as ChevronDownIcon,
+  ChevronUp as ChevronUpIcon,
+  X as XIcon,
+  CircleCheck as CircleCheckIcon,
+  Info as InfoIcon,
+  TriangleAlert as TriangleAlertIcon,
+  OctagonX as OctagonXIcon,
+  Loader2 as Loader2Icon,
+} from "lucide-react";

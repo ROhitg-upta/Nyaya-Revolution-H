@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { ThemeToggle } from "@/components/common/theme-toggle";
@@ -70,11 +71,11 @@ export function LandingNavbar() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <a href={routes.signIn} className="hidden md:inline-flex">
+          <Link href={routes.signIn} className="hidden md:inline-flex">
             <Button className="glow-hover rounded-full px-5" size="sm">
               Log in
             </Button>
-          </a>
+          </Link>
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger
@@ -104,9 +105,9 @@ export function LandingNavbar() {
                     {link.label}
                   </a>
                 ))}
-                <a href={routes.signIn} onClick={() => setOpen(false)}>
+                <Link href={routes.signIn} onClick={() => setOpen(false)}>
                   <Button className="mt-3 w-full">Log in</Button>
-                </a>
+                </Link>
               </div>
             </SheetContent>
           </Sheet>

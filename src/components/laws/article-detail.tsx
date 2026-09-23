@@ -14,6 +14,7 @@ import {
 import { VerificationBadge } from "@/components/laws/verification-badge";
 import { MiniChallenge } from "@/components/learning/mini-challenge";
 import { getRelatedCaseStudiesForArticle, getRelatedSituationsForArticle } from "@/lib/legal-graph";
+import { Container } from "@/components/layout";
 import type { LawArticle } from "@/types";
 
 interface ArticleDetailProps {
@@ -25,7 +26,7 @@ export function ArticleDetail({ article }: ArticleDetailProps) {
   const relatedCases = getRelatedCaseStudiesForArticle(article.slug);
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-5 pt-28 pb-24 sm:px-8 lg:pt-32">
+    <Container size="narrow" gutter="page">
       {/* Back button */}
       <Link
         href="/laws"
@@ -287,6 +288,6 @@ export function ArticleDetail({ article }: ArticleDetailProps) {
           </a>
         ) : null}
       </footer>
-    </div>
+    </Container>
   );
 }

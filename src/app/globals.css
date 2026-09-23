@@ -16,9 +16,9 @@
 
 @theme inline {
   /* Fonts */
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-geist-sans);
 
   /* Core semantic colours */
   --color-background: var(--background);
@@ -333,5 +333,94 @@
   .mask-radial {
     -webkit-mask-image: radial-gradient(60% 55% at 50% 40%, black, transparent);
     mask-image: radial-gradient(60% 55% at 50% 40%, black, transparent);
+  }
+
+  /* Standardized Typography Scale Utilities */
+  .type-display {
+    font-family: var(--font-heading), var(--font-sans), sans-serif;
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+  .type-h1 {
+    font-family: var(--font-heading), var(--font-sans), sans-serif;
+    font-size: clamp(1.875rem, 4vw, 2.75rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+  .type-h2 {
+    font-family: var(--font-heading), var(--font-sans), sans-serif;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  .type-h3 {
+    font-family: var(--font-heading), var(--font-sans), sans-serif;
+    font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+  }
+  .type-h4 {
+    font-family: var(--font-heading), var(--font-sans), sans-serif;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+  .type-body-lg {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    text-wrap: pretty;
+  }
+  .type-body {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+  .type-body-sm {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+  .type-caption {
+    font-size: 0.75rem;
+    line-height: 1.4;
+    color: var(--muted-foreground);
+  }
+  .type-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* Accessible touch-target utility (>= 44x44px hit surface) */
+  .touch-target {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Smooth Carousel Scroll Snap */
+  .carousel-snap {
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .carousel-snap::-webkit-scrollbar {
+    display: none;
+  }
+  .carousel-item {
+    scroll-snap-align: start;
+    scroll-snap-stop: normal;
   }
 }

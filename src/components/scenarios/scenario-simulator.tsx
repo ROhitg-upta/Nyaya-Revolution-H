@@ -17,6 +17,7 @@ import {
 import { VerificationBadge } from "@/components/laws/verification-badge";
 import { ContentDiscovery } from "@/components/common/content-discovery";
 import { Button } from "@/components/ui/button";
+import { Container } from "@/components/layout";
 import type { ScenarioEvaluation, ScenarioSimulation, ScenarioStepOption } from "@/types";
 
 interface ScenarioSimulatorProps {
@@ -26,22 +27,18 @@ interface ScenarioSimulatorProps {
 export function ScenarioSimulator({ scenario }: ScenarioSimulatorProps) {
   const [currentStepId, setCurrentStepId] = useState<string>(scenario.initialStepId);
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
-  const [stepHistory, setStepHistory] = useState<{
-    stepId: string;
-    option: ScenarioStepOption;
-  }[]>([]);
-  const [isFinished, setIsFinished] = useState(false);
+  const [stepHistory, setStepHistory] = useState<{ stepId: string; option: ScenarioStepOption }[]>([]);
+  const [isFinished, setIsFinished] = useState<boolean>(false);
 
   const currentStep = scenario.steps[currentStepId];
-  const selectedOption = currentStep?.options.find((o) => o.id === selectedOptionId);
+  const selectedOption = currentStep?.options.find((opt) => opt.id === selectedOptionId);
 
   const totalScore = stepHistory.reduce((sum, h) => sum + h.option.points, 0);
   const maxPossible = (stepHistory.length || 1) * 25;
   const scorePct = Math.round((totalScore / maxPossible) * 100);
 
-  const handleSelectOption = (opt: ScenarioStepOption) => {
-    if (selectedOptionId) return;
-    setSelectedOptionId(opt.id);
+  const handleSelectOption = (optId: string) => {
+    setSelectedOptionId(optId);
   };
 
   const handleProceed = () => {
@@ -70,32 +67,32 @@ export function ScenarioSimulator({ scenario }: ScenarioSimulatorProps) {
       case "optimal":
         return {
           icon: ShieldCheck,
-          label: "Best Legal Course",
-          className: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+          label: "Optimal Legal Action",
+          className: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
         };
       case "acceptable":
         return {
           icon: CheckCircle2,
-          label: "Acceptable / Informal",
-          className: "bg-blue-500/15 text-blue-400 border-blue-500/30",
+          label: "Acceptable Action",
+          className: "bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/30",
         };
       case "risky":
         return {
           icon: AlertTriangle,
-          label: "Moderate Legal Risk",
-          className: "bg-amber-500/15 text-amber-400 border-amber-500/30",
+          label: "Risky Action",
+          className: "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30",
         };
       case "dangerous":
         return {
           icon: ShieldAlert,
-          label: "High Risk / Adverse Liability",
-          className: "bg-red-500/15 text-red-400 border-red-500/30",
+          label: "Dangerous Mistake",
+          className: "bg-red-500/15 text-red-600 dark:text-red-400 border-red-500/30",
         };
     }
   };
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-5 pt-28 pb-24 sm:px-8 lg:pt-32">
+    <Container size="narrow" gutter="page">
       {/* Back Link */}
       <Link
         href="/learn/scenarios"
@@ -179,7 +176,7 @@ export function ScenarioSimulator({ scenario }: ScenarioSimulatorProps) {
                     key={opt.id}
                     type="button"
                     disabled={Boolean(selectedOptionId)}
-                    onClick={() => handleSelectOption(opt)}
+                    onClick={() => handleSelectOption(opt.id)}
                     className={`glass text-foreground flex items-start gap-3.5 rounded-xl p-4 text-left text-sm transition-all ${
                       isSelected
                         ? "border-brand bg-brand/10 shadow-sm"
@@ -326,6 +323,6 @@ export function ScenarioSimulator({ scenario }: ScenarioSimulatorProps) {
           />
         </motion.div>
       )}
-    </div>
+    </Container>
   );
 }

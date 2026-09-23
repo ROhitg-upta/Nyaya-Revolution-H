@@ -10,6 +10,13 @@ import { MiniChallenge } from "@/components/learning/mini-challenge";
 import { XpToast } from "@/components/learning/xp-toast";
 import { Button } from "@/components/ui/button";
 import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
   adjacentLessons,
   getJourney,
   getLesson,
@@ -147,14 +154,47 @@ export function LessonReader({ journeySlug, lessonSlug }: LessonReaderProps) {
 
         {/* Main content */}
         <article className="flex min-w-0 flex-1 flex-col gap-10">
-          {/* Back link */}
-          <Link
-            href={learnRoutes.journey(journeySlug)}
-            className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm transition-colors"
-          >
-            <ArrowLeft className="size-4" />
-            {journey.title}
-          </Link>
+          {/* Back link & Mobile TOC drawer */}
+          <div className="flex items-center justify-between gap-4">
+            <Link
+              href={learnRoutes.journey(journeySlug)}
+              className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm transition-colors"
+            >
+              <ArrowLeft className="size-4" />
+              {journey.title}
+            </Link>
+
+            {/* Mobile/Tablet Table of Contents Drawer (xl:hidden) */}
+            <Sheet>
+              <SheetTrigger
+                render={
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="xl:hidden glass rounded-xl gap-1.5 text-xs font-semibold"
+                  />
+                }
+              >
+                <BookOpen className="size-3.5 text-brand" />
+                <span>Contents ({completedCount}/{totalLessons})</span>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-80 p-5 overflow-y-auto">
+                <SheetHeader className="p-0 text-left mb-4">
+                  <SheetTitle className="flex items-center gap-2 text-base">
+                    <BookOpen className="text-brand size-4" />
+                    <span>Course Contents</span>
+                  </SheetTitle>
+                </SheetHeader>
+                <LessonSidebar
+                  journeySlug={journeySlug}
+                  modules={journey.modules}
+                  currentLessonSlug={lessonSlug}
+                  completedCount={completedCount}
+                  className="flex w-full p-0 shadow-none border-0 bg-transparent"
+                />
+              </SheetContent>
+            </Sheet>
+          </div>
 
           {/* Header */}
           <motion.div

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getCategory, situationRoute } from "@/constants";
 import { ArrowRight } from "@/lib/icons";
 import type { Situation } from "@/types";
@@ -6,11 +7,11 @@ import type { Situation } from "@/types";
 export function SituationCard({ situation }: { situation: Situation }) {
   const category = getCategory(situation.category);
   return (
-    <a
+    <Link
       href={situationRoute(situation.slug)}
       className="focus-visible:ring-ring group/card block h-full rounded-2xl focus-visible:ring-2 focus-visible:outline-none"
     >
-      <div className="glass glow-hover relative flex h-full flex-col gap-4 overflow-hidden rounded-2xl p-5 hover:-translate-y-1">
+      <div className="glass glow-hover relative flex h-full flex-col gap-4 overflow-hidden rounded-2xl p-5 hover:-translate-y-1 transition-all">
         <div className="bg-brand/20 pointer-events-none absolute -top-14 -right-14 size-36 rounded-full opacity-0 blur-2xl transition-opacity duration-500 group-hover/card:opacity-100" />
         <div className="relative flex items-center justify-between">
           <span className="bg-brand/12 text-brand ring-brand/15 flex size-11 items-center justify-center rounded-xl ring-1 transition-transform duration-300 group-hover/card:scale-110">
@@ -35,6 +36,6 @@ export function SituationCard({ situation }: { situation: Situation }) {
           <ArrowRight className="size-4 transition-transform duration-300 group-hover/card:translate-x-1" />
         </span>
       </div>
-    </a>
+    </Link>
   );
 }

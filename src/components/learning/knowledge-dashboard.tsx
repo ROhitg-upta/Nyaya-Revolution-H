@@ -13,13 +13,14 @@ import {
   RotateCcw,
   Target,
 } from "@/lib/icons";
+import { Container } from "@/components/layout";
 import { initialKnowledgeProgress } from "@/constants";
 
 export function KnowledgeDashboard() {
   const data = initialKnowledgeProgress;
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-5 pt-28 pb-24 sm:px-8 lg:pt-32">
+    <Container size="default" gutter="page">
       {/* Header */}
       <div className="flex flex-col gap-3">
         <div className="flex items-center gap-2">
@@ -268,6 +269,6 @@ export function KnowledgeDashboard() {
           </div>
         </div>
       </div>
-    </div>
+    </Container>
   );
 }

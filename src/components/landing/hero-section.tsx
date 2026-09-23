@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { routes } from "@/constants";
@@ -178,7 +179,7 @@ export function HeroSection() {
               placeholder="Try “my landlord won't return my deposit”"
               className="text-foreground placeholder:text-muted-foreground w-full bg-transparent text-sm outline-none sm:text-base"
             />
-            <a href={routes.situations}>
+            <Link href={routes.situations}>
               <Button
                 type="button"
                 size="lg"
@@ -186,20 +187,20 @@ export function HeroSection() {
               >
                 Explore
               </Button>
-            </a>
+            </Link>
           </motion.form>
 
           <motion.div
             variants={item}
             className="flex flex-col items-stretch gap-3 sm:flex-row"
           >
-            <a href={routes.signUp}>
+            <Link href={routes.signUp}>
               <Button size="lg" className="glow-hover w-full rounded-full px-6">
                 Start learning free
                 <ArrowRight className="transition-transform group-hover/button:translate-x-0.5" />
               </Button>
-            </a>
-            <a href={routes.situations}>
+            </Link>
+            <Link href={routes.situations}>
               <Button
                 size="lg"
                 variant="outline"
@@ -207,7 +208,7 @@ export function HeroSection() {
               >
                 Explore situations
               </Button>
-            </a>
+            </Link>
           </motion.div>
 
           <motion.ul

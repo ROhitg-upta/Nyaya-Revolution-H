@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
 import type { ResponseModeId } from "@/types";
 import { useConversationStore } from "@/hooks/use-conversation-store";
 import { useChat } from "@/hooks/use-chat";
@@ -177,13 +176,13 @@ export function ChatInterface({ conversationId }: ChatInterfaceProps) {
                     {msg.role === "assistant" &&
                       !showStreaming &&
                       msg.structured && (
-                        <div className="mt-2 ml-11">
+                        <div className="mt-2 ml-0 sm:ml-11">
                           <StructuredResponseView data={msg.structured} />
                         </div>
                       )}
                     {/* Live structured response while/after streaming */}
                     {showStreaming && structured && (
-                      <div className="mt-2 ml-11">
+                      <div className="mt-2 ml-0 sm:ml-11">
                         <StructuredResponseView data={structured} />
                       </div>
                     )}
@@ -192,7 +191,7 @@ export function ChatInterface({ conversationId }: ChatInterfaceProps) {
                       !showStreaming &&
                       msg.followUps &&
                       msg.followUps.length > 0 && (
-                        <div className="ml-11">
+                        <div className="ml-0 sm:ml-11">
                           <FollowUpCards
                             suggestions={msg.followUps}
                             onSelect={(s) =>
@@ -208,7 +207,7 @@ export function ChatInterface({ conversationId }: ChatInterfaceProps) {
                       !isStreaming &&
                       followUps.length > 0 &&
                       !msg.followUps?.length && (
-                        <div className="ml-11">
+                        <div className="ml-0 sm:ml-11">
                           <FollowUpCards
                             suggestions={followUps}
                             onSelect={(s) =>

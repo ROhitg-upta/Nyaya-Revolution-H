@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { LucideIcon } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 
@@ -31,16 +32,16 @@ export function SectionRow({
           )}
         </div>
         {seeAllHref && (
-          <a
+          <Link
             href={seeAllHref}
             className="text-brand hover:text-brand/80 shrink-0 text-sm font-medium transition-colors"
           >
             See all
-          </a>
+          </Link>
         )}
       </div>
 
-      <div className="-mx-5 flex [scrollbar-width:none] gap-4 overflow-x-auto px-5 pb-2 sm:-mx-8 sm:px-8">
+      <div className="-mx-5 flex [scrollbar-width:none] gap-4 overflow-x-auto px-5 pb-2 sm:-mx-8 sm:px-8 snap-x snap-mandatory scroll-smooth [&>*]:snap-start [&::-webkit-scrollbar]:hidden">
         {children}
       </div>
     </section>

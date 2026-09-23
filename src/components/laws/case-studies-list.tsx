@@ -8,6 +8,7 @@ import {
   Landmark,
   Search,
 } from "@/lib/icons";
+import { Container } from "@/components/layout";
 import { caseStudies } from "@/constants";
 
 export function CaseStudiesList() {
@@ -21,7 +22,7 @@ export function CaseStudiesList() {
   });
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-5 pt-28 pb-24 sm:px-8 lg:pt-32">
+    <Container size="default" gutter="page">
       {/* Header */}
       <div className="mx-auto max-w-3xl text-center">
         <motion.span
@@ -112,6 +113,6 @@ export function CaseStudiesList() {
           </motion.div>
         ))}
       </div>
-    </div>
+    </Container>
   );
 }

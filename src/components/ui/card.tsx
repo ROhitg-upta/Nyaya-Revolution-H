@@ -2,17 +2,33 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
+export interface CardProps
+  extends React.ComponentProps<"div"> {
+  size?: "default" | "sm";
+  variant?: "default" | "glass" | "glass-strong" | "interactive";
+}
+
 function Card({
   className,
   size = "default",
+  variant = "default",
   ...props
-}: React.ComponentProps<"div"> & { size?: "default" | "sm" }) {
+}: CardProps) {
+  const variantClasses = {
+    default: "bg-card text-card-foreground ring-1 ring-foreground/10 shadow-sm",
+    glass: "glass text-foreground",
+    "glass-strong": "glass-strong text-foreground",
+    interactive: "glass text-foreground glow-hover hover:-translate-y-1 transition-all",
+  }[variant];
+
   return (
     <div
       data-slot="card"
       data-size={size}
+      data-variant={variant}
       className={cn(
-        "group/card bg-card text-card-foreground ring-foreground/10 flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl py-(--card-spacing) text-sm ring-1 [--card-spacing:--spacing(4)] has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
+        "group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-2xl py-(--card-spacing) text-sm [--card-spacing:--spacing(5)] has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3.5)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-2xl *:[img:last-child]:rounded-b-2xl",
+        variantClasses,
         className,
       )}
       {...props}

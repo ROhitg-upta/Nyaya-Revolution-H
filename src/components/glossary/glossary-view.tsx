@@ -10,6 +10,7 @@ import {
   Search,
 } from "@/lib/icons";
 import { VerificationBadge } from "@/components/laws/verification-badge";
+import { Container } from "@/components/layout";
 import { glossaryTerms, legalAreas } from "@/constants";
 import type { LegalArea } from "@/types";
 
@@ -42,7 +43,7 @@ export function GlossaryView() {
   }, [search, selectedLetter, selectedCategory]);
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-5 pt-28 pb-24 sm:px-8 lg:pt-32">
+    <Container size="default" gutter="page">
       {/* Header */}
       <div className="mx-auto max-w-3xl text-center">
         <motion.span
@@ -263,6 +264,6 @@ export function GlossaryView() {
           })
         )}
       </div>
-    </div>
+    </Container>
   );
 }

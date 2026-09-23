@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 
 import { AuthCard } from "@/components/auth/auth-card";
@@ -44,7 +45,7 @@ export function ForgotPasswordForm() {
           </>
         }
       >
-        <a href={routes.signIn}>
+        <Link href={routes.signIn}>
           <Button
             variant="outline"
             size="lg"
@@ -53,7 +54,7 @@ export function ForgotPasswordForm() {
             <ArrowLeft />
             Back to sign in
           </Button>
-        </a>
+        </Link>
       </AuthCard>
     );
   }

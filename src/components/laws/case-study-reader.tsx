@@ -11,6 +11,7 @@ import {
 } from "@/lib/icons";
 import { VerificationBadge } from "@/components/laws/verification-badge";
 import { ContentDiscovery } from "@/components/common/content-discovery";
+import { Container } from "@/components/layout";
 import type { CaseStudy } from "@/types";
 
 interface CaseStudyReaderProps {
@@ -19,7 +20,7 @@ interface CaseStudyReaderProps {
 
 export function CaseStudyReader({ caseStudy }: CaseStudyReaderProps) {
   return (
-    <div className="mx-auto w-full max-w-4xl px-5 pt-28 pb-24 sm:px-8 lg:pt-32">
+    <Container size="narrow" gutter="page">
       {/* Back link */}
       <Link
         href="/case-studies"
@@ -185,6 +186,6 @@ export function CaseStudyReader({ caseStudy }: CaseStudyReaderProps) {
           practiceLabel="Police Check Scenario"
         />
       </div>
-    </div>
+    </Container>
   );
 }

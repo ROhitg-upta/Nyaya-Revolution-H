@@ -23,6 +23,7 @@ import {
   learningDisclaimer,
   routes,
 } from "@/constants";
+import { Container } from "@/components/layout";
 import {
   Award,
   Bookmark,
@@ -49,7 +50,7 @@ export function LearningHome() {
   const profileBased = journeysByTag("profile");
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-14 px-5 pt-28 pb-24 sm:px-8 lg:pt-32">
+    <Container size="default" gutter="page" className="flex flex-col gap-14">
       {/* Hero greeting */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -299,6 +300,6 @@ export function LearningHome() {
       <p className="text-muted-foreground/60 text-center text-xs">
         {learningDisclaimer}
       </p>
-    </div>
+    </Container>
   );
 }

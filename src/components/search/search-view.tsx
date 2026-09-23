@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { Search, Sparkles } from "@/lib/icons";
+import { Container } from "@/components/layout";
 import { unifiedSearch } from "@/lib/search";
 import type { SearchEntityType } from "@/types";
 
@@ -27,7 +28,7 @@ export function SearchView() {
   }, [query, activeTab]);
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-5 pt-28 pb-24 sm:px-8 lg:pt-32">
+    <Container size="default" gutter="page">
       {/* Header */}
       <div className="mx-auto max-w-3xl text-center">
         <motion.span
@@ -160,6 +161,6 @@ export function SearchView() {
           ))
         )}
       </div>
-    </div>
+    </Container>
   );
 }
