@@ -32,7 +32,7 @@ export function WeeklyActivity({ data }: WeeklyActivityProps) {
           const pct = Math.round((d.minutes / max) * 100);
           return (
             <div
-              key={d.day}
+              key={`${d.day}-${i}`}
               className="flex flex-1 flex-col items-center gap-1.5"
             >
               <span className="text-muted-foreground text-[10px]">

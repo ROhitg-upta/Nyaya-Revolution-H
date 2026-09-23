@@ -39,7 +39,7 @@ export function StreakCard({ streakDays, weekly }: StreakCardProps) {
           const active = d.minutes > 0;
           return (
             <div
-              key={d.day}
+              key={`${d.day}-${i}`}
               className="flex flex-1 flex-col items-center gap-1.5"
             >
               <div
