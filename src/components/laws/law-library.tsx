@@ -192,6 +192,7 @@ export function LawLibrary() {
                       source={art.source}
                       status={art.verificationStatus}
                       lastVerifiedAt={art.lastVerifiedAt}
+                      showLink={false}
                     />
                   </div>
 

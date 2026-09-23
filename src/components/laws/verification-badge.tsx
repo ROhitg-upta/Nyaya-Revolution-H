@@ -8,6 +8,7 @@ interface VerificationBadgeProps {
   status?: VerificationStatus;
   lastVerifiedAt?: string;
   className?: string;
+  showLink?: boolean;
 }
 
 export function VerificationBadge({
@@ -15,6 +16,7 @@ export function VerificationBadge({
   status = "verified",
   lastVerifiedAt = "2025-01-15",
   className = "",
+  showLink = true,
 }: VerificationBadgeProps) {
   const isVerified = status === "verified";
 
@@ -46,16 +48,25 @@ export function VerificationBadge({
       ) : null}
 
       {source?.url ? (
-        <a
-          href={source.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-brand inline-flex items-center gap-0.5 font-medium hover:underline"
-          title={`Official record: ${source.title}`}
-        >
-          <span>India Code / Official</span>
-          <ExternalLink className="size-3" />
-        </a>
+        showLink ? (
+          <a
+            href={source.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-brand inline-flex items-center gap-0.5 font-medium hover:underline"
+            title={`Official record: ${source.title}`}
+          >
+            <span>India Code / Official</span>
+            <ExternalLink className="size-3" />
+          </a>
+        ) : (
+          <span
+            className="text-muted-foreground/80 hidden lg:inline-flex items-center gap-0.5 font-medium"
+            title={`Official record: ${source.title}`}
+          >
+            <span>Official Record</span>
+          </span>
+        )
       ) : null}
     </div>
   );
