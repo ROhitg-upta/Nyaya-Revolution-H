@@ -6,11 +6,14 @@ import { motion } from "motion/react";
 import {
   Brain,
   Clock,
+  Sparkles,
 } from "@/lib/icons";
 import { Container } from "@/components/layout";
 import { scenarioSimulations } from "@/constants";
+import { AIPracticeLab } from "./ai-practice-lab";
 
 export function ScenariosList() {
+  const [activeTab, setActiveTab] = useState<"curated" | "ai_lab">("curated");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
   const categories = [
@@ -54,23 +57,62 @@ export function ScenariosList() {
         </motion.p>
       </div>
 
-      {/* Category Pills */}
-      <div className="mt-10 flex flex-wrap items-center justify-center gap-2">
-        {categories.map((cat) => (
+      {/* Mode Switcher Tabs */}
+      <div className="mt-8 flex justify-center">
+        <div className="glass flex items-center gap-1.5 rounded-full p-1.5">
           <button
-            key={cat.id}
             type="button"
-            onClick={() => setSelectedCategory(cat.id)}
-            className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
-              selectedCategory === cat.id
-                ? "bg-gradient-brand text-primary-foreground shadow-sm"
-                : "glass text-muted-foreground hover:text-foreground"
+            onClick={() => setActiveTab("curated")}
+            className={`inline-flex items-center gap-2 rounded-full px-5 py-2 text-xs sm:text-sm font-semibold transition-all ${
+              activeTab === "curated"
+                ? "bg-brand text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            {cat.label}
+            <Brain className="size-4" />
+            <span>Curated Simulations ({scenarioSimulations.length})</span>
           </button>
-        ))}
+          <button
+            type="button"
+            onClick={() => setActiveTab("ai_lab")}
+            className={`inline-flex items-center gap-2 rounded-full px-5 py-2 text-xs sm:text-sm font-semibold transition-all ${
+              activeTab === "ai_lab"
+                ? "bg-brand text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Sparkles className="size-4" />
+            <span>AI Practice Lab</span>
+            <span className="bg-amber-500/20 text-amber-500 rounded-full px-1.5 py-0.2 text-[10px] font-bold">
+              +XP
+            </span>
+          </button>
+        </div>
       </div>
+
+      {activeTab === "ai_lab" ? (
+        <div className="mt-8">
+          <AIPracticeLab />
+        </div>
+      ) : (
+        <>
+          {/* Category Pills */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
+                  selectedCategory === cat.id
+                    ? "bg-gradient-brand text-primary-foreground shadow-sm"
+                    : "glass text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
 
       {/* Scenario Cards Grid */}
       <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -116,6 +158,8 @@ export function ScenariosList() {
           </motion.div>
         ))}
       </div>
-    </Container>
-  );
+    </>
+  )}
+</Container>
+);
 }

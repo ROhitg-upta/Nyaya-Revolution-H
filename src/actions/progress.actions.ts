@@ -2,7 +2,14 @@
 
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { bookmarkSchema, type BookmarkValues, progressUpdateSchema, type ProgressUpdateValues } from "@/lib/validations";
+import {
+  bookmarkSchema,
+  type BookmarkValues,
+  practiceCompletionSchema,
+  type PracticeCompletionValues,
+  progressUpdateSchema,
+  type ProgressUpdateValues,
+} from "@/lib/validations";
 import { progressService } from "@/services/db/progress.service";
 import type { ActionResult } from "./types";
 
@@ -104,3 +111,60 @@ export async function bookmarkItemAction(
     };
   }
 }
+
+/**
+ * Server action to record AI practice scenario or simulation completion,
+ * award XP, and advance user streaks.
+ */
+export async function recordPracticeCompletionAction(
+  rawInput: PracticeCompletionValues
+): Promise<
+  ActionResult<{
+    xpAwarded: number;
+    totalXp: number;
+    currentLevel: number;
+    leveledUp: boolean;
+    currentStreak: number;
+    longestStreak: number;
+    streakIncreased: boolean;
+  }>
+> {
+  try {
+    const validated = practiceCompletionSchema.parse(rawInput);
+    const client = await createSupabaseServerClient();
+
+    let userId = "guest-user";
+    if (client) {
+      const {
+        data: { user },
+      } = await client.auth.getUser();
+      if (user?.id) userId = user.id;
+    }
+
+    const result = await progressService.recordPracticeCompletion(
+      userId,
+      validated.scenarioId,
+      validated.conceptName,
+      validated.score,
+      validated.maxScore,
+      validated.isCorrect,
+      validated.xpEarned
+    );
+
+    revalidatePath("/learn/scenarios");
+    revalidatePath("/learn");
+    revalidatePath("/profile");
+
+    return { success: true, data: result };
+  } catch (err) {
+    console.error("recordPracticeCompletionAction error:", err);
+    return {
+      success: false,
+      error:
+        err instanceof Error
+          ? err.message
+          : "Failed to record practice completion",
+    };
+  }
+}
+

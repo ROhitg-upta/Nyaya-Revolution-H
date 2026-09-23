@@ -332,6 +332,7 @@ export const footerLinkGroups: FooterLinkGroup[] = [
       { label: "Real Situations", href: "/situations" },
       { label: "Learning Journeys", href: "/learn" },
       { label: "Scenario Simulator", href: "/learn/scenarios" },
+      { label: "Live Analytics", href: "/analytics" },
       { label: "My Knowledge", href: "/learn/knowledge" },
     ],
   },
@@ -341,6 +342,7 @@ export const footerLinkGroups: FooterLinkGroup[] = [
       { label: "Constitution & Acts", href: "/laws" },
       { label: "Landmark Cases", href: "/case-studies" },
       { label: "Citizen Glossary", href: "/glossary" },
+      { label: "Submit Situation", href: "/situations/submit" },
       { label: "AI Guidance", href: "/ai" },
     ],
   },
@@ -357,6 +359,7 @@ export const footerLinkGroups: FooterLinkGroup[] = [
     links: [
       { label: "Search", href: "/search" },
       { label: "Learner Profile", href: "/learn/profile" },
+      { label: "Moderator Queue", href: "/moderation" },
       { label: "Sign In", href: "/sign-in" },
     ],
   },

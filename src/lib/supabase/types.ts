@@ -1164,6 +1164,16 @@ export interface Database {
         };
         Returns: string;
       };
+      record_practice_completion: {
+        Args: {
+          p_scenario_id: string;
+          p_score: number;
+          p_max_score: number;
+          p_passed: boolean;
+          p_xp: number;
+        };
+        Returns: Json;
+      };
     };
     Enums: {
       user_role: UserRole;

@@ -19,6 +19,7 @@ export type { LucideIcon, LucideProps } from "lucide-react";
 // Re-export the icons the app uses. Extend this curated set as shared
 // components need more so the icon library stays swappable in one place.
 export {
+  Activity,
   AlertTriangle,
   ArrowDown,
   ArrowLeft,
@@ -71,7 +72,9 @@ export {
   Moon,
   MousePointerClick,
   PartyPopper,
+  Pause,
   Quote,
+  Radio,
   Receipt,
   RefreshCw,
   Rocket,
@@ -91,6 +94,7 @@ export {
   TrendingUp,
   Trophy,
   User,
+  UserCheck,
   UserPlus,
   UserX,
   Users,

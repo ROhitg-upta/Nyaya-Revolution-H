@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/sheet";
 import { routes, siteConfig } from "@/constants";
 import {
+  Activity,
   BookOpen,
   Brain,
   Compass,
@@ -23,6 +24,7 @@ import {
   Menu,
   Scale,
   Search,
+  ShieldCheck,
   Sparkles,
   Target,
   User,
@@ -35,6 +37,7 @@ const navItems = [
   { label: "Laws", href: routes.laws, icon: Scale },
   { label: "Learn", href: routes.learn, icon: BookOpen },
   { label: "Scenarios", href: routes.scenarios, icon: Brain },
+  { label: "Analytics", href: routes.analytics, icon: Activity },
   { label: "Precedents", href: routes.caseStudies, icon: Gavel },
   { label: "Knowledge", href: routes.knowledge, icon: Target },
   { label: "Glossary", href: routes.glossary, icon: FileText },
@@ -233,6 +236,25 @@ export function AppHeader() {
                   <Search className="size-4" />
                   Search Everything
                 </Link>
+
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <Link
+                    href={routes.moderation}
+                    onClick={() => setOpen(false)}
+                    className="glass text-foreground/80 hover:text-foreground hover:border-brand/40 flex items-center justify-center gap-1.5 rounded-xl py-2 text-center text-[11px] font-medium"
+                  >
+                    <ShieldCheck className="size-3.5 text-brand" />
+                    Review Queue
+                  </Link>
+                  <Link
+                    href={routes.submitSituation}
+                    onClick={() => setOpen(false)}
+                    className="glass text-foreground/80 hover:text-foreground hover:border-brand/40 flex items-center justify-center gap-1.5 rounded-xl py-2 text-center text-[11px] font-medium"
+                  >
+                    <Compass className="size-3.5 text-brand" />
+                    Submit Situation
+                  </Link>
+                </div>
 
                 {isAuthenticated ? (
                   <div className="flex flex-col gap-2">

@@ -21,6 +21,9 @@ export const routes = {
   knowledge: "/learn/knowledge",
   scenarios: "/learn/scenarios",
   caseStudies: "/case-studies",
+  moderation: "/moderation",
+  analytics: "/analytics",
+  submitSituation: "/situations/submit",
 } as const;
 
 export type RouteKey = keyof typeof routes;

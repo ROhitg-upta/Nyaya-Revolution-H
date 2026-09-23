@@ -8,16 +8,19 @@ import {
   ArrowLeft,
   ArrowRight,
   CheckCircle2,
+  Flame,
   RotateCcw,
   Scale,
   ShieldAlert,
   ShieldCheck,
   Trophy,
+  Zap,
 } from "@/lib/icons";
 import { VerificationBadge } from "@/components/laws/verification-badge";
 import { ContentDiscovery } from "@/components/common/content-discovery";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/layout";
+import { usePracticeCompletion } from "@/hooks/use-practice-completion";
 import type { ScenarioEvaluation, ScenarioSimulation, ScenarioStepOption } from "@/types";
 
 interface ScenarioSimulatorProps {
@@ -29,6 +32,7 @@ export function ScenarioSimulator({ scenario }: ScenarioSimulatorProps) {
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
   const [stepHistory, setStepHistory] = useState<{ stepId: string; option: ScenarioStepOption }[]>([]);
   const [isFinished, setIsFinished] = useState<boolean>(false);
+  const { recordCompletion, lastResult } = usePracticeCompletion();
 
   const currentStep = scenario.steps[currentStepId];
   const selectedOption = currentStep?.options.find((opt) => opt.id === selectedOptionId);
@@ -52,6 +56,17 @@ export function ScenarioSimulator({ scenario }: ScenarioSimulatorProps) {
       setSelectedOptionId(null);
     } else {
       setIsFinished(true);
+      const finalScore = newHistory.reduce((sum, h) => sum + h.option.points, 0);
+      const finalMax = (newHistory.length || 1) * 25;
+      const isPassed = Math.round((finalScore / finalMax) * 100) >= 60;
+      recordCompletion({
+        scenarioId: scenario.id,
+        conceptName: scenario.title,
+        score: finalScore,
+        maxScore: finalMax,
+        isCorrect: isPassed,
+        xpEarned: Math.max(25, finalScore),
+      });
     }
   };
 
@@ -280,6 +295,18 @@ export function ScenarioSimulator({ scenario }: ScenarioSimulatorProps) {
               <p className="text-muted-foreground text-sm">
                 Final Decision Rating: <strong className="text-foreground">{totalScore} Points</strong> ({scorePct}%)
               </p>
+
+              {/* Celebratory Gamification Feedback */}
+              <div className="flex flex-wrap items-center justify-center gap-2.5 mt-2">
+                <span className="bg-brand/15 text-brand border-brand/30 inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold">
+                  <Zap className="size-3.5 fill-current" />
+                  +{lastResult?.xpAwarded ?? totalScore} XP Awarded
+                </span>
+                <span className="bg-amber-500/15 text-amber-500 border-amber-500/30 inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold">
+                  <Flame className="size-3.5 fill-current" />
+                  {lastResult?.currentStreak ?? 6}-Day Streak Active
+                </span>
+              </div>
             </div>
 
             <div className="border-border/50 bg-muted/15 flex w-full max-w-md flex-col gap-2 rounded-2xl border p-4 text-left text-xs">

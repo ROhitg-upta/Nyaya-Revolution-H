@@ -154,8 +154,52 @@ export const generateScenarioSchema = z.object({
   difficulty: z.enum(["beginner", "intermediate", "advanced"]).default("beginner"),
 });
 
+export const practiceCompletionSchema = z.object({
+  scenarioId: z.string().min(1, "Scenario ID is required"),
+  conceptName: z.string().min(1, "Concept name is required"),
+  score: z.number().int().min(0),
+  maxScore: z.number().int().min(1),
+  isCorrect: z.boolean(),
+  xpEarned: z.number().int().min(0).default(25),
+});
+
+export const situationSubmissionSchema = z.object({
+  title: z
+    .string()
+    .min(5, "Title must be at least 5 characters")
+    .max(150, "Title cannot exceed 150 characters"),
+  categoryId: z.string().min(1, "Legal category is required"),
+  summary: z
+    .string()
+    .min(20, "Summary must be at least 20 characters")
+    .max(500, "Summary cannot exceed 500 characters"),
+  whatHappened: z
+    .string()
+    .min(20, "Please describe what happened in at least 20 characters")
+    .max(3000, "Description cannot exceed 3000 characters"),
+  immediateActions: z
+    .array(z.string().min(2))
+    .min(1, "Provide at least one recommended immediate action"),
+  dontDo: z
+    .array(z.string().min(2))
+    .min(1, "Provide at least one mistake or caution to avoid"),
+  statutoryReference: z.string().max(200).optional(),
+});
+
+export const moderationActionSchema = z.object({
+  entityType: z.enum(["situation", "quiz", "story", "report"]),
+  entityId: z.string().min(1, "Entity ID is required"),
+  decision: z.enum(["approve", "reject", "revise"]),
+  reviewNotes: z.string().max(1000).optional(),
+  revisedData: z.record(z.string(), z.unknown()).optional(),
+});
+
 export type AIQueryValues = z.infer<typeof aiQuerySchema>;
 export type AILearningResponseValues = z.infer<typeof aiLearningResponseSchema>;
 export type ExplainConceptValues = z.infer<typeof explainConceptSchema>;
 export type SimplifyLessonValues = z.infer<typeof simplifyLessonSchema>;
 export type GenerateScenarioValues = z.infer<typeof generateScenarioSchema>;
+export type PracticeCompletionValues = z.infer<typeof practiceCompletionSchema>;
+export type SituationSubmissionValues = z.infer<typeof situationSubmissionSchema>;
+export type ModerationActionValues = z.infer<typeof moderationActionSchema>;
+
