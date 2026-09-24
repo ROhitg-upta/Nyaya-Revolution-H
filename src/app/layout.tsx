@@ -15,8 +15,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+function getSafeMetadataBase(rawUrl: string): URL {
+  try {
+    return new URL(rawUrl || "http://localhost:3000");
+  } catch {
+    return new URL("http://localhost:3000");
+  }
+}
+
 export const metadata: Metadata = {
-  metadataBase: new URL(publicEnv.appUrl),
+  metadataBase: getSafeMetadataBase(publicEnv.appUrl),
   title: {
     default: `${siteConfig.name} — Understand your legal rights`,
     template: `%s | ${siteConfig.name}`,

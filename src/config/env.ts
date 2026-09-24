@@ -18,18 +18,64 @@ function required(key: string, value: string | undefined): string {
   return value;
 }
 
+/**
+ * Resolves the first non-empty candidate into a guaranteed valid absolute URL.
+ * Handles empty strings (`""`), whitespace, and bare domains (e.g. `VERCEL_URL` without `https://`).
+ */
+function resolveValidUrl(...candidates: Array<string | undefined>): string {
+  const fallback = "http://localhost:3000";
+  for (const raw of candidates) {
+    const trimmed = raw?.trim();
+    if (!trimmed) continue;
+    const withProtocol =
+      trimmed.startsWith("http://") || trimmed.startsWith("https://")
+        ? trimmed
+        : `https://${trimmed}`;
+    try {
+      return new URL(withProtocol).toString().replace(/\/$/, "");
+    } catch {
+      continue;
+    }
+  }
+  return fallback;
+}
+
+function isValidHttpUrl(raw: string | undefined): boolean {
+  const trimmed = raw?.trim();
+  if (!trimmed || (!trimmed.startsWith("http://") && !trimmed.startsWith("https://"))) {
+    return false;
+  }
+  try {
+    new URL(trimmed);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+const resolvedAppUrl = resolveValidUrl(
+  process.env.NEXT_PUBLIC_APP_URL,
+  process.env.NEXT_PUBLIC_SITE_URL,
+  process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL,
+  process.env.NEXT_PUBLIC_VERCEL_URL,
+  process.env.VERCEL_URL,
+);
+
 /** Client-safe configuration (bundled into the browser). */
 export const publicEnv = {
-  appUrl: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
-  siteUrl:
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    process.env.NEXT_PUBLIC_APP_URL ??
-    "http://localhost:3000",
-  supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-  supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
+  appUrl: resolvedAppUrl,
+  siteUrl: resolveValidUrl(
+    process.env.NEXT_PUBLIC_SITE_URL,
+    process.env.NEXT_PUBLIC_APP_URL,
+    resolvedAppUrl,
+  ),
+  supabaseUrl: isValidHttpUrl(process.env.NEXT_PUBLIC_SUPABASE_URL)
+    ? process.env.NEXT_PUBLIC_SUPABASE_URL!.trim()
+    : "",
+  supabaseAnonKey: (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "").trim(),
   isSupabaseConfigured: Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    isValidHttpUrl(process.env.NEXT_PUBLIC_SUPABASE_URL) &&
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim(),
   ),
 } as const;
 

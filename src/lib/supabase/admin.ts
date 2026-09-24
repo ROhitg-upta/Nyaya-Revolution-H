@@ -14,7 +14,7 @@ import { publicEnv, serverEnv } from "@/config";
 import type { Database } from "./types";
 
 export function createSupabaseAdminClient() {
-  if (!publicEnv.supabaseUrl || !serverEnv.supabaseServiceRoleKey) {
+  if (!publicEnv.isSupabaseConfigured || !serverEnv.supabaseServiceRoleKey.trim()) {
     return null;
   }
 
