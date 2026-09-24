@@ -213,3 +213,27 @@ Citizen Shares Real Situation (`/community/share` 7-Step Wizard)
                 [COMMUNITY STORY] ≠ [AI EDUCATIONAL SUMMARY] ≠ [VERIFIED LEGAL LEARNING BRIDGE]
 ```
 
+---
+
+## 7. Sprint E11: Multilingual Voice, Verified Legal Aid & Citizen Action Engine
+
+```
+Citizen Speaks / Types in Hindi, Hinglish, Regional Script, or English (`/action-center` & `/community/share`)
+         │
+         ├── 1. Voice-First Capture (`VoiceSituationInput`) -> Lifecycle (`idle` -> `recording` -> `paused` -> `transcribing` -> `complete`)
+         │      └── Editable "We heard:" verification box + `transcript_only` vs `audio_and_transcript` privacy selector
+         ├── 2. Prompt Injection & PII Defense (`sanitizeUntrustedCitizenInput` + `detectAndRedactPII`)
+         ├── 3. Provider Abstraction (`IndianCitizenLanguageDetector` + `ControlledTerminologyTranslationProvider`)
+         │      └── Maps vernacular/Hinglish phrases (`"deposit wapas nahi de raha"`, `"paisa kat gaya"`) to verified legal domains
+         │          while preserving `original_text`, `detected_language`, and `normalized_translation`
+         ├── 4. Verified Assistance Ranking Engine (`getRankedVerifiedResources`)
+         │      └── Deterministic scoring across Category Match, State SLSA/DLSA vs Central Jurisdiction,
+         │          Authority Priority (1930 Golden Hour, NALSA 15100, NCH 1915, Central RTI `rtionline.gov.in` warning),
+         │          and Verification Freshness (`last_verified_at` + `stale_after_days`)
+         └── 5. Citizen Action Document Studio (`generateCitizenDocumentDraft`)
+                └── Versioned templates (`consumer-grievance-v1`, `rti-application-v1`, `cyber-fraud-incident-v1`,
+                    `workplace-wage-representation-v1`, `legal-aid-checklist-v1`) labeled
+                    `Draft / Educational Template / User-Review Required` with mandatory human review gate & A4 PDF Print
+```
+
+

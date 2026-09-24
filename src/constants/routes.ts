@@ -27,6 +27,7 @@ export const routes = {
   community: "/community",
   communityShare: "/community/share",
   communityMyStories: "/community/my-stories",
+  actionCenter: "/action-center",
 } as const;
 
 export type RouteKey = keyof typeof routes;

@@ -120,6 +120,15 @@ export const PRIMARY_NAV_SECTIONS: PrimaryNavSection[] = [
         icon: Compass,
       },
       {
+        id: "sit-action-center",
+        title: "Multilingual Voice & Citizen Action Engine",
+        description: "Speak in Hindi/Hinglish, find NALSA 15100 aid & prepare A4 drafts.",
+        href: routes.actionCenter,
+        icon: Mic,
+        badge: "New E11",
+        badgeTone: "amber",
+      },
+      {
         id: "sit-submit",
         title: "Submit a Citizen Situation",
         description: "Propose a new everyday legal situation for moderator verification.",
@@ -128,10 +137,10 @@ export const PRIMARY_NAV_SECTIONS: PrimaryNavSection[] = [
       },
     ],
     primaryCta: {
-      label: "Explore All Situation Playbooks",
-      description: "Find step-by-step checklists for 60+ Indian legal situations",
-      href: routes.situations,
-      icon: Compass,
+      label: "Open Multilingual Voice & Action Engine",
+      description: "Speak what happened, find verified helplines & prepare a citizen draft",
+      href: routes.actionCenter,
+      icon: Mic,
     },
   },
   {
@@ -372,7 +381,7 @@ export const PRIMARY_NAV_SECTIONS: PrimaryNavSection[] = [
 export function matchActiveNavSection(pathname: string): PrimaryNavId | null {
   if (!pathname || pathname === "/") return null;
 
-  if (pathname.startsWith("/situations")) {
+  if (pathname.startsWith("/situations") || pathname.startsWith("/action-center")) {
     return "situations";
   }
 
@@ -405,6 +414,9 @@ export function matchActiveNavSection(pathname: string): PrimaryNavId | null {
  * feels aware of the user's current environment.
  */
 export function getContextualSearchPlaceholder(pathname: string): string {
+  if (pathname.startsWith("/action-center")) {
+    return "Search NALSA 15100, Cyber 1930, Consumer 1915, RTI...";
+  }
   if (pathname.startsWith("/community")) {
     return "Search citizen stories, 1930, Zero FIR...";
   }
@@ -427,6 +439,9 @@ export function getContextualRouteBadge(pathname: string): {
   label: string;
   accent: string;
 } | null {
+  if (pathname.startsWith("/action-center")) {
+    return { label: "Citizen Action Engine", accent: "text-amber-500" };
+  }
   if (pathname.startsWith("/community/share")) {
     return { label: "Story Studio", accent: "text-brand" };
   }

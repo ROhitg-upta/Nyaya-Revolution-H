@@ -223,4 +223,36 @@ Citizens sharing evidence checklists, voice notes, or video walkthroughs may ina
 1. Enforce real-time client and server PII detection (`detectAndRedactPII` in `src/lib/sanitization.ts`) with 1-click auto-redaction before story or comment submission.
 2. Restrict uploads to `community-media` (`image/jpeg`, `image/png`, `image/webp` ≤ 8MB; `audio/*` ≤ 15MB; `video/mp4`, `video/webm` ≤ 40MB) with path-traversal sanitization (`sanitizeStorageFileName`) and accessible playback without unexpected autoplay.
 
+---
+
+## ADR-013: Multilingual Voice Provider Abstraction & Controlled Legal Terminology Bridge
+
+- **Status:** Accepted
+- **Date:** 2026-09-24
+- **Deciders:** Multilingual AI Engineer, Voice UX Engineer
+
+### Context
+Indian citizens often express legal problems in spoken Hindi, Hinglish (`"Mera landlord deposit wapas nahi de raha"`), or regional scripts rather than formal English statutory terms. Direct opaque machine translation risks erasing the citizen's original testimony or mistranslating Indian legal terms.
+
+### Decision
+1. Define clean provider interfaces (`LanguageDetectionProvider`, `SpeechToTextProvider`, `TranslationProvider`) in `src/types/action-engine.ts` and `src/services/voice/multilingual-voice.service.ts`.
+2. Preserve `original_text`, `detected_language`, and `language_script` alongside `normalized_translation`, requiring citizen verification via an editable `"We heard:"` box before submission.
+3. Map vernacular/Hinglish triggers through a curated `CONTROLLED_LEGAL_TERMINOLOGY_BRIDGE` rather than allowing uncontrolled freeform legal re-interpretation.
+
+---
+
+## ADR-014: Verified Resource Freshness & Versioned Citizen Action Documents
+
+- **Status:** Accepted
+- **Date:** 2026-09-24
+- **Deciders:** Legal-Tech Systems Engineer, Data Verification Architect
+
+### Context
+Generating official grievance drafts or recommending government helplines requires zero fabrication and strict jurisdictional clarity (especially distinguishing Central Government RTI at `rtionline.gov.in` from State RTI portals).
+
+### Decision
+1. Maintain a verified resource directory (`verified_resources` table + `VERIFIED_RESOURCES_CATALOG`) with `last_verified_at` and `stale_after_days` freshness verification, deterministic jurisdiction scoring, and explicit Central vs State RTI notices.
+2. Generate Citizen Action Drafts exclusively from human-reviewed versioned templates (`consumer-grievance-v1`, `rti-application-v1`, `cyber-fraud-incident-v1`, `workplace-wage-representation-v1`, `legal-aid-checklist-v1`) labeled **`Draft / Educational Template / User-Review Required`**, gated behind a mandatory human-review confirmation checkbox before A4 Print/PDF or text export.
+
+
 

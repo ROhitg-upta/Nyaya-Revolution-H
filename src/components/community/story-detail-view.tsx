@@ -26,8 +26,10 @@ import {
 } from "@/actions/community.actions";
 import { StoryMediaGallery } from "@/components/community/media-player";
 import { StoryLearningBridge } from "@/components/community/story-learning-bridge";
+import { YourNextStepsCard } from "@/components/action/your-next-steps-card";
 import { Container } from "@/components/layout";
 import { STORY_REPORT_REASONS, STORY_TYPES } from "@/constants/community";
+import { VERIFIED_RESOURCES_CATALOG } from "@/constants/verified-resources";
 import { routes } from "@/constants/routes";
 import { detectAndRedactPII } from "@/lib/sanitization";
 import type {
@@ -380,6 +382,35 @@ export function StoryDetailView({
         <StoryLearningBridge
           bridge={story.learningBridge}
           storyTitle={story.title}
+        />
+
+        {/* SPRINT E11: STORY -> VERIFIED LEGAL AID & CITIZEN ACTION DRAFT */}
+        <YourNextStepsCard
+          primaryCategory={
+            story.category === "cyber"
+              ? "Cyber Safety"
+              : story.category === "consumer"
+                ? "Consumer Rights"
+                : story.category === "tenancy"
+                  ? "Tenancy & Housing"
+                  : story.category === "workplace"
+                    ? "Labour & Employment"
+                    : story.category === "rti_civic"
+                      ? "RTI & Governance"
+                      : "Fundamental Rights"
+          }
+          plainLanguageExplanation={
+            story.aiEducationalNote ||
+            story.citizenTakeaway ||
+            "Indian citizens facing a similar situation can contact verified statutory legal aid authorities (NALSA 15100, Cyber 1930, Consumer 1915) and prepare a chronological draft before approaching the authority."
+          }
+          recommendedResources={VERIFIED_RESOURCES_CATALOG.slice(0, 4).map(
+            (r) => ({
+              ...r,
+              matchScore: 95,
+              matchReasons: ["Verified Official Statutory Channel"],
+            })
+          )}
         />
 
         {/* Constructive Citizen Comments & Reflections */}

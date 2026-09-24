@@ -28,6 +28,7 @@ import {
 } from "@/actions/community.actions";
 import { StoryMediaGallery } from "@/components/community/media-player";
 import { StoryLearningBridge } from "@/components/community/story-learning-bridge";
+import { VoiceSituationInput } from "@/components/voice/voice-situation-input";
 import { Container } from "@/components/layout";
 import {
   COMMUNITY_CATEGORIES,
@@ -534,6 +535,41 @@ export function StoryCreationWizard({
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g., How calling 1930 within 25 minutes helped freeze an unauthorized UPI debit"
                   className="border-border bg-background text-foreground mt-1.5 w-full rounded-xl border px-4 py-3 text-sm outline-none"
+                />
+              </div>
+
+              <div>
+                <VoiceSituationInput
+                  compact
+                  onTranscriptConfirmed={(voiceRes) => {
+                    setWhatHappened((prev) =>
+                      prev.trim()
+                        ? `${prev.trim()}\n\n${voiceRes.editedTranscript}`
+                        : voiceRes.editedTranscript
+                    );
+                    if (
+                      voiceRes.storagePreference === "audio_and_transcript" &&
+                      voiceRes.audioBlobUrl
+                    ) {
+                      setMediaAttachments((prev) => [
+                        ...prev,
+                        {
+                          id: `voice-${Date.now()}`,
+                          storyId: initialStory?.id || "draft",
+                          storageBucket: "community-media",
+                          sortOrder: prev.length,
+                          mediaType: "audio",
+                          fileName: `citizen-voice-${voiceRes.language}.webm`,
+                          mimeType: "audio/webm",
+                          fileSizeBytes: 64000,
+                          url: voiceRes.audioBlobUrl!,
+                          storagePath: `voice/${Date.now()}.webm`,
+                          caption: `Reviewed Citizen Voice Note (${voiceRes.language.toUpperCase()})`,
+                          durationSeconds: voiceRes.durationSeconds,
+                        },
+                      ]);
+                    }
+                  }}
                 />
               </div>
 

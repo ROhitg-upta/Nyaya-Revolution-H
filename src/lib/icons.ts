@@ -151,6 +151,12 @@ export {
   Siren,
   TriangleAlert,
   UserRound,
+  Printer,
+  Copy,
+  Languages,
+  MicOff,
+  Volume2,
+  Edit3,
 } from "lucide-react";
 
 // Aliases for Base UI / Shadcn conventions

@@ -5,6 +5,7 @@
  * reusable, app-wide types here (utility types, common API envelopes, etc.).
  */
 
+export * from "./action-engine";
 export * from "./ai";
 export * from "./analytics";
 export * from "./auth";
