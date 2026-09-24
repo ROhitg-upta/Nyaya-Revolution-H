@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { AppHeader } from "@/components/common";
 import { ScenarioSimulator } from "@/components/scenarios";
 import { getScenario, scenarioSimulations } from "@/constants";
 
@@ -35,11 +34,8 @@ export default async function ScenarioDetailPage({
   if (!scenario) notFound();
 
   return (
-    <>
-      <AppHeader />
-      <main className="min-h-dvh">
-        <ScenarioSimulator scenario={scenario} />
-      </main>
-    </>
+    <main className="min-h-dvh">
+      <ScenarioSimulator scenario={scenario} />
+    </main>
   );
 }

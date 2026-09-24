@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { AppHeader } from "@/components/common/app-header";
 import { LandingFooter } from "@/components/landing/landing-footer";
 import { SituationSubmitForm } from "@/components/situations/situation-submit-form";
 
@@ -12,10 +11,9 @@ export const metadata: Metadata = {
 export default function SubmitSituationPage() {
   return (
     <>
-      <AppHeader />
-      <main className="min-h-screen py-10">
+      <div className="min-h-screen py-10">
         <SituationSubmitForm />
-      </main>
+      </div>
       <LandingFooter />
     </>
   );

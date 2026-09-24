@@ -27,7 +27,6 @@ import {
   Moon,
   Phone,
   Scale,
-  Search,
   Shield,
   ShieldAlert,
   ShieldCheck,
@@ -38,7 +37,6 @@ import {
   Users,
 } from "lucide-react";
 
-import { CommandSearchModal } from "@/components/navigation/command-search-modal";
 import { MobileBottomNav } from "@/components/navigation/mobile-bottom-nav";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -260,13 +258,15 @@ const groundedAiItems: MegaNavItem[] = [
   },
 ];
 
+const HeaderSingletonContext = React.createContext(false);
+
 export function Header() {
+  const alreadyRenderedInTree = React.useContext(HeaderSingletonContext);
   const pathname = usePathname() || "/";
   const { user, status, signOut } = useAuth();
   const isAuthenticated = status === "authenticated";
 
   const [scrolled, setScrolled] = useState(false);
-  const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
 
   const routeBadge = getContextualRouteBadge(pathname);
@@ -281,16 +281,9 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-        e.preventDefault();
-        setSearchModalOpen((prev) => !prev);
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  if (alreadyRenderedInTree) {
+    return null;
+  }
 
   const userDisplayName =
     user?.name ||
@@ -307,7 +300,9 @@ export function Header() {
 
   return (
     <>
+      <style>{`header[data-nyaya-navbar="true"] ~ header[data-nyaya-navbar="true"], header[data-nyaya-navbar="true"] ~ * header[data-nyaya-navbar="true"] { display: none !important; }`}</style>
       <header
+        data-nyaya-navbar="true"
         className={cn(
           "bg-background/90 sticky top-0 z-50 flex h-16 w-full items-center justify-between px-4 backdrop-blur-xl transition-all duration-300 sm:px-6",
           scrolled
@@ -583,29 +578,14 @@ export function Header() {
             </NavigationMenu>
           </div>
 
-          {/* Right Cluster: Cmd+K Search + Action Studio + Auth Avatar Dropdown with ThemeSwitcher */}
+          {/* Right Cluster: Action Studio + Auth Avatar Dropdown with ThemeSwitcher */}
           <div className="flex items-center gap-2">
-            {/* Cmd+K Search Trigger Button */}
-            <button
-              type="button"
-              onClick={() => setSearchModalOpen(true)}
-              aria-label="Open global legal search (Ctrl+K)"
-              className="border-border/80 bg-muted/40 text-muted-foreground hover:border-foreground/30 hover:text-foreground hidden h-8 items-center gap-2 rounded-full border px-3 text-xs transition-colors sm:inline-flex"
-            >
-              <Search className="size-3.5" />
-              <span className="hidden md:inline">Search situations, 1930, laws...</span>
-              <span className="md:hidden">Search</span>
-              <kbd className="border-border bg-background text-muted-foreground rounded border px-1.5 py-0.5 font-mono text-[10px]">
-                ⌘K
-              </kbd>
-            </button>
-
             {/* Quick Voice & Draft Action Button */}
             <Button
               variant="outline"
               size="sm"
               asChild
-              className="hidden rounded-full text-xs font-medium xl:inline-flex"
+              className="hidden rounded-full text-xs font-medium sm:inline-flex"
             >
               <Link href={routes.actionCenter}>
                 <Mic className="mr-1 size-3.5 text-amber-500" />
@@ -755,23 +735,6 @@ export function Header() {
                 </SheetHeader>
 
                 <div className="mt-4 space-y-5">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMobileSheetOpen(false);
-                      setSearchModalOpen(true);
-                    }}
-                    className="border-border bg-muted/50 text-muted-foreground flex w-full items-center justify-between rounded-xl border px-3.5 py-2.5 text-xs"
-                  >
-                    <span className="flex items-center gap-2">
-                      <Search className="size-4" />
-                      Search situations, 1930, laws...
-                    </span>
-                    <kbd className="rounded border px-1.5 py-0.5 text-[10px]">
-                      ⌘K
-                    </kbd>
-                  </button>
-
                   <div className="space-y-1">
                     <p className="text-muted-foreground px-2 text-[11px] font-bold uppercase">
                       Core Citizen Paths
@@ -833,12 +796,6 @@ export function Header() {
           </div>
         </div>
       </header>
-
-      {/* Command+K Search Modal */}
-      <CommandSearchModal
-        open={searchModalOpen}
-        onClose={() => setSearchModalOpen(false)}
-      />
 
       {/* Mobile Bottom Dock */}
       <MobileBottomNav />

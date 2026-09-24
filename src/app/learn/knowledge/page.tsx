@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { AppHeader } from "@/components/common";
 import { KnowledgeDashboard } from "@/components/learning/knowledge-dashboard";
 
 export const metadata: Metadata = {
@@ -10,11 +9,8 @@ export const metadata: Metadata = {
 
 export default function KnowledgePage() {
   return (
-    <>
-      <AppHeader />
-      <main className="min-h-dvh">
-        <KnowledgeDashboard />
-      </main>
-    </>
+    <main className="min-h-dvh">
+      <KnowledgeDashboard />
+    </main>
   );
 }

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { AppHeader } from "@/components/common";
 import { ScenariosList } from "@/components/scenarios";
 
 export const metadata: Metadata = {
@@ -10,11 +9,8 @@ export const metadata: Metadata = {
 
 export default function ScenariosPage() {
   return (
-    <>
-      <AppHeader />
-      <main className="min-h-dvh">
-        <ScenariosList />
-      </main>
-    </>
+    <main className="min-h-dvh">
+      <ScenariosList />
+    </main>
   );
 }
