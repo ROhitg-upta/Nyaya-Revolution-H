@@ -2638,8 +2638,17 @@ export const situations: Situation[] = [
   },
 ];
 
+export const SITUATION_SLUG_ALIASES: Record<string, string> = {
+  "online-scam-upi-fraud": "upi-fraud",
+  "police-refusing-to-file-fir": "police-complaint-fir",
+  "defective-product-refund-refused": "defective-product",
+  "landlord-keeping-security-deposit": "landlord-withholding-deposit",
+  "salary-not-paid-by-employer": "employer-not-paying-salary",
+};
+
 export function getSituation(slug: string): Situation | undefined {
-  return situations.find((s) => s.slug === slug);
+  const canonicalSlug = SITUATION_SLUG_ALIASES[slug] ?? slug;
+  return situations.find((s) => s.slug === canonicalSlug);
 }
 
 export function getCategory(

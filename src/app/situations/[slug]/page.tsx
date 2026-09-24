@@ -2,12 +2,15 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { SituationDetail } from "@/components/situations";
-import { getSituation, situations } from "@/constants";
+import { getSituation, SITUATION_SLUG_ALIASES, situations } from "@/constants";
 
 type Params = { params: Promise<{ slug: string }> };
 
 export function generateStaticParams() {
-  return situations.map((s) => ({ slug: s.slug }));
+  return [
+    ...situations.map((s) => ({ slug: s.slug })),
+    ...Object.keys(SITUATION_SLUG_ALIASES).map((slug) => ({ slug })),
+  ];
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
@@ -21,5 +24,5 @@ export default async function SituationDetailPage({ params }: Params) {
   const { slug } = await params;
   const situation = getSituation(slug);
   if (!situation) notFound();
-  return <SituationDetail slug={slug} />;
+  return <SituationDetail slug={situation.slug} />;
 }

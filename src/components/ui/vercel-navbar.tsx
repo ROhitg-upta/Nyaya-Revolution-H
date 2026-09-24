@@ -83,21 +83,21 @@ interface MegaNavItem {
 const urgentTriageItems: MegaNavItem[] = [
   {
     title: "Cyber Scam & UPI Fraud (1930)",
-    href: "/situations/online-scam-upi-fraud",
+    href: "/situations/upi-fraud",
     icon: <ShieldAlert className="size-4" strokeWidth={2} />,
     description: "Golden-hour bank lien freeze & RBI zero-liability steps",
     badge: "1930",
   },
   {
     title: "Police Refusing to File FIR",
-    href: "/situations/police-refusing-to-file-fir",
+    href: "/situations/police-complaint-fir",
     icon: <ShieldCheck className="size-4" strokeWidth={2} />,
     description: "Zero FIR & e-FIR rights under Section 173 of BNSS 2023",
     badge: "BNSS 173",
   },
   {
     title: "Defective Product & Refund Denied",
-    href: "/situations/defective-product-refund-refused",
+    href: "/situations/defective-product",
     icon: <Scale className="size-4" strokeWidth={2} />,
     description: "National Consumer Helpline 1915 & CPA 2019 remedies",
   },
@@ -106,13 +106,13 @@ const urgentTriageItems: MegaNavItem[] = [
 const everydaySituationItems: MegaNavItem[] = [
   {
     title: "Landlord Keeping Security Deposit",
-    href: "/situations/landlord-keeping-security-deposit",
+    href: "/situations/landlord-withholding-deposit",
     icon: <Building2 className="size-4" strokeWidth={2} />,
     description: "Move-out inspection proof, wear-and-tear & demand notice",
   },
   {
     title: "Unpaid Salary or Relieving Letter",
-    href: "/situations/salary-not-paid-by-employer",
+    href: "/situations/employer-not-paying-salary",
     icon: <Briefcase className="size-4" strokeWidth={2} />,
     description: "Full & final settlement rights & SAMADHAN conciliation",
   },
