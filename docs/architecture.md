@@ -197,3 +197,19 @@ Row-Level Security (RLS) is enforced directly inside the PostgreSQL kernel. Even
    - Only modified learning tracks or user profile views are re-evaluated, leaving static assets cached indefinitely.
 3. **Database Indexing**:
    - Trigram (`pg_trgm`) and GIN indexes support instant search across thousands of statutory records with sub-10ms query execution times.
+
+---
+
+## 6. Sprint E10: Community Voice, Media Storage & Story-to-Learning Bridge
+
+```
+Citizen Shares Real Situation (`/community/share` 7-Step Wizard)
+         │
+         ├── 1. Indian PII Shield (`detectAndRedactPII`) scans Aadhaar, Phone, PAN, Email, Bank Acct
+         ├── 2. Media Validator (`validateMediaFile`) checks MIME, extension, size (Image 8MB, Audio 15MB, Video 40MB)
+         ├── 3. Upload to `community-media` Supabase Storage bucket (`{userId}/{storyId}/{timestamp}-{safeName}`)
+         ├── 4. AI Story Assistance (`analyzeCitizenStoryWithAI`) generates labeled `AI Summary` & matches `StoryLearningBridge`
+         └── 5. Publish / Save (`citizen_stories` + `story_media`) with strict Three-Tier Authority Separation:
+                [COMMUNITY STORY] ≠ [AI EDUCATIONAL SUMMARY] ≠ [VERIFIED LEGAL LEARNING BRIDGE]
+```
+

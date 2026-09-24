@@ -9,6 +9,7 @@ export * from "./ai";
 export * from "./analytics";
 export * from "./auth";
 export * from "./case-study";
+export * from "./community";
 export * from "./glossary";
 export * from "./learning";
 export * from "./legal-content";

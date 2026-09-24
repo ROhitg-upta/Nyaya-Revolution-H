@@ -203,3 +203,118 @@ export type PracticeCompletionValues = z.infer<typeof practiceCompletionSchema>;
 export type SituationSubmissionValues = z.infer<typeof situationSubmissionSchema>;
 export type ModerationActionValues = z.infer<typeof moderationActionSchema>;
 
+// =============================================================================
+// SPRINT E10: COMMUNITY VOICE, MEDIA UPLOAD & SAFETY VALIDATION SCHEMAS
+// =============================================================================
+
+export const storyMediaUploadSchema = z.object({
+  id: z.string().optional(),
+  mediaType: z.enum(["image", "audio", "video"]),
+  fileName: z.string().min(1).max(160),
+  mimeType: z.string().min(3).max(80),
+  fileSizeBytes: z.number().int().positive(),
+  url: z.string().min(1),
+  storagePath: z.string().min(1),
+  durationSeconds: z.number().nonnegative().optional(),
+  width: z.number().int().positive().optional(),
+  height: z.number().int().positive().optional(),
+  caption: z.string().max(240).optional(),
+  altText: z.string().max(240).optional(),
+  posterUrl: z.string().optional(),
+  transcript: z.string().max(2000).optional(),
+});
+
+export const communityStorySubmissionSchema = z.object({
+  storyId: z.string().optional(),
+  storyType: z
+    .enum(["experience", "awareness", "outcome", "learning", "question", "resource"])
+    .default("experience"),
+  category: z.enum([
+    "consumer",
+    "cyber",
+    "workplace",
+    "tenancy",
+    "police_rights",
+    "family_safety",
+    "education",
+    "rti_civic",
+    "traffic_transport",
+    "general_awareness",
+  ]),
+  title: z
+    .string()
+    .min(8, "Please give your story a clear title (at least 8 characters).")
+    .max(180, "Title cannot exceed 180 characters."),
+  whatHappened: z
+    .string()
+    .min(25, "Please describe what happened in at least 25 characters.")
+    .max(4000, "Story description cannot exceed 4000 characters."),
+  warningSigns: z
+    .string()
+    .max(1500, "Warning signs cannot exceed 1500 characters.")
+    .optional()
+    .default(""),
+  actionTaken: z
+    .string()
+    .min(10, "Please share what action was taken or considered (min 10 chars).")
+    .max(2500, "Action taken cannot exceed 2500 characters."),
+  legalOutcome: z
+    .string()
+    .min(5, "Please describe the current status or outcome.")
+    .max(2000, "Outcome cannot exceed 2000 characters."),
+  citizenTakeaway: z
+    .string()
+    .min(10, "What should another citizen learn from this situation? (min 10 chars)")
+    .max(1200, "Takeaway cannot exceed 1200 characters."),
+  resolutionStatus: z.enum(["resolved", "ongoing", "mediated"]).default("resolved"),
+  statutoryBacking: z.string().max(255).optional().default(""),
+  locationState: z.string().max(80).optional().default("All India"),
+  tags: z.array(z.string().min(2).max(40)).max(6).default([]),
+  identityMode: z.enum(["real_name", "pseudonym", "anonymous"]).default("pseudonym"),
+  authorDisplayName: z.string().max(80).optional(),
+  authorRoleLabel: z.string().max(80).optional(),
+  visibility: z
+    .enum(["public", "community_only", "unlisted", "private_draft"])
+    .default("public"),
+  saveAsDraft: z.boolean().default(false),
+  media: z.array(storyMediaUploadSchema).max(6).default([]),
+  linkedSituationSlug: z.string().optional(),
+  linkedJourneySlug: z.string().optional(),
+  aiSummary: z.string().max(1000).optional(),
+  aiEducationalNote: z.string().max(1000).optional(),
+});
+
+export const storyCommentCreateSchema = z.object({
+  storyId: z.string().min(1, "Story ID is required."),
+  content: z
+    .string()
+    .min(3, "Comment must be at least 3 characters.")
+    .max(1200, "Comment cannot exceed 1200 characters."),
+  identityMode: z.enum(["real_name", "pseudonym", "anonymous"]).default("pseudonym"),
+  authorDisplayName: z.string().max(80).optional(),
+});
+
+export const storyReportCreateSchema = z.object({
+  contentType: z.enum(["story", "comment"]),
+  contentId: z.string().min(1, "Content ID is required."),
+  reason: z.enum([
+    "false_legal_claim",
+    "personal_data_exposure",
+    "defamation_targeted_accusation",
+    "harassment_hate",
+    "spam_scam",
+    "unsafe_media",
+    "graphic_distressing",
+    "impersonation",
+    "copyright",
+    "other",
+  ]),
+  details: z.string().max(1000).optional(),
+});
+
+export type CommunityStorySubmissionValues = z.infer<typeof communityStorySubmissionSchema>;
+export type StoryMediaUploadValues = z.infer<typeof storyMediaUploadSchema>;
+export type StoryCommentCreateValues = z.infer<typeof storyCommentCreateSchema>;
+export type StoryReportCreateValues = z.infer<typeof storyReportCreateSchema>;
+
+

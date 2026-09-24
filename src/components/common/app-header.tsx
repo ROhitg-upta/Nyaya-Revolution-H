@@ -28,12 +28,14 @@ import {
   Sparkles,
   Target,
   User,
+  Users,
 } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/providers/auth-provider";
 
 const navItems = [
   { label: "Situations", href: routes.situations, icon: Compass },
+  { label: "Community", href: routes.community, icon: Users },
   { label: "Laws", href: routes.laws, icon: Scale },
   { label: "Learn", href: routes.learn, icon: BookOpen },
   { label: "Scenarios", href: routes.scenarios, icon: Brain },

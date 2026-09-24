@@ -24,9 +24,17 @@ export const routes = {
   moderation: "/moderation",
   analytics: "/analytics",
   submitSituation: "/situations/submit",
+  community: "/community",
+  communityShare: "/community/share",
+  communityMyStories: "/community/my-stories",
 } as const;
 
 export type RouteKey = keyof typeof routes;
+
+/** Builds the detail route for a citizen story slug. */
+export function communityStoryRoute(slug: string): string {
+  return `/community/stories/${slug}`;
+}
 
 /** Builds the detail route for a situation slug. */
 export function situationRoute(slug: string): string {

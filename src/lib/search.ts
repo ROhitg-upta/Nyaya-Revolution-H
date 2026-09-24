@@ -13,6 +13,7 @@ import {
   situations,
   statutoryActs,
 } from "@/constants";
+import { INITIAL_COMMUNITY_STORIES } from "@/constants/community";
 import type {
   SearchEntityType,
   SearchResultItem,
@@ -37,6 +38,7 @@ export function unifiedSearch(
         journey: [],
         case_study: [],
         glossary: [],
+        story: [],
       },
     };
   }
@@ -209,6 +211,28 @@ export function unifiedSearch(
     });
   }
 
+  // 7. Search Published Public Citizen Stories (Strictly excluding private/draft/rejected)
+  if (filterType === "all" || filterType === "story") {
+    INITIAL_COMMUNITY_STORIES.filter(
+      (story) =>
+        story.moderationStatus === "published" && story.visibility === "public"
+    ).forEach((story) => {
+      const haystack = `${story.title} ${story.whatHappened} ${story.actionTaken} ${story.citizenTakeaway} ${story.statutoryBacking} ${story.tags.join(" ")}`.toLowerCase();
+      if (haystack.includes(q)) {
+        results.push({
+          id: `story-${story.id}`,
+          type: "story",
+          title: story.title,
+          subtitle: `Community Voice · ${story.authorName} · ${story.categoryLabel}`,
+          summary: story.aiSummary || story.citizenTakeaway,
+          href: `/community/stories/${story.slug}`,
+          category: story.categoryLabel,
+          tags: ["Citizen Story", ...story.tags.slice(0, 2)],
+        });
+      }
+    });
+  }
+
   const byType: Record<SearchEntityType, SearchResultItem[]> = {
     situation: results.filter((r) => r.type === "situation"),
     law: results.filter((r) => r.type === "law"),
@@ -217,6 +241,7 @@ export function unifiedSearch(
     journey: results.filter((r) => r.type === "journey"),
     case_study: results.filter((r) => r.type === "case_study"),
     glossary: results.filter((r) => r.type === "glossary"),
+    story: results.filter((r) => r.type === "story"),
   };
 
   return {

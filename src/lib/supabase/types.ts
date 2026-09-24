@@ -34,7 +34,17 @@ export type LegalAreaId =
   | "family"
   | "education";
 export type DifficultyLevel = "beginner" | "intermediate" | "advanced";
-export type ModerationStatus = "pending" | "approved" | "flagged" | "rejected";
+export type ModerationStatus =
+  | "draft"
+  | "submitted"
+  | "under_review"
+  | "pending"
+  | "published"
+  | "approved"
+  | "needs_edit"
+  | "flagged"
+  | "rejected"
+  | "archived";
 export type ResolutionStatus = "resolved" | "ongoing" | "mediated";
 export type JourneyProgressStatus = "not_started" | "in_progress" | "completed";
 export type SourceType =

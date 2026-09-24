@@ -16,6 +16,7 @@ const ENTITY_TABS: { id: SearchEntityType | "all"; label: string }[] = [
   { id: "case_study", label: "Precedents" },
   { id: "lesson", label: "Lessons" },
   { id: "journey", label: "Journeys" },
+  { id: "story", label: "Citizen Stories" },
   { id: "glossary", label: "Glossary" },
 ];
 

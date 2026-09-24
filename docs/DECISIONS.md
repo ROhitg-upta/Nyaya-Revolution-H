@@ -191,3 +191,36 @@ All AI-generated scenarios and questions enter the system with `governanceStatus
 - **Positive:** Protects official curriculum integrity; complies with institutional governance standards.
 - **Negative:** Requires staff review step before publishing.
 
+---
+
+## ADR-011: Three-Tier Authority Separation in Community Voice (`Community Story ≠ AI Summary ≠ Verified Law`)
+
+- **Status:** Accepted
+- **Date:** 2026-09-24
+- **Deciders:** Principal Product Architect, Trust & Safety Engineer
+
+### Context
+User-submitted legal experiences contain valuable practical awareness (such as how 1930 froze a UPI fraud or how NCH 1915 resolved a refund refusal), but citizen anecdotes can never be presented as binding statutory rules.
+
+### Decision
+Enforce explicit visual, structural, and schema separation across three distinct authority tiers on every `/community` card and `/community/stories/[slug]` detail view:
+1. **Tier 1 (`Community Story`)**: User-shared experience with explicit `Identity Mode` (`real_name`, `pseudonym`, `anonymous`).
+2. **Tier 2 (`AI Educational Summary`)**: Explicitly labeled synthesis (`Not Legal Advice`) that never overwrites the citizen's original narrative.
+3. **Tier 3 (`Verified Legal Learning Bridge`)**: Deterministic link (`StoryLearningBridgeData`) connecting the story to verified platform Situations, Indian Statutes (BNSS 2023, CPA 2019, RBI Circulars), Learning Journeys, and AI Practice Scenarios.
+
+---
+
+## ADR-012: Multi-Media Storage Validation & Indian PII Redaction Shield
+
+- **Status:** Accepted
+- **Date:** 2026-09-24
+- **Deciders:** Supabase Storage Architect, Security Engineer
+
+### Context
+Citizens sharing evidence checklists, voice notes, or video walkthroughs may inadvertently include personal phone numbers, 12-digit Aadhaar numbers, PAN cards, or unsafe file formats.
+
+### Decision
+1. Enforce real-time client and server PII detection (`detectAndRedactPII` in `src/lib/sanitization.ts`) with 1-click auto-redaction before story or comment submission.
+2. Restrict uploads to `community-media` (`image/jpeg`, `image/png`, `image/webp` ≤ 8MB; `audio/*` ≤ 15MB; `video/mp4`, `video/webm` ≤ 40MB) with path-traversal sanitization (`sanitizeStorageFileName`) and accessible playback without unexpected autoplay.
+
+

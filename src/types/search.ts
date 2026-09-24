@@ -11,7 +11,8 @@ export type SearchEntityType =
   | "lesson"
   | "journey"
   | "case_study"
-  | "glossary";
+  | "glossary"
+  | "story";
 
 export interface SearchResultItem {
   id: string;
