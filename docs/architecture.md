@@ -261,3 +261,6 @@ ull and rendered as *"Contact details not available in the verified source."*
 ## Sprint E13 — Trust Infrastructure & Authority Governance Console
 - **Governance Layer (src/services/governance/authority-governance.service.ts)**: Controls all NALSA/SLSA/DLSA records via getGovernedPublishedAuthorities().
 - **Zero Silent Overwrites**: Incoming CSV/JSON changes to existing verified authorities generate side-by-side conflicts rather than overwriting live citizen records.
+
+## Sprint E14 — Private Citizen Case Preparation Workspace (/action-center/case-prep)
+- **Service (src/services/action/case-prep-workspace.service.ts)**: Aggregates user chronology, context-aware checklists, private attachment metadata, E13 authority version snapshots (publishedVersionNumber), E12 Lok Adalat readiness notes, and E11 drafts into a single bilingual A4 preparation dossier without ever claiming legal representation or case eligibility.

@@ -101,13 +101,31 @@ export default async function ActionCenterPage({
               <FileText className="mt-0.5 size-5 shrink-0 text-sky-400" />
               <div>
                 <div className="text-xs font-bold text-white">
-                  Printable A4 Citizen Drafts
+                  Bilingual Case Prep Workspace & A4 Dossier
                 </div>
                 <p className="text-[11px] text-slate-300">
-                  Versioned educational templates (`v1`) with mandatory human review and source traceability.
+                  Organize timeline, checklist, DLSA version snapshot, and export a bilingual preparation dossier.
                 </p>
               </div>
             </div>
+          </div>
+
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-indigo-500/40 bg-indigo-950/40 p-4">
+            <div>
+              <div className="text-xs font-bold uppercase tracking-wider text-indigo-300">
+                Sprint E14 • Speak / Describe → Understand → Find Help → Prepare → Review → Export
+              </div>
+              <div className="mt-0.5 text-sm font-bold text-white">
+                Ready to organize your chronology, evidence checklist, and DLSA snapshot into an A4 Bilingual Preparation Pack?
+              </div>
+            </div>
+            <a
+              href="/action-center/case-prep"
+              className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2.5 text-xs font-extrabold text-slate-950 shadow-lg hover:bg-emerald-400"
+            >
+              <FileText className="size-4" />
+              Open Citizen Case Prep Workspace
+            </a>
           </div>
         </section>
 

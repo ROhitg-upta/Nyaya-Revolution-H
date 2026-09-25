@@ -125,8 +125,17 @@ export const PRIMARY_NAV_SECTIONS: PrimaryNavSection[] = [
         description: "Speak in Hindi/Hinglish, find NALSA 15100 aid & prepare A4 drafts.",
         href: routes.actionCenter,
         icon: Mic,
-        badge: "New E11",
+        badge: "Action Center",
         badgeTone: "amber",
+      },
+      {
+        id: "sit-case-prep",
+        title: "Citizen Case Prep & Bilingual Dossier",
+        description: "Organize timeline, checklist, DLSA snapshot & export A4 bilingual pack.",
+        href: "/action-center/case-prep",
+        icon: FolderKanban,
+        badge: "New E14",
+        badgeTone: "emerald",
       },
       {
         id: "sit-submit",

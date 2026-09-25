@@ -264,3 +264,6 @@ ull when absent in official sources and flag multi-source conflicts (conflict_st
 
 ## ADR-013: Human-in-the-Loop Authority Governance & Immutable Versioning (Sprint E13)
 - **Decision**: Disallow automatic background overwrites of verified legal service authorities. Require HTTPS sourceUrl provenance, side-by-side conflict resolution, and immutable 1 -> v2 snapshots with batch rollback.
+
+## ADR-014: Private Case Preparation Workspace & Authority Snapshot Traceability (Sprint E14)
+- **Decision**: Preserve exact E13 publishedVersionNumber and erifiedAtSnapshot inside each Citizen Case Preparation Dossier export (case_prep_exports) so printed/offline citizen packs remain auditable even if public directory details later change.

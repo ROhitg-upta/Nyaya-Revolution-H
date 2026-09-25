@@ -236,3 +236,6 @@ Creates 4-option practice scenarios. Automatically marked as `governanceStatus: 
 - publishAuthorityImportBatchAction & ollbackAuthorityImportBatchAction: Atomic batch publish and reversible rollback.
 - esolveAuthorityConflictAction: Side-by-side conflict resolution (ccept_import, keep_existing, manual_edit, eject_import, equest_reverification, rchive_record).
 - 	riggerScheduledFreshnessScanAction & 	riggerSourceHealthCheckAction: Automated freshness and HTTP/fingerprint drift checks.
+
+## Sprint E14 — Case Prep Server Actions (src/actions/case-prep.actions.ts)
+- etchCasePrepWorkspaceAction, saveCasePrepSummaryAction, ddCasePrepTimelineEventAction, uploadCasePrepAttachmentMetadataAction, linkCasePrepAuthorityAction, pplyCasePrepPiiDecisionAction, exportVerifiedCasePrepDossierAction: Enforces owner-only anti-IDOR protection (ssertWorkspaceOwner) and mandatory 6-point Review Gate confirmation before generating versioned exports.
