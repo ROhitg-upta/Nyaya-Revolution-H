@@ -179,7 +179,8 @@ export type CitizenDocumentTemplateType =
   | "rti-application-v1"
   | "cyber-fraud-incident-v1"
   | "workplace-wage-representation-v1"
-  | "legal-aid-checklist-v1";
+  | "legal-aid-checklist-v1"
+  | "lok-adalat-prep-brief-v1";
 
 export type CitizenTemplateVersion = CitizenDocumentTemplateType;
 
@@ -258,3 +259,202 @@ export interface CitizenDocumentTemplateSpec {
     reference: string;
   }[];
 }
+
+// ============================================================================
+// SPRINT E12: LIVE SPEECH PROVIDERS (BHASHINI ULCA + GEMINI AUDIO + TTS)
+// ============================================================================
+
+export type ActiveSpeechProviderId =
+  | "bhashini_ulca"
+  | "gemini_audio"
+  | "browser_web_speech"
+  | "text_fallback";
+
+export interface LiveSpeechTranscriptionResult {
+  transcript: string;
+  requestedLanguage: SupportedCitizenLanguage;
+  detectedLanguage: SupportedCitizenLanguage;
+  providerLanguageCode: string;
+  languageScript: string;
+  confidence: number;
+  provider: ActiveSpeechProviderId;
+  fallbackUsed: boolean;
+  latencyMs: number;
+  createdAt: string;
+}
+
+export interface TextToSpeechSynthesisInput {
+  text: string;
+  language: SupportedCitizenLanguage;
+  voiceGender?: "female" | "male";
+}
+
+export interface TextToSpeechAudioResult {
+  ok: boolean;
+  audioBase64: string | null;
+  mimeType: string;
+  provider: ActiveSpeechProviderId;
+  languageCode: string;
+  fallbackToBrowserTts: boolean;
+  errorReason?: string;
+}
+
+export interface TextToSpeechProvider {
+  readonly name: string;
+  synthesize(input: TextToSpeechSynthesisInput): Promise<TextToSpeechAudioResult>;
+}
+
+// ============================================================================
+// SPRINT E12: SOURCE-DRIVEN DLSA / SLSA DIRECTORY & GEO-LOCATOR
+// ============================================================================
+
+export type LegalAuthorityTier = "NALSA" | "SLSA" | "DLSA" | "TLSC" | "HCLSC";
+
+export type AuthorityVerificationLifecycleState =
+  | "new"
+  | "needs_review"
+  | "verified"
+  | "published"
+  | "review_due"
+  | "stale"
+  | "conflicted"
+  | "archived";
+
+export interface AuthorityConflictMetadata {
+  conflictStatus: "none" | "conflicted" | "resolved";
+  sourceA?: {
+    sourceUrl: string;
+    valueSummary: string;
+    checkedAt: string;
+  };
+  sourceB?: {
+    sourceUrl: string;
+    valueSummary: string;
+    checkedAt: string;
+  };
+  reviewRequired: boolean;
+  notes?: string;
+}
+
+export interface LegalServiceAuthorityRecord {
+  id: string;
+  slug: string;
+  authorityType: LegalAuthorityTier;
+  state: string;
+  district: string | null;
+  talukOrLocalOffice?: string | null;
+  officeName: string;
+  contact: {
+    phone: string | null;
+    helpline: string | null;
+    email: string | null;
+  };
+  address: string | null;
+  website: string | null;
+  jurisdiction: string;
+  services: string[];
+  issueCategories: string[];
+  languagesSupported: SupportedCitizenLanguage[];
+  sourceUrl: string;
+  sourceType: "nalsa_portal" | "official_slsa_directory" | "ecourts_district_portal";
+  verificationStatus: AuthorityVerificationLifecycleState;
+  lastVerifiedAt: string;
+  staleAfterDays: number;
+  conflictMetadata?: AuthorityConflictMetadata;
+  isPublished: boolean;
+}
+
+export interface RankedDlsaAuthority extends LegalServiceAuthorityRecord {
+  matchScore: number;
+  matchTier: "exact_district" | "state_slsa" | "national_nalsa";
+  matchReasons: string[];
+  isStale: boolean;
+}
+
+export interface PincodeJurisdictionResult {
+  validFormat: boolean;
+  pincode: string;
+  resolvedState: string | null;
+  primaryDistrict: string | null;
+  candidateDistricts: string[];
+  isAmbiguous: boolean;
+  resolutionConfidence: "exact_district_prefix" | "state_postal_circle" | "unknown";
+  explanationNote: string;
+}
+
+// ============================================================================
+// SPRINT E12: LOK ADALAT EDUCATIONAL SIMULATOR
+// ============================================================================
+
+export type LokAdalatDisputeCategory =
+  | "public_utility_electricity_water_telecom"
+  | "motor_accident_claim_mact"
+  | "banking_loan_recovery_negotiable_instrument"
+  | "consumer_service_refund_dispute"
+  | "tenancy_rent_or_workplace_dues"
+  | "matrimonial_family_compoundable"
+  | "non_compoundable_criminal_offence"
+  | "urgent_safety_or_cyber_freeze";
+
+export type LokAdalatCourtStage =
+  | "pre_litigation_no_case_filed"
+  | "pending_in_court"
+  | "unsure";
+
+export type LokAdalatSettlementCapability =
+  | "capable_of_mutual_compromise"
+  | "requires_criminal_prosecution_or_injunction"
+  | "unsure";
+
+export type LokAdalatWillingness =
+  | "both_open_to_settlement"
+  | "citizen_wants_dlsa_conciliation_notice"
+  | "no_willingness_to_settle"
+  | "unsure";
+
+export interface LokAdalatSimulatorInput {
+  disputeCategory: LokAdalatDisputeCategory;
+  courtStage: LokAdalatCourtStage;
+  settlementCapability: LokAdalatSettlementCapability;
+  willingness: LokAdalatWillingness;
+  state?: string;
+  district?: string;
+  situationSummary?: string;
+}
+
+export interface LokAdalatReadinessItem {
+  id: string;
+  category:
+    | "Basic facts"
+    | "Parties involved"
+    | "Relevant documents"
+    | "Existing case information"
+    | "Contact details"
+    | "Important dates"
+    | "Previous communications"
+    | "Desired resolution";
+  title: string;
+  description: string;
+  requiredForBrief: boolean;
+}
+
+export interface LokAdalatSimulatorOutput {
+  headline: string;
+  relevanceSignal:
+    | "commonly_explored_in_lok_adalat"
+    | "depends_on_compoundability_and_consent"
+    | "not_typical_for_lok_adalat";
+  whatLokAdalatMeans: string;
+  whatSettlementMeans: string;
+  statutoryBasis: {
+    provision: string;
+    summary: string;
+    sourceUrl: string;
+  }[];
+  whyThisPathwayAppears: string[];
+  whenNotAppropriate: string[];
+  questionsToAskDlsaOrLawyer: string[];
+  readinessChecklist: LokAdalatReadinessItem[];
+  mandatoryEducationalDisclaimer: string;
+}
+

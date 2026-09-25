@@ -126,23 +126,24 @@ const everydaySituationItems: MegaNavItem[] = [
 
 const citizenActionItems: MegaNavItem[] = [
   {
-    title: "Multilingual Voice Input (Hindi/Hinglish)",
+    title: "Multilingual Voice & Listen Readback",
     href: routes.actionCenter,
     icon: <Mic className="size-4" strokeWidth={2} />,
-    description: "Speak in your own words with editable transcript review",
-    badge: "New E11",
+    description: "Live speech-to-text & optional voice readback in Indian languages",
+    badge: "Live E12",
   },
   {
-    title: "Verified Legal Aid Directory (15100)",
-    href: "/action-center?category=Fundamental+Rights",
+    title: "Verified DLSA & SLSA Geo-Locator",
+    href: "/action-center?q=DLSA",
     icon: <Phone className="size-4" strokeWidth={2} />,
-    description: "NALSA, State SLSAs, NCH 1915, Cyber 1930 & Central/State RTI",
+    description: "Find District & State Legal Services by State, District or 6-digit PIN",
+    badge: "15100",
   },
   {
-    title: "Printable A4 Citizen Draft Studio",
-    href: "/action-center?template=consumer-grievance-v1",
+    title: "Lok Adalat Simulator & A4 Brief Studio",
+    href: "/action-center?template=lok-adalat-prep-brief-v1",
     icon: <FileText className="size-4" strokeWidth={2} />,
-    description: "Versioned consumer, RTI, cyber & wage templates (v1)",
+    description: "Educational ADR simulator, readiness checklist & printable A4 brief",
   },
 ];
 

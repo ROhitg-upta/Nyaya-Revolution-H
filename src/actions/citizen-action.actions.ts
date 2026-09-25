@@ -6,20 +6,36 @@ import {
   getRankedVerifiedResources,
   updateCitizenDocumentDraft,
 } from "@/services/action/citizen-action.service";
+import { evaluateLokAdalatEducationalPathway } from "@/services/action/lok-adalat-simulator.service";
+import {
+  findRankedDlsaAuthorities,
+  resolveCoordinatesToJurisdiction,
+} from "@/services/dlsa/dlsa-locator.service";
 import {
   analyzeMultilingualCitizenSituation,
+  NyayaSpeechToTextProvider,
+  NyayaTextToSpeechProvider,
   saveVoiceTranscriptRecord,
 } from "@/services/voice/multilingual-voice.service";
 import type {
   CitizenDocumentTemplateType,
   GeneratedCitizenDocument,
   GeneratedDocumentSection,
+  LiveSpeechTranscriptionResult,
+  LokAdalatSimulatorInput,
+  LokAdalatSimulatorOutput,
   MultilingualUnderstandingResult,
+  PincodeJurisdictionResult,
+  RankedDlsaAuthority,
   RankedVerifiedResource,
   SupportedCitizenLanguage,
+  TextToSpeechAudioResult,
   VoiceStoragePreference,
   VoiceTranscriptRecord,
 } from "@/types/action-engine";
+
+const speechProvider = new NyayaSpeechToTextProvider();
+const ttsProvider = new NyayaTextToSpeechProvider();
 
 // Lightweight in-memory rate-limit bucket per session key
 const actionRateMap = new Map<string, { count: number; resetAt: number }>();
@@ -38,15 +54,60 @@ function checkActionRateLimit(key: string, maxRequests = 25, windowMs = 60_000):
   return true;
 }
 
+export async function transcribeLiveVoiceAction(params: {
+  audioBase64?: string;
+  mimeType: string;
+  languageHint?: SupportedCitizenLanguage;
+  browserTranscript?: string;
+}): Promise<{
+  ok: boolean;
+  result?: LiveSpeechTranscriptionResult;
+  error?: string;
+}> {
+  if (!checkActionRateLimit("voice-stt", 20, 60_000)) {
+    return {
+      ok: false,
+      error: "Voice transcription rate limit reached. Please wait a moment or type your situation.",
+    };
+  }
+
+  const result = await speechProvider.transcribeLive(params);
+  return { ok: true, result };
+}
+
+export async function synthesizeEducationalTtsAction(params: {
+  text: string;
+  language: SupportedCitizenLanguage;
+}): Promise<TextToSpeechAudioResult> {
+  if (!checkActionRateLimit("voice-tts", 25, 60_000)) {
+    return {
+      ok: false,
+      audioBase64: null,
+      mimeType: "audio/wav",
+      provider: "browser_web_speech",
+      languageCode: "en-IN",
+      fallbackToBrowserTts: true,
+      errorReason: "Rate limit reached for server TTS; using browser readback.",
+    };
+  }
+
+  return ttsProvider.synthesize({
+    text: params.text,
+    language: params.language,
+  });
+}
+
 export async function analyzeCitizenVoiceOrTextAction(params: {
   rawInput: string;
   languageHint?: SupportedCitizenLanguage;
   stateJurisdiction?: string;
+  districtJurisdiction?: string;
 }): Promise<{
   ok: boolean;
   error?: string;
   understanding?: MultilingualUnderstandingResult;
   recommendedResources?: RankedVerifiedResource[];
+  recommendedDlsaAuthorities?: RankedDlsaAuthority[];
 }> {
   if (!checkActionRateLimit("multilingual-analyze", 30, 60_000)) {
     return {
@@ -69,10 +130,20 @@ export async function analyzeCitizenVoiceOrTextAction(params: {
     stateJurisdiction: params.stateJurisdiction,
   });
 
+  const targetState =
+    params.stateJurisdiction ?? understanding.detectedState ?? "All India";
+
   const recommendedResources = await getRankedVerifiedResources({
     category: understanding.primaryCategory,
     secondaryCategories: understanding.secondaryCategories,
-    state: params.stateJurisdiction ?? understanding.detectedState ?? "All India",
+    state: targetState,
+    language: understanding.detectedLanguage,
+  });
+
+  const dlsaLookup = findRankedDlsaAuthorities({
+    state: targetState,
+    district: params.districtJurisdiction,
+    issueCategory: understanding.primaryCategory,
     language: understanding.detectedLanguage,
   });
 
@@ -80,7 +151,94 @@ export async function analyzeCitizenVoiceOrTextAction(params: {
     ok: true,
     understanding,
     recommendedResources: recommendedResources.slice(0, 6),
+    recommendedDlsaAuthorities: dlsaLookup.authorities.slice(0, 4),
   };
+}
+
+export async function findLocalDlsaAuthoritiesAction(params: {
+  state?: string;
+  district?: string | null;
+  pincode?: string;
+  issueCategory?: string;
+  language?: SupportedCitizenLanguage;
+  ephemeralCoordinates?: {
+    latitude: number;
+    longitude: number;
+  } | null;
+}): Promise<{
+  ok: boolean;
+  authorities: RankedDlsaAuthority[];
+  pincodeResolution: PincodeJurisdictionResult | null;
+  derivedJurisdiction: {
+    state: string;
+    district: string | null;
+    privacyNote?: string;
+  } | null;
+  exactDistrictFound: boolean;
+}> {
+  let effectiveState = params.state ?? "All India";
+  let effectiveDistrict = params.district ?? null;
+  let derivedJurisdiction: {
+    state: string;
+    district: string | null;
+    privacyNote?: string;
+  } | null = null;
+
+  // Ephemeral coordinate resolution: derive district/state and immediately discard coordinates
+  if (params.ephemeralCoordinates) {
+    const geo = resolveCoordinatesToJurisdiction({
+      latitude: params.ephemeralCoordinates.latitude,
+      longitude: params.ephemeralCoordinates.longitude,
+    });
+    if (geo.matched) {
+      effectiveState = geo.state;
+      effectiveDistrict = geo.district;
+    }
+    derivedJurisdiction = {
+      state: geo.state,
+      district: geo.district,
+      privacyNote: geo.privacyNote,
+    };
+  }
+
+  const lookup = findRankedDlsaAuthorities({
+    state: effectiveState,
+    district: effectiveDistrict,
+    pincode: params.pincode,
+    issueCategory: params.issueCategory,
+    language: params.language,
+  });
+
+  if (lookup.pincodeResolution?.resolvedState && !derivedJurisdiction) {
+    derivedJurisdiction = {
+      state: lookup.pincodeResolution.resolvedState,
+      district: lookup.pincodeResolution.primaryDistrict,
+      privacyNote: lookup.pincodeResolution.explanationNote,
+    };
+  } else if (effectiveState !== "All India" && !derivedJurisdiction) {
+    derivedJurisdiction = {
+      state: effectiveState,
+      district: effectiveDistrict,
+    };
+  }
+
+  return {
+    ok: true,
+    authorities: lookup.authorities,
+    pincodeResolution: lookup.pincodeResolution,
+    derivedJurisdiction,
+    exactDistrictFound: lookup.exactDistrictFound,
+  };
+}
+
+export async function evaluateLokAdalatSimulatorAction(
+  input: LokAdalatSimulatorInput
+): Promise<{
+  ok: boolean;
+  output: LokAdalatSimulatorOutput;
+}> {
+  const output = evaluateLokAdalatEducationalPathway(input);
+  return { ok: true, output };
 }
 
 export async function saveVoiceTranscriptAction(params: {
@@ -183,3 +341,4 @@ export async function deleteCitizenActionDraftAction(
 ): Promise<{ ok: boolean }> {
   return deleteCitizenDocumentDraft(documentId);
 }
+

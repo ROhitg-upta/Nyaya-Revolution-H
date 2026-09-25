@@ -237,3 +237,23 @@ Citizen Speaks / Types in Hindi, Hinglish, Regional Script, or English (`/action
 ```
 
 
+
+---
+
+## Sprint E12 — Live Multilingual Voice, Verified DLSA Geo-Locator & Lok Adalat Readiness Engine
+
+### 1. Live Speech Provider & TTS Architecture
+- **3-Tier Speech-to-Text (NyayaSpeechToTextProvider)**:
+  1. **MeitY Bhashini ULCA ASR (hashini_ulca)**: Server-side pipeline (BHASHINI_USER_ID, BHASHINI_API_KEY, BHASHINI_PIPELINE_ID).
+  2. **Gemini 2.0 Flash Multimodal Audio ASR (gemini_audio)**: Server-side Indian language & Hinglish transcription fallback using GEMINI_API_KEY.
+  3. **Browser Web Speech API + Deterministic Indian Script/Hinglish Detector (rowser_web_speech)** & Manual Text Fallback.
+- **Multilingual Text-to-Speech (NyayaTextToSpeechProvider + TTSListenPlayer)**:
+  - Supports [? Listen], Pause, Resume, Stop, Progress, Retry, and Browser speechSynthesis (hi-IN, en-IN, regional Indian locales) with zero autoplay and a 1,200-character cost-control cap.
+
+### 2. Source-Driven DLSA / SLSA Directory & Geo-Locator
+- **No Fabricated Contacts**: Missing district phone numbers or postal addresses in official sources are explicitly preserved as 
+ull and rendered as *"Contact details not available in the verified source."*
+- **PIN Code & Ephemeral Geolocation**: Resolves 6-digit PIN codes (VERIFIED_PINCODE_JURISDICTION_MAP + 2-digit INDIAN_POSTAL_CIRCLE_STATE_MAP), flags multi-district boundary PINs (isAmbiguous: true), and matches browser GPS coordinates in-memory before immediately discarding raw coordinates.
+
+### 3. Lok Adalat Educational Simulator
+- Interactive 4-step educational pathway (evaluateLokAdalatEducationalPathway) with an 8-point Readiness Checklist and 1-click **Create Case Preparation Brief** (lok-adalat-prep-brief-v1), strictly separated from legal eligibility determination.

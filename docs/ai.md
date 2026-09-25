@@ -139,3 +139,8 @@ Indian citizens frequently express legal grievances in mixed colloquial phrasing
 - **Kernel-Level User Isolation**: AI conversations and messages are persisted in Supabase tables `ai_conversations` and `ai_messages` under Row-Level Security (`user_id = auth.uid()`).
 - **PII Scrubbing**: Query titles automatically mask 12-digit Aadhaar patterns and 10-digit phone numbers before database persistence.
 - **Dual-Mode Graceful Fallback**: In offline, CI/CD, or unauthenticated environments where Gemini credentials are not present, the system automatically fulfills all queries using verified static platform knowledge without crashing or throwing 500 errors.
+
+
+## Sprint E12 Voice AI & Lok Adalat Boundaries
+- AI and Simulator components explain Lok Adalat concepts (Sections 19-22B of LSA Act, 1987) and prepare Case Preparation Briefs without ever determining legal eligibility or guaranteeing settlement.
+- Untrusted voice transcripts pass through sanitizeUntrustedCitizenInput and detectAndRedactPII prior to analysis.

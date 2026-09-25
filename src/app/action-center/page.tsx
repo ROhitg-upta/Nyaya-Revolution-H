@@ -36,6 +36,7 @@ export default async function ActionCenterPage({
     "cyber-fraud-incident-v1",
     "workplace-wage-representation-v1",
     "legal-aid-checklist-v1",
+    "lok-adalat-prep-brief-v1",
   ];
 
   const initialTemplate = validTemplates.includes(
@@ -56,11 +57,11 @@ export default async function ActionCenterPage({
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/20 px-3 py-1 text-xs font-semibold text-amber-300">
               <Mic className="size-3.5" aria-hidden />
-              Sprint E11 • Citizen Action & Multilingual Voice Engine
+              Sprint E12 • Live Multilingual Voice, DLSA Geo-Locator & Lok Adalat Engine
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-300">
               <ShieldCheck className="size-3.5" aria-hidden />
-              100% Verified Official Resources • Zero Fabricated Contacts
+              Source-Driven SLSA/DLSA Directory • Zero Fabricated Contacts
             </span>
           </div>
 

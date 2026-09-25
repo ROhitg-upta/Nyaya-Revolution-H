@@ -256,3 +256,8 @@ Generating official grievance drafts or recommending government helplines requir
 
 
 
+
+
+## ADR-012: Source-Driven DLSA Directory & Ephemeral Geolocation Privacy
+- **Decision**: Never hardcode a national DLSA count or invent missing phone numbers; explicitly store 
+ull when absent in official sources and flag multi-source conflicts (conflict_status = 'conflicted'). Discard raw browser coordinates immediately after nearest-district centroid matching.

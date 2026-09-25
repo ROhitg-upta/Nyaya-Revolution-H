@@ -34,15 +34,19 @@ import {
   CITIZEN_DOCUMENT_TEMPLATES,
   VERIFIED_RESOURCES_CATALOG,
 } from "@/constants/verified-resources";
+import { DLSAGeoLocator } from "@/components/action/dlsa-geo-locator";
+import { LokAdalatSimulator } from "@/components/action/lok-adalat-simulator";
+import { YourNextStepsCard } from "@/components/action/your-next-steps-card";
+import { TTSListenPlayer } from "@/components/voice/tts-listen-player";
 import {
   VoiceSituationInput,
   type VoiceSituationInputResult,
 } from "@/components/voice/voice-situation-input";
-import { YourNextStepsCard } from "@/components/action/your-next-steps-card";
 import type {
   CitizenDocumentTemplateType,
   GeneratedCitizenDocument,
   MultilingualUnderstandingResult,
+  RankedDlsaAuthority,
   RankedVerifiedResource,
 } from "@/types/action-engine";
 
@@ -83,8 +87,18 @@ export function ActionCenterHub({
   initialQuery = "",
 }: ActionCenterHubProps) {
   const [activeTab, setActiveTab] = React.useState<
-    "voice-understand" | "verified-directory" | "document-studio"
-  >(initialTemplate && initialCategory !== "All" ? "document-studio" : "voice-understand");
+    | "voice-understand"
+    | "dlsa-locator"
+    | "lok-adalat-simulator"
+    | "verified-directory"
+    | "document-studio"
+  >(
+    initialTemplate === "lok-adalat-prep-brief-v1"
+      ? "lok-adalat-simulator"
+      : initialTemplate && initialCategory !== "All"
+        ? "document-studio"
+        : "voice-understand"
+  );
 
   // State 1: Multilingual Understanding & Voice
   const [selectedState, setSelectedState] = React.useState<string>("All India");
@@ -315,14 +329,44 @@ export function ActionCenterHub({
             role="tab"
             aria-selected={activeTab === "voice-understand"}
             onClick={() => setActiveTab("voice-understand")}
-            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-semibold transition ${
+            className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2.5 text-xs font-semibold transition ${
               activeTab === "voice-understand"
                 ? "bg-slate-900 text-white shadow-sm dark:bg-amber-500 dark:text-slate-950"
                 : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
             }`}
           >
             <Mic className="size-4" aria-hidden />
-            1. Speak or Describe (Multilingual)
+            1. Speak / Understand
+          </button>
+
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "dlsa-locator"}
+            onClick={() => setActiveTab("dlsa-locator")}
+            className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2.5 text-xs font-semibold transition ${
+              activeTab === "dlsa-locator"
+                ? "bg-slate-900 text-white shadow-sm dark:bg-amber-500 dark:text-slate-950"
+                : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+            }`}
+          >
+            <Building2 className="size-4" aria-hidden />
+            2. Find Local Legal Aid (DLSA Geo-Locator)
+          </button>
+
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "lok-adalat-simulator"}
+            onClick={() => setActiveTab("lok-adalat-simulator")}
+            className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2.5 text-xs font-semibold transition ${
+              activeTab === "lok-adalat-simulator"
+                ? "bg-slate-900 text-white shadow-sm dark:bg-amber-500 dark:text-slate-950"
+                : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+            }`}
+          >
+            <Scale className="size-4" aria-hidden />
+            3. Lok Adalat Readiness Simulator
           </button>
 
           <button
@@ -330,14 +374,14 @@ export function ActionCenterHub({
             role="tab"
             aria-selected={activeTab === "verified-directory"}
             onClick={() => setActiveTab("verified-directory")}
-            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-semibold transition ${
+            className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2.5 text-xs font-semibold transition ${
               activeTab === "verified-directory"
                 ? "bg-slate-900 text-white shadow-sm dark:bg-amber-500 dark:text-slate-950"
                 : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
             }`}
           >
-            <Building2 className="size-4" aria-hidden />
-            2. Verified Legal Aid & Helplines (15100 / 1915 / 1930)
+            <ShieldCheck className="size-4" aria-hidden />
+            4. National Helplines & Portals
           </button>
 
           <button
@@ -345,14 +389,14 @@ export function ActionCenterHub({
             role="tab"
             aria-selected={activeTab === "document-studio"}
             onClick={() => setActiveTab("document-studio")}
-            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-semibold transition ${
+            className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2.5 text-xs font-semibold transition ${
               activeTab === "document-studio"
                 ? "bg-slate-900 text-white shadow-sm dark:bg-amber-500 dark:text-slate-950"
                 : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
             }`}
           >
             <FileText className="size-4" aria-hidden />
-            3. Citizen Action Draft & Printable A4 Studio
+            5. Printable A4 Draft Studio
           </button>
         </div>
 
@@ -410,6 +454,11 @@ export function ActionCenterHub({
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2">
+                    <TTSListenPlayer
+                      text={`${understanding.primaryCategory}. ${understanding.plainLanguageExplanation}`}
+                      language={understanding.detectedLanguage}
+                      label="Listen to Explanation"
+                    />
                     <span className="rounded-full bg-amber-500/15 px-3 py-1 text-xs font-semibold text-amber-800 dark:text-amber-300">
                       Detected Script: {understanding.languageScript}
                     </span>
@@ -474,6 +523,26 @@ export function ActionCenterHub({
                     </div>
                   </div>
                 )}
+
+                {/* Quick E12 Bridge Buttons: Local DLSA Locator + Lok Adalat Simulator */}
+                <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-4 dark:border-slate-800">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("dlsa-locator")}
+                    className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-emerald-700"
+                  >
+                    <Building2 className="size-4" />
+                    Find Verified DLSA Near You ({selectedState})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("lok-adalat-simulator")}
+                    className="inline-flex items-center gap-2 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-2 text-xs font-bold text-amber-900 transition hover:bg-amber-500/20 dark:text-amber-200"
+                  >
+                    <Scale className="size-4" />
+                    Could Lok Adalat Be Relevant to This Situation?
+                  </button>
+                </div>
               </div>
 
               {/* Your Next Steps Action Roadmap */}
@@ -487,6 +556,52 @@ export function ActionCenterHub({
               />
             </div>
           )}
+        </div>
+      )}
+
+      {/* =====================================================================
+          WORKSPACE 2: VERIFIED DLSA / SLSA GEO-LOCATOR (SPRINT E12)
+      ===================================================================== */}
+      {activeTab === "dlsa-locator" && (
+        <div className="print:hidden">
+          <DLSAGeoLocator
+            initialState={selectedState}
+            initialIssueCategory={understanding?.primaryCategory || dirCategory}
+            language={understanding?.detectedLanguage || "en"}
+            onPrepareBriefForAuthority={(authority: RankedDlsaAuthority) => {
+              setSelectedTemplate("legal-aid-checklist-v1");
+              setCitizenCityState(
+                authority.district
+                  ? `${authority.district}, ${authority.state}`
+                  : authority.state
+              );
+              setCounterpartyName(authority.officeName);
+              setActiveTab("document-studio");
+            }}
+          />
+        </div>
+      )}
+
+      {/* =====================================================================
+          WORKSPACE 3: LOK ADALAT READINESS SIMULATOR (SPRINT E12)
+      ===================================================================== */}
+      {activeTab === "lok-adalat-simulator" && (
+        <div className="print:hidden">
+          <LokAdalatSimulator
+            language={understanding?.detectedLanguage || "en"}
+            onCreateCasePreparationBrief={(params) => {
+              setSelectedTemplate("lok-adalat-prep-brief-v1");
+              setSituationSummary(
+                understanding?.originalText
+                  ? `${understanding.originalText}\n\n[Lok Adalat Readiness Notes]: ${params.summaryNote}`
+                  : params.summaryNote
+              );
+              setReliefSought(
+                `Explore Pre-Litigation / Lok Adalat Conciliation for ${params.disputeLabel}`
+              );
+              setActiveTab("document-studio");
+            }}
+          />
         </div>
       )}
 

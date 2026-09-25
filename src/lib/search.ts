@@ -14,6 +14,7 @@ import {
   statutoryActs,
 } from "@/constants";
 import { INITIAL_COMMUNITY_STORIES } from "@/constants/community";
+import { VERIFIED_DLSA_DIRECTORY } from "@/constants/dlsa-directory";
 import type {
   SearchEntityType,
   SearchResultItem,
@@ -231,6 +232,44 @@ export function unifiedSearch(
         });
       }
     });
+  }
+
+  // 8. Search Verified Legal Services Authorities (NALSA / SLSA / DLSA) & Lok Adalat Engine (Sprint E12)
+  if (filterType === "all" || filterType === "situation" || filterType === "law") {
+    VERIFIED_DLSA_DIRECTORY.filter(
+      (auth) => auth.isPublished && auth.verificationStatus !== "archived"
+    ).forEach((auth) => {
+      const haystack = `${auth.officeName} ${auth.authorityType} ${auth.state} ${auth.district ?? ""} ${auth.jurisdiction} ${auth.services.join(" ")} ${auth.contact.helpline ?? ""} legal aid dlsa slsa nalsa lok adalat`.toLowerCase();
+      if (haystack.includes(q)) {
+        results.push({
+          id: `authority-${auth.id}`,
+          type: "situation",
+          title: auth.officeName,
+          subtitle: `Verified ${auth.authorityType} · ${auth.district ? `${auth.district}, ${auth.state}` : auth.state}`,
+          summary: `${auth.jurisdiction} — Services: ${auth.services.join(", ")}. Helpline: ${auth.contact.helpline ?? "15100"}.`,
+          href: `/action-center?q=${encodeURIComponent(auth.district || auth.state)}`,
+          category: "Fundamental Rights",
+          tags: [auth.authorityType, auth.state, "Verified Source"],
+          verificationStatus:
+            auth.verificationStatus === "verified" ? "verified" : "needs_review",
+        });
+      }
+    });
+
+    if ("lok adalat adr mediation settlement pre-litigation conciliation 15100".includes(q)) {
+      results.push({
+        id: "e12-lok-adalat-simulator",
+        type: "situation",
+        title: "Could Lok Adalat Be Relevant to This Situation? (Educational Simulator)",
+        subtitle: "Action Center · Lok Adalat & ADR Readiness Engine",
+        summary:
+          "Interactive 4-step educational simulator and 8-point readiness checklist under Sections 19–22B of the Legal Services Authorities Act, 1987.",
+        href: "/action-center?template=lok-adalat-prep-brief-v1",
+        category: "Fundamental Rights",
+        tags: ["Lok Adalat", "ADR", "Preparation Brief"],
+        verificationStatus: "verified",
+      });
+    }
   }
 
   const byType: Record<SearchEntityType, SearchResultItem[]> = {

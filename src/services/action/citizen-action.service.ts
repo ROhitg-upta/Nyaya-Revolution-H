@@ -430,6 +430,51 @@ export async function generateCitizenDocumentDraft(params: {
       break;
     }
 
+    case "lok-adalat-prep-brief-v1": {
+      title = `Lok Adalat / ADR Case Preparation Brief — ${applicantName}`;
+      sections = [
+        {
+          id: "lok-adalat-purpose",
+          heading: "1. Educational Preparation Sheet (Not a Court Filing)",
+          body: `Prepared On: ${todayFormatted}\nPrepared By: ${applicantName}\nJurisdiction / District & State: ${applicantLocation}\nOpposite Party / Institution: ${targetEntity}\nKey Reference / Account / Case No.: ${referenceOrAmount}\n\nNOTE: This is a personal case preparation brief to help you organize facts and documents before speaking with your District Legal Services Authority (DLSA Front Office / 15100) or Panel Advocate.`,
+          editable: true,
+        },
+        {
+          id: "lok-adalat-facts-chronology",
+          heading: "2. Factual Summary & Chronology of Dispute",
+          body: `• Relevant Date / Timeline Start: ${incidentDate}\n• Factual Summary of Dispute:\n${piiCleanedSummary}\n\n• Previous Communications / Attempts to Resolve:\n[Complete before use: Note dates of emails, customer-care tickets, or written notices sent to ${targetEntity}]`,
+          editable: true,
+        },
+        {
+          id: "lok-adalat-settlement-terms",
+          heading: "3. Desired Amicable Resolution / Settlement Range",
+          body: `What resolution or mutual compromise I am willing to explore:\n• ${reliefRequested}\n• Minimum acceptable terms for voluntary settlement: [Complete before use: Specify refund amount / waiver / installment schedule / document release]`,
+          editable: true,
+        },
+        {
+          id: "lok-adalat-documents-checklist",
+          heading: "4. Documents & Records Checklist to Carry",
+          body: `[ ] Identity & Address Proof (Aadhaar / Voter ID)\n[ ] Primary Agreement / Bill / Sanction Letter / Invoice (${referenceOrAmount})\n[ ] Chronological copies of previous communications or notices\n[ ] If already pending in court: Case Number, Next Hearing Date & Court Name`,
+          editable: true,
+        },
+        {
+          id: "lok-adalat-questions-for-counsel",
+          heading: "5. Questions to Discuss with DLSA Secretary / Panel Advocate",
+          body: `1. Does my dispute qualify for Pre-Litigation Lok Adalat conciliation under Section 19(5)(ii) of the Legal Services Authorities Act, 1987, or Permanent Lok Adalat (Public Utility Services) under Section 22B?\n2. If the opposite party agrees to attend conciliation, when is the next District or National Lok Adalat scheduled in ${applicantLocation}?\n3. If no mutual settlement is reached in Lok Adalat, what is the appropriate statutory court/commission forum so my limitation period is protected?`,
+          editable: true,
+        },
+      ];
+      sourceCitations = [
+        {
+          title: "Legal Services Authorities Act, 1987 — Sections 19, 20, 21 & 22B (Lok Adalat & Pre-Litigation Conciliation)",
+          category: "Fundamental Rights",
+          authorityOrProvision: "National Legal Services Authority (NALSA — nalsa.gov.in / 15100)",
+          slug: "nalsa-national-legal-aid-15100",
+        },
+      ];
+      break;
+    }
+
     case "legal-aid-checklist-v1":
     default: {
       title = `NALSA / DLSA Free Legal Aid Case Preparation Brief — ${applicantName}`;

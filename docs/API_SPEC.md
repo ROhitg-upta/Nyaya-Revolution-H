@@ -223,3 +223,10 @@ Creates 4-option practice scenarios. Automatically marked as `governanceStatus: 
 ### 3.6 `GovernanceService`
 - `logAuditEvent(payload: AuditEventPayload): Promise<boolean>`
 - `logVerification(payload: VerificationLogPayload): Promise<boolean>`
+
+
+## Sprint E12 Server Actions (src/actions/citizen-action.actions.ts)
+- 	ranscribeLiveVoiceAction: Multi-tier live STT (Bhashini ULCA -> Gemini Audio -> Browser Web Speech)
+- synthesizeEducationalTtsAction: Bhashini ULCA TTS with LRU caching and Browser SpeechSynthesis fallback
+- indLocalDlsaAuthoritiesAction: State, District, 6-digit PIN, and ephemeral coordinate DLSA ranking
+- evaluateLokAdalatSimulatorAction: 4-step educational Lok Adalat pathway evaluator

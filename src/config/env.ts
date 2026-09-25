@@ -81,10 +81,27 @@ export const publicEnv = {
 
 /** Server-only backend configuration (NOT bundled into the browser). */
 export const serverEnv = {
-  geminiApiKey: process.env.GEMINI_API_KEY ?? "",
+  geminiApiKey: (process.env.GEMINI_API_KEY ?? "").trim(),
   geminiModel: process.env.GEMINI_MODEL ?? "gemini-2.0-flash",
-  supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY ?? "",
+  supabaseServiceRoleKey: (process.env.SUPABASE_SERVICE_ROLE_KEY ?? "").trim(),
   databaseUrl: process.env.DATABASE_URL ?? "",
+  bhashiniUserId: (process.env.BHASHINI_USER_ID ?? "").trim(),
+  bhashiniApiKey: (process.env.BHASHINI_API_KEY ?? "").trim(),
+  bhashiniPipelineId:
+    (process.env.BHASHINI_PIPELINE_ID ?? "64392f96daac500b55c543cd").trim(),
+  bhashiniConfigUrl:
+    (
+      process.env.BHASHINI_CONFIG_URL ??
+      "https://meity-auth.ulcacontrib.org/ulca/apis/v0/model/getModelsPipeline"
+    ).trim(),
+  bhashiniInferenceUrl:
+    (
+      process.env.BHASHINI_INFERENCE_URL ??
+      "https://dhruva-api.bhashini.gov.in/services/inference/pipeline"
+    ).trim(),
+  isBhashiniConfigured: Boolean(
+    process.env.BHASHINI_USER_ID?.trim() && process.env.BHASHINI_API_KEY?.trim(),
+  ),
 } as const;
 
 /** Convenience runtime flags. */

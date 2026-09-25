@@ -166,12 +166,42 @@ export function VoiceSituationInput({
         }
       };
 
-      recorder.onstop = () => {
+      recorder.onstop = async () => {
         stream.getTracks().forEach((track) => track.stop());
         if (audioChunksRef.current.length > 0) {
           const blob = new Blob(audioChunksRef.current, { type: "audio/webm" });
           const url = URL.createObjectURL(blob);
           setAudioBlobUrl(url);
+
+          // Live Server-Side Speech Provider Integration (Bhashini ULCA -> Gemini Audio -> Browser Fallback)
+          if (blob.size > 0 && blob.size <= 1_800_000) {
+            setLifecycleState("transcribing");
+            try {
+              const arrayBuffer = await blob.arrayBuffer();
+              const bytes = new Uint8Array(arrayBuffer);
+              let binary = "";
+              for (let i = 0; i < bytes.byteLength; i += 1) {
+                binary += String.fromCharCode(bytes[i]);
+              }
+              const base64Audio = btoa(binary);
+              const { transcribeLiveVoiceAction } = await import(
+                "@/actions/citizen-action.actions"
+              );
+              const sttRes = await transcribeLiveVoiceAction({
+                audioBase64: base64Audio,
+                mimeType: "audio/webm",
+                languageHint: selectedLang,
+                browserTranscript: editedTranscript,
+              });
+              if (sttRes.ok && sttRes.result?.transcript) {
+                setRawTranscript(sttRes.result.transcript);
+                setEditedTranscript(sttRes.result.transcript);
+                setSelectedLang(sttRes.result.detectedLanguage);
+              }
+            } catch {
+              // Keep browser transcript cleanly on network/provider error
+            }
+          }
         }
         setLifecycleState("complete");
       };

@@ -633,4 +633,19 @@ export const CITIZEN_DOCUMENT_TEMPLATES: CitizenDocumentTemplateMeta[] = [
       "Prepared for citizen readiness when consulting a NALSA / DLSA Panel Advocate.",
     ],
   },
+  {
+    templateType: "lok-adalat-prep-brief-v1",
+    templateVersion: "v1.2 (E12 Lok Adalat Readiness)",
+    title: "Lok Adalat / ADR Case Preparation Brief (Citizen Discussion Sheet)",
+    subtitle:
+      "Structured factual chronology, documents checklist, and settlement discussion questions for DLSA Front Office or Panel Counsel.",
+    category: "Fundamental Rights",
+    jurisdictionNote:
+      "This is a personal preparation brief to discuss pre-litigation conciliation (Section 19(5)(ii) LSA Act) or pending-case referral (Section 20 LSA Act) with your District Legal Services Authority (DLSA) or advocate. It is NOT a formal court filing.",
+    mandatoryDisclaimers: [
+      "Draft / Educational Template / User-Review Required",
+      "Educational preparation brief only — does not determine legal eligibility or constitute a formal Lok Adalat application.",
+    ],
+  },
 ];
+

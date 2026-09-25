@@ -1,11 +1,17 @@
+import { serverEnv } from "@/config/env";
 import { CONTROLLED_LEGAL_TERMINOLOGY_BRIDGE } from "@/constants/verified-resources";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { detectAndRedactPII } from "@/lib/sanitization";
 import type {
+  ActiveSpeechProviderId,
   LanguageDetectionProvider,
+  LiveSpeechTranscriptionResult,
   MultilingualUnderstandingResult,
   SpeechToTextProvider,
   SupportedCitizenLanguage,
+  TextToSpeechAudioResult,
+  TextToSpeechProvider,
+  TextToSpeechSynthesisInput,
   TranslationProvider,
   VoiceStoragePreference,
   VoiceTranscriptRecord,
@@ -190,13 +196,368 @@ export class ControlledTerminologyTranslationProvider implements TranslationProv
   }
 }
 
+const ULCA_LANGUAGE_CODE_MAP: Record<SupportedCitizenLanguage, string> = {
+  en: "en",
+  hi: "hi",
+  hinglish: "hi",
+  mr: "mr",
+  ta: "ta",
+  te: "te",
+  bn: "bn",
+  gu: "gu",
+  kn: "kn",
+  ml: "ml",
+  pa: "pa",
+};
+
+// Cost-control: In-memory cache for synthesized TTS audio (prevents duplicate API calls)
+const ttsAudioCache = new Map<string, TextToSpeechAudioResult>();
+const MAX_TTS_TEXT_LENGTH = 1200;
+const MAX_AUDIO_BASE64_LENGTH = 2_800_000; // ~2MB base64 cap (~60s compressed audio)
+
 /**
- * Provider 3: Speech-to-Text Abstraction Provider
- * Supports browser Web Speech API transcript verification and server-side audio normalization.
+ * Logs strictly safe observability metadata (`voice_provider_events`).
+ * NEVER logs private audio recordings, transcripts, or geolocation coordinates.
+ */
+export async function recordVoiceObservabilityEvent(params: {
+  provider: ActiveSpeechProviderId;
+  operation: "stt" | "tts" | "language_detect";
+  language: string;
+  latencyMs: number;
+  success: boolean;
+  fallbackUsed: boolean;
+  errorType?: string;
+}): Promise<void> {
+  try {
+    const supabase = await createSupabaseServerClient();
+    if (!supabase) return;
+    const untypedClient = supabase as unknown as {
+      from: (table: string) => {
+        insert: (row: Record<string, unknown>) => Promise<unknown>;
+      };
+    };
+    await untypedClient.from("voice_provider_events").insert({
+      provider: params.provider,
+      operation: params.operation,
+      language: params.language,
+      latency_ms: Math.max(0, Math.round(params.latencyMs)),
+      success: params.success,
+      fallback_used: params.fallbackUsed,
+      error_type: params.errorType ?? null,
+    });
+  } catch {
+    // Non-blocking telemetry
+  }
+}
+
+/**
+ * Provider 3: Live Multi-Tier Speech-to-Text Provider
+ * Tier 1: MeitY Bhashini ULCA ASR Pipeline (when BHASHINI_USER_ID & BHASHINI_API_KEY are configured)
+ * Tier 2: Gemini 2.0 Flash Multimodal Audio ASR (when GEMINI_API_KEY & audioBase64 are available)
+ * Tier 3: Browser Web Speech API Transcript + Indian Script/Hinglish Detector
  */
 export class NyayaSpeechToTextProvider implements SpeechToTextProvider {
   readonly name = "NyayaMultilingualSpeechProvider";
   private detector = new IndianCitizenLanguageDetector();
+
+  private async transcribeViaBhashini(params: {
+    audioBase64: string;
+    languageHint: SupportedCitizenLanguage;
+  }): Promise<{ transcript: string; providerLanguageCode: string } | null> {
+    if (!serverEnv.isBhashiniConfigured) {
+      return null;
+    }
+
+    const sourceLang = ULCA_LANGUAGE_CODE_MAP[params.languageHint] ?? "hi";
+
+    // Step 1: Request ULCA Pipeline Configuration
+    const configRes = await fetch(serverEnv.bhashiniConfigUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        userID: serverEnv.bhashiniUserId,
+        ulcaApiKey: serverEnv.bhashiniApiKey,
+      },
+      body: JSON.stringify({
+        pipelineTasks: [
+          {
+            taskType: "asr",
+            config: {
+              language: { sourceLanguage: sourceLang },
+            },
+          },
+        ],
+        pipelineRequestConfig: {
+          pipelineId: serverEnv.bhashiniPipelineId,
+        },
+      }),
+    });
+
+    if (!configRes.ok) return null;
+    const configJson = (await configRes.json()) as {
+      pipelineInferenceAPIEndPoint?: {
+        callbackUrl?: string;
+        inferenceApiKey?: { name?: string; value?: string };
+      };
+      pipelineResponseConfig?: Array<{
+        taskType?: string;
+        config?: Array<{ serviceId?: string }>;
+      }>;
+    };
+
+    const callbackUrl =
+      configJson.pipelineInferenceAPIEndPoint?.callbackUrl ||
+      serverEnv.bhashiniInferenceUrl;
+    const authHeaderName =
+      configJson.pipelineInferenceAPIEndPoint?.inferenceApiKey?.name ||
+      "Authorization";
+    const authHeaderVal =
+      configJson.pipelineInferenceAPIEndPoint?.inferenceApiKey?.value ||
+      serverEnv.bhashiniApiKey;
+    const serviceId =
+      configJson.pipelineResponseConfig?.[0]?.config?.[0]?.serviceId;
+
+    if (!serviceId) return null;
+
+    // Step 2: Execute ULCA ASR Inference
+    const cleanBase64 = params.audioBase64.replace(/^data:audio\/[^;]+;base64,/, "");
+    const inferRes = await fetch(callbackUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        [authHeaderName]: authHeaderVal,
+      },
+      body: JSON.stringify({
+        pipelineTasks: [
+          {
+            taskType: "asr",
+            config: {
+              language: { sourceLanguage: sourceLang },
+              serviceId,
+              audioFormat: "wav",
+              samplingRate: 16000,
+            },
+          },
+        ],
+        inputData: {
+          audio: [{ audioContent: cleanBase64 }],
+        },
+      }),
+    });
+
+    if (!inferRes.ok) return null;
+    const inferJson = (await inferRes.json()) as {
+      pipelineResponse?: Array<{
+        output?: Array<{ source?: string }>;
+      }>;
+    };
+
+    const transcript =
+      inferJson.pipelineResponse?.[0]?.output?.[0]?.source?.trim() ?? "";
+    if (!transcript) return null;
+
+    return {
+      transcript,
+      providerLanguageCode: sourceLang,
+    };
+  }
+
+  private async transcribeViaGeminiAudio(params: {
+    audioBase64: string;
+    mimeType: string;
+    languageHint: SupportedCitizenLanguage;
+  }): Promise<string | null> {
+    if (!serverEnv.geminiApiKey) {
+      return null;
+    }
+
+    const cleanBase64 = params.audioBase64.replace(/^data:audio\/[^;]+;base64,/, "");
+    if (!cleanBase64 || cleanBase64.length > MAX_AUDIO_BASE64_LENGTH) {
+      return null;
+    }
+
+    const model = serverEnv.geminiModel || "gemini-2.0-flash";
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${serverEnv.geminiApiKey}`;
+
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            role: "user",
+            parts: [
+              {
+                inlineData: {
+                  mimeType: params.mimeType || "audio/webm",
+                  data: cleanBase64,
+                },
+              },
+              {
+                text: `Transcribe the citizen's spoken statement verbatim. Preserve their exact language (whether Hindi, Hinglish, English, Marathi, Tamil, Telugu, Bengali, Gujarati, Kannada, Malayalam, or Punjabi). Do not add commentary or advice—output ONLY the verbatim transcript text. Language hint: ${params.languageHint}.`,
+              },
+            ],
+          },
+        ],
+        generationConfig: {
+          temperature: 0.1,
+          maxOutputTokens: 600,
+        },
+      }),
+      signal: AbortSignal.timeout(15000),
+    });
+
+    if (!response.ok) return null;
+    const json = (await response.json()) as {
+      candidates?: Array<{
+        content?: { parts?: Array<{ text?: string }> };
+      }>;
+    };
+    const text = json.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ?? "";
+    return text.length > 0 ? text : null;
+  }
+
+  async transcribeLive(params: {
+    audioBase64?: string;
+    mimeType: string;
+    languageHint?: SupportedCitizenLanguage;
+    browserTranscript?: string;
+  }): Promise<LiveSpeechTranscriptionResult> {
+    const startTime = Date.now();
+    const requestedLanguage = params.languageHint ?? "hinglish";
+    const providerLanguageCode = ULCA_LANGUAGE_CODE_MAP[requestedLanguage] ?? "hi";
+    const createdAt = new Date().toISOString();
+
+    // 1. Try Bhashini ULCA if audioBase64 is provided and Bhashini credentials exist
+    if (
+      params.audioBase64 &&
+      params.audioBase64.length <= MAX_AUDIO_BASE64_LENGTH &&
+      serverEnv.isBhashiniConfigured
+    ) {
+      try {
+        const bhashiniResult = await this.transcribeViaBhashini({
+          audioBase64: params.audioBase64,
+          languageHint: requestedLanguage,
+        });
+        if (bhashiniResult && bhashiniResult.transcript) {
+          const detection = await this.detector.detectLanguage(
+            bhashiniResult.transcript
+          );
+          const latencyMs = Date.now() - startTime;
+          await recordVoiceObservabilityEvent({
+            provider: "bhashini_ulca",
+            operation: "stt",
+            language: detection.language,
+            latencyMs,
+            success: true,
+            fallbackUsed: false,
+          });
+          return {
+            transcript: bhashiniResult.transcript,
+            requestedLanguage,
+            detectedLanguage: detection.language,
+            providerLanguageCode: bhashiniResult.providerLanguageCode,
+            languageScript: detection.script,
+            confidence: 0.96,
+            provider: "bhashini_ulca",
+            fallbackUsed: false,
+            latencyMs,
+            createdAt,
+          };
+        }
+      } catch {
+        // Proceed to Tier 2 fallback cleanly
+      }
+    }
+
+    // 2. Try Gemini Multimodal Audio ASR if audioBase64 is provided and GEMINI_API_KEY is available
+    if (
+      params.audioBase64 &&
+      params.audioBase64.length <= MAX_AUDIO_BASE64_LENGTH &&
+      serverEnv.geminiApiKey
+    ) {
+      try {
+        const geminiTranscript = await this.transcribeViaGeminiAudio({
+          audioBase64: params.audioBase64,
+          mimeType: params.mimeType,
+          languageHint: requestedLanguage,
+        });
+        if (geminiTranscript) {
+          const detection = await this.detector.detectLanguage(geminiTranscript);
+          const latencyMs = Date.now() - startTime;
+          await recordVoiceObservabilityEvent({
+            provider: "gemini_audio",
+            operation: "stt",
+            language: detection.language,
+            latencyMs,
+            success: true,
+            fallbackUsed: serverEnv.isBhashiniConfigured,
+          });
+          return {
+            transcript: geminiTranscript,
+            requestedLanguage,
+            detectedLanguage: detection.language,
+            providerLanguageCode,
+            languageScript: detection.script,
+            confidence: 0.94,
+            provider: "gemini_audio",
+            fallbackUsed: serverEnv.isBhashiniConfigured,
+            latencyMs,
+            createdAt,
+          };
+        }
+      } catch {
+        // Proceed to Tier 3 browser transcript fallback
+      }
+    }
+
+    // 3. Tier 3: Browser Web Speech API Transcript + Indian Script/Hinglish Detection
+    const candidateTranscript = (params.browserTranscript ?? "").trim();
+    const latencyMs = Date.now() - startTime;
+
+    if (candidateTranscript.length > 0) {
+      const detection = await this.detector.detectLanguage(candidateTranscript);
+      const effectiveLang =
+        requestedLanguage !== "en" && detection.language === "en"
+          ? requestedLanguage
+          : detection.language;
+      await recordVoiceObservabilityEvent({
+        provider: "browser_web_speech",
+        operation: "stt",
+        language: effectiveLang,
+        latencyMs,
+        success: true,
+        fallbackUsed: true,
+      });
+      return {
+        transcript: candidateTranscript,
+        requestedLanguage,
+        detectedLanguage: effectiveLang,
+        providerLanguageCode,
+        languageScript: detection.script,
+        confidence: detection.confidence,
+        provider: "browser_web_speech",
+        fallbackUsed: true,
+        latencyMs,
+        createdAt,
+      };
+    }
+
+    return {
+      transcript: "",
+      requestedLanguage,
+      detectedLanguage: requestedLanguage,
+      providerLanguageCode,
+      languageScript: "Latin",
+      confidence: 0,
+      provider: "text_fallback",
+      fallbackUsed: true,
+      latencyMs,
+      createdAt,
+    };
+  }
 
   async transcribeAudio(params: {
     audioBase64?: string;
@@ -208,23 +569,177 @@ export class NyayaSpeechToTextProvider implements SpeechToTextProvider {
     detectedLanguage: SupportedCitizenLanguage;
     confidence: number;
   }> {
-    const candidateTranscript = (params.browserTranscript ?? "").trim();
+    const liveResult = await this.transcribeLive(params);
+    return {
+      transcript: liveResult.transcript,
+      detectedLanguage: liveResult.detectedLanguage,
+      confidence: liveResult.confidence,
+    };
+  }
+}
 
-    if (candidateTranscript.length > 0) {
-      const detection = await this.detector.detectLanguage(candidateTranscript);
+/**
+ * Provider 4: Multilingual Text-to-Speech (TTS) Provider
+ * Supports Bhashini ULCA TTS synthesis when configured, with in-memory caching
+ * and deterministic fallback to Browser SpeechSynthesis (`hi-IN` / `en-IN`).
+ */
+export class NyayaTextToSpeechProvider implements TextToSpeechProvider {
+  readonly name = "NyayaMultilingualTTSProvider";
+
+  async synthesize(
+    input: TextToSpeechSynthesisInput
+  ): Promise<TextToSpeechAudioResult> {
+    const startTime = Date.now();
+    const cleanText = input.text.trim().slice(0, MAX_TTS_TEXT_LENGTH);
+    const langCode = ULCA_LANGUAGE_CODE_MAP[input.language] ?? "en";
+
+    if (!cleanText) {
       return {
-        transcript: candidateTranscript,
-        detectedLanguage: params.languageHint && params.languageHint !== "en"
-          ? params.languageHint
-          : detection.language,
-        confidence: detection.confidence,
+        ok: false,
+        audioBase64: null,
+        mimeType: "audio/wav",
+        provider: "text_fallback",
+        languageCode: langCode,
+        fallbackToBrowserTts: true,
+        errorReason: "Empty text provided for readback.",
       };
     }
 
+    const cacheKey = `${langCode}:${input.voiceGender ?? "female"}:${cleanText}`;
+    const cached = ttsAudioCache.get(cacheKey);
+    if (cached) {
+      return cached;
+    }
+
+    if (serverEnv.isBhashiniConfigured) {
+      try {
+        const configRes = await fetch(serverEnv.bhashiniConfigUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            userID: serverEnv.bhashiniUserId,
+            ulcaApiKey: serverEnv.bhashiniApiKey,
+          },
+          body: JSON.stringify({
+            pipelineTasks: [
+              {
+                taskType: "tts",
+                config: {
+                  language: { sourceLanguage: langCode },
+                },
+              },
+            ],
+            pipelineRequestConfig: {
+              pipelineId: serverEnv.bhashiniPipelineId,
+            },
+          }),
+        });
+
+        if (configRes.ok) {
+          const configJson = (await configRes.json()) as {
+            pipelineInferenceAPIEndPoint?: {
+              callbackUrl?: string;
+              inferenceApiKey?: { name?: string; value?: string };
+            };
+            pipelineResponseConfig?: Array<{
+              config?: Array<{ serviceId?: string }>;
+            }>;
+          };
+
+          const callbackUrl =
+            configJson.pipelineInferenceAPIEndPoint?.callbackUrl ||
+            serverEnv.bhashiniInferenceUrl;
+          const authHeaderName =
+            configJson.pipelineInferenceAPIEndPoint?.inferenceApiKey?.name ||
+            "Authorization";
+          const authHeaderVal =
+            configJson.pipelineInferenceAPIEndPoint?.inferenceApiKey?.value ||
+            serverEnv.bhashiniApiKey;
+          const serviceId =
+            configJson.pipelineResponseConfig?.[0]?.config?.[0]?.serviceId;
+
+          if (serviceId) {
+            const inferRes = await fetch(callbackUrl, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                [authHeaderName]: authHeaderVal,
+              },
+              body: JSON.stringify({
+                pipelineTasks: [
+                  {
+                    taskType: "tts",
+                    config: {
+                      language: { sourceLanguage: langCode },
+                      serviceId,
+                      gender: input.voiceGender ?? "female",
+                      samplingRate: 8000,
+                    },
+                  },
+                ],
+                inputData: {
+                  input: [{ source: cleanText }],
+                },
+              }),
+            });
+
+            if (inferRes.ok) {
+              const inferJson = (await inferRes.json()) as {
+                pipelineResponse?: Array<{
+                  audio?: Array<{ audioContent?: string }>;
+                }>;
+              };
+              const audioBase64 =
+                inferJson.pipelineResponse?.[0]?.audio?.[0]?.audioContent ??
+                null;
+              if (audioBase64) {
+                const result: TextToSpeechAudioResult = {
+                  ok: true,
+                  audioBase64,
+                  mimeType: "audio/wav",
+                  provider: "bhashini_ulca",
+                  languageCode: langCode,
+                  fallbackToBrowserTts: false,
+                };
+                if (ttsAudioCache.size > 50) {
+                  const firstKey = ttsAudioCache.keys().next().value;
+                  if (firstKey) ttsAudioCache.delete(firstKey);
+                }
+                ttsAudioCache.set(cacheKey, result);
+                await recordVoiceObservabilityEvent({
+                  provider: "bhashini_ulca",
+                  operation: "tts",
+                  language: langCode,
+                  latencyMs: Date.now() - startTime,
+                  success: true,
+                  fallbackUsed: false,
+                });
+                return result;
+              }
+            }
+          }
+        }
+      } catch {
+        // Fallback to browser TTS cleanly
+      }
+    }
+
+    await recordVoiceObservabilityEvent({
+      provider: "browser_web_speech",
+      operation: "tts",
+      language: langCode,
+      latencyMs: Date.now() - startTime,
+      success: true,
+      fallbackUsed: true,
+    });
+
     return {
-      transcript: "",
-      detectedLanguage: params.languageHint ?? "en",
-      confidence: 0.85,
+      ok: true,
+      audioBase64: null,
+      mimeType: "audio/wav",
+      provider: "browser_web_speech",
+      languageCode: langCode === "hi" ? "hi-IN" : `${langCode}-IN`,
+      fallbackToBrowserTts: true,
     };
   }
 }

@@ -379,3 +379,11 @@ npx supabase db lint
 1. **Daily Automated Backups**: Point-in-time recovery (PITR) enabled via Supabase Managed PostgreSQL.
 2. **Tamper-Evident Content Audits**: All mutations to statutory articles, judgments, and legal guidance generate immutable records in `content_verification_logs` with verified source citations, author IDs, and timestamps.
 3. **Zero Untrusted Legal Advice**: Automated tests verify that no AI responses or community submissions are auto-published without statutory backing or staff review.
+
+
+## Sprint E12 Tables (20260925000001_e12_dlsa_locator_voice_tts_and_lok_adalat.sql)
+- public.legal_service_authorities (Source-driven NALSA/SLSA/DLSA directory with conflict_status, source_url, erification_status, stale_after_days)
+- public.authority_verification_events (Moderator re-verification audit log)
+- public.pincode_jurisdiction_map (6-digit PIN prefix to district/state mapping with is_ambiguous)
+- public.voice_provider_events (Safe telemetry metadata only — zero audio or transcripts stored)
+- public.lok_adalat_sessions (User-private readiness checklists protected by RLS)
