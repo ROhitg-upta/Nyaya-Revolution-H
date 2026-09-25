@@ -1,9 +1,9 @@
 import {
   DISTRICT_COORDINATE_CENTROIDS,
   INDIAN_POSTAL_CIRCLE_STATE_MAP,
-  VERIFIED_DLSA_DIRECTORY,
   VERIFIED_PINCODE_JURISDICTION_MAP,
 } from "@/constants/dlsa-directory";
+import { getGovernedPublishedAuthorities } from "@/services/governance/authority-governance.service";
 import type {
   LegalServiceAuthorityRecord,
   PincodeJurisdictionResult,
@@ -289,7 +289,8 @@ export function getVerifiedDirectoryStatesAndDistricts(): {
   districtsByState: Record<string, string[]>;
 } {
   const districtsByState: Record<string, string[]> = {};
-  for (const rec of VERIFIED_DLSA_DIRECTORY) {
+  const liveDirectory = getGovernedPublishedAuthorities();
+  for (const rec of liveDirectory) {
     if (!rec.isPublished || rec.state === "All India") continue;
     if (!districtsByState[rec.state]) {
       districtsByState[rec.state] = [];
@@ -348,7 +349,8 @@ export function findRankedDlsaAuthorities(params: {
   const ranked: RankedDlsaAuthority[] = [];
   let exactDistrictFound = false;
 
-  for (const record of VERIFIED_DLSA_DIRECTORY) {
+  const liveDirectory = getGovernedPublishedAuthorities();
+  for (const record of liveDirectory) {
     if (!record.isPublished || record.verificationStatus === "archived") {
       continue;
     }

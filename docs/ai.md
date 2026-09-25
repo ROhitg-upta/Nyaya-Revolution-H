@@ -144,3 +144,6 @@ Indian citizens frequently express legal grievances in mixed colloquial phrasing
 ## Sprint E12 Voice AI & Lok Adalat Boundaries
 - AI and Simulator components explain Lok Adalat concepts (Sections 19-22B of LSA Act, 1987) and prepare Case Preparation Briefs without ever determining legal eligibility or guaranteeing settlement.
 - Untrusted voice transcripts pass through sanitizeUntrustedCitizenInput and detectAndRedactPII prior to analysis.
+
+## Sprint E13 — Grounded AI & Search Freshness Enforcement
+- Public DLSA Geo-Locator (src/services/dlsa/dlsa-locator.service.ts) and Unified Search (src/lib/search.ts) read exclusively from getGovernedPublishedAuthorities(), ensuring unpublished, archived, or conflicted candidates never leak into citizen-facing AI or search responses.

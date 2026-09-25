@@ -14,7 +14,7 @@ import {
   statutoryActs,
 } from "@/constants";
 import { INITIAL_COMMUNITY_STORIES } from "@/constants/community";
-import { VERIFIED_DLSA_DIRECTORY } from "@/constants/dlsa-directory";
+import { getGovernedPublishedAuthorities } from "@/services/governance/authority-governance.service";
 import type {
   SearchEntityType,
   SearchResultItem,
@@ -234,11 +234,9 @@ export function unifiedSearch(
     });
   }
 
-  // 8. Search Verified Legal Services Authorities (NALSA / SLSA / DLSA) & Lok Adalat Engine (Sprint E12)
+  // 8. Search Verified Legal Services Authorities (NALSA / SLSA / DLSA) & Lok Adalat Engine (Sprint E12 & E13 Governance)
   if (filterType === "all" || filterType === "situation" || filterType === "law") {
-    VERIFIED_DLSA_DIRECTORY.filter(
-      (auth) => auth.isPublished && auth.verificationStatus !== "archived"
-    ).forEach((auth) => {
+    getGovernedPublishedAuthorities().forEach((auth) => {
       const haystack = `${auth.officeName} ${auth.authorityType} ${auth.state} ${auth.district ?? ""} ${auth.jurisdiction} ${auth.services.join(" ")} ${auth.contact.helpline ?? ""} legal aid dlsa slsa nalsa lok adalat`.toLowerCase();
       if (haystack.includes(q)) {
         results.push({

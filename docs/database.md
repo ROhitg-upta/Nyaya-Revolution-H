@@ -387,3 +387,9 @@ npx supabase db lint
 - public.pincode_jurisdiction_map (6-digit PIN prefix to district/state mapping with is_ambiguous)
 - public.voice_provider_events (Safe telemetry metadata only — zero audio or transcripts stored)
 - public.lok_adalat_sessions (User-private readiness checklists protected by RLS)
+
+## Sprint E13 — Authority Governance, Immutable Versions & Source Freshness Schema (20260925000002_e13_authority_governance_imports_versions_and_freshness.sql)
+- uthority_versions: Immutable snapshots (ersion_number, snapshot_json, source_url, erified_by, change_reason, is_active_published).
+- uthority_import_batches & uthority_import_rows: Header-mapped CSV/JSON ingestion with source_fingerprint idempotency and reversible pre_batch_snapshots. 
+- uthority_conflicts: Side-by-side field-level diffs (source_a vs source_b) preventing silent overwrites.
+- source_health_checks & moderator_notifications: Automated freshness & SHA-256 fingerprint drift monitoring.

@@ -230,3 +230,9 @@ Creates 4-option practice scenarios. Automatically marked as `governanceStatus: 
 - synthesizeEducationalTtsAction: Bhashini ULCA TTS with LRU caching and Browser SpeechSynthesis fallback
 - indLocalDlsaAuthoritiesAction: State, District, 6-digit PIN, and ephemeral coordinate DLSA ranking
 - evaluateLokAdalatSimulatorAction: 4-step educational Lok Adalat pathway evaluator
+
+## Sprint E13 — Governance Server Actions (src/actions/authority-governance.actions.ts)
+- previewAuthorityImportBatchAction: Validates CSV/JSON against AuthorityImportSchemaV1.
+- publishAuthorityImportBatchAction & ollbackAuthorityImportBatchAction: Atomic batch publish and reversible rollback.
+- esolveAuthorityConflictAction: Side-by-side conflict resolution (ccept_import, keep_existing, manual_edit, eject_import, equest_reverification, rchive_record).
+- 	riggerScheduledFreshnessScanAction & 	riggerSourceHealthCheckAction: Automated freshness and HTTP/fingerprint drift checks.

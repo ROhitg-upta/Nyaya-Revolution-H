@@ -257,3 +257,7 @@ ull and rendered as *"Contact details not available in the verified source."*
 
 ### 3. Lok Adalat Educational Simulator
 - Interactive 4-step educational pathway (evaluateLokAdalatEducationalPathway) with an 8-point Readiness Checklist and 1-click **Create Case Preparation Brief** (lok-adalat-prep-brief-v1), strictly separated from legal eligibility determination.
+
+## Sprint E13 — Trust Infrastructure & Authority Governance Console
+- **Governance Layer (src/services/governance/authority-governance.service.ts)**: Controls all NALSA/SLSA/DLSA records via getGovernedPublishedAuthorities().
+- **Zero Silent Overwrites**: Incoming CSV/JSON changes to existing verified authorities generate side-by-side conflicts rather than overwriting live citizen records.
