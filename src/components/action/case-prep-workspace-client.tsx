@@ -32,8 +32,11 @@ import {
   uploadCasePrepAttachmentMetadataAction,
 } from "@/actions/case-prep.actions";
 import { DEFAULT_AUTHORIZED_CITIZEN_ID } from "@/services/action/case-prep-workspace.service";
+import { ClinicHandoffAndPwaPanel } from "@/components/action/clinic-handoff-and-pwa-panel";
 import type { LegalServiceAuthorityRecord } from "@/types/action-engine";
 import type {
+  CasePrepHandoffAuditEvent,
+  CasePrepHandoffSession,
   CasePrepPiiDetectionItem,
   CasePrepReviewGateState,
   CitizenCasePrepWorkspace,
@@ -46,6 +49,8 @@ interface CasePrepWorkspaceClientProps {
   initialCompletion: WorkspaceCompletionReport;
   initialPiiDetections: CasePrepPiiDetectionItem[];
   availableAuthorities: LegalServiceAuthorityRecord[];
+  initialHandoffSessions: CasePrepHandoffSession[];
+  initialHandoffEvents: CasePrepHandoffAuditEvent[];
 }
 
 export function CasePrepWorkspaceClient({
@@ -53,6 +58,8 @@ export function CasePrepWorkspaceClient({
   initialCompletion,
   initialPiiDetections,
   availableAuthorities,
+  initialHandoffSessions,
+  initialHandoffEvents,
 }: CasePrepWorkspaceClientProps) {
   const [workspace, setWorkspace] =
     React.useState<CitizenCasePrepWorkspace>(initialWorkspace);
@@ -739,6 +746,21 @@ export function CasePrepWorkspaceClient({
           </button>
         </div>
       </div>
+
+      {/* SPRINT E15: ASSISTED PARA-LEGAL CLINIC HANDOFF & OFFLINE PWA SYNC PANEL */}
+      <ClinicHandoffAndPwaPanel
+        workspace={workspace}
+        activeUserId={activeUserId}
+        initialSessions={initialHandoffSessions}
+        initialEvents={initialHandoffEvents}
+        onWorkspaceSynced={(updated) => {
+          setWorkspace(updated);
+          setTitle(updated.title);
+          setSummaryEn(updated.situationSummaryEn);
+          setSummaryHi(updated.situationSummaryHi);
+          setPrivateNotes(updated.userPrivateNotes);
+        }}
+      />
 
       {/* =====================================================================
           TAB 1: SITUATION SUMMARY, BILINGUAL CONTROLS, TIMELINE & PARTIES

@@ -16,9 +16,16 @@ import {
   updateReviewGateAndExportDossier,
   updateWorkspaceSummaryAndLanguages,
 } from "@/services/action/case-prep-workspace.service";
+import {
+  createHandoff,
+  listWorkspaceHandoffs,
+  revokeHandoff,
+  syncOfflineWorkspaceDraft,
+} from "@/services/action/case-prep-handoff.service";
 import type {
   CasePrepReviewGateState,
   DossierLanguage,
+  HandoffShareScope,
 } from "@/types/case-prep";
 
 export async function fetchCasePrepWorkspaceAction(params: {
@@ -183,3 +190,65 @@ export async function exportVerifiedCasePrepDossierAction(params: {
     completion: computeWorkspaceCompletion(res.workspace),
   };
 }
+
+export async function listCasePrepHandoffsAction(params: {
+  workspaceId: string;
+  requestingUserId: string;
+}) {
+  return listWorkspaceHandoffs(params);
+}
+
+export async function createCasePrepHandoffAction(params: {
+  workspaceId: string;
+  requestingUserId: string;
+  scope: HandoffShareScope;
+}) {
+  const res = createHandoff(params);
+  revalidatePath("/action-center/case-prep");
+  return {
+    ...res,
+    allHandoffs: listWorkspaceHandoffs({
+      workspaceId: params.workspaceId,
+      requestingUserId: params.requestingUserId,
+    }),
+  };
+}
+
+export async function revokeCasePrepHandoffAction(params: {
+  sessionId: string;
+  workspaceId: string;
+  requestingUserId: string;
+}) {
+  const revokedSession = revokeHandoff(params);
+  revalidatePath("/action-center/case-prep");
+  return {
+    revokedSession,
+    allHandoffs: listWorkspaceHandoffs({
+      workspaceId: params.workspaceId,
+      requestingUserId: params.requestingUserId,
+    }),
+  };
+}
+
+export async function syncOfflineCasePrepDraftAction(params: {
+  workspaceId: string;
+  requestingUserId: string;
+  localDraftTitle: string;
+  localDraftSummaryEn: string;
+  localDraftNotes: string;
+  clientBaseUpdatedAt: string;
+  forceConflictSimulation?: boolean;
+  resolutionStrategy?: "keep_local" | "keep_server";
+}) {
+  const res = syncOfflineWorkspaceDraft(params);
+  revalidatePath("/action-center/case-prep");
+  return {
+    ...res,
+    completion: computeWorkspaceCompletion(res.workspace),
+    allHandoffs: listWorkspaceHandoffs({
+      workspaceId: params.workspaceId,
+      requestingUserId: params.requestingUserId,
+    }),
+  };
+}
+

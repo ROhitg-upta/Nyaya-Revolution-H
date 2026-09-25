@@ -264,3 +264,9 @@ ull and rendered as *"Contact details not available in the verified source."*
 
 ## Sprint E14 — Private Citizen Case Preparation Workspace (/action-center/case-prep)
 - **Service (src/services/action/case-prep-workspace.service.ts)**: Aggregates user chronology, context-aware checklists, private attachment metadata, E13 authority version snapshots (publishedVersionNumber), E12 Lok Adalat readiness notes, and E11 drafts into a single bilingual A4 preparation dossier without ever claiming legal representation or case eligibility.
+
+## Sprint E15 — Assisted Para-Legal Clinic Mode (/handoff/[token]) & Offline PWA (public/sw.js)
+- **Zero-Trust Handoff (src/services/action/case-prep-handoff.service.ts)**: Cryptographic 24-byte ase64url opaque tokens (
+yh_...) hashed with SHA-256 at rest, server-enforced UTC expiration, immediate revocation, and brute-force rate limiting.
+- **Conservative PWA (src/app/manifest.ts, public/sw.js)**: 
+yaya-static-v1 allowlists only safe shell assets (/action-center, /action-center/case-prep, /learn) and explicitly bypasses /handoff/*, /api/*, and private auth routes.

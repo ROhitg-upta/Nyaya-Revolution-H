@@ -396,3 +396,8 @@ npx supabase db lint
 
 ## Sprint E14 — Citizen Case Preparation Workspace & Bilingual Dossier Schema (20260925000003_e14_citizen_case_prep_workspace_and_bilingual_dossier.sql)
 - case_prep_workspaces, case_prep_timeline_events, case_prep_participants, case_prep_checklist_items, case_prep_attachments, case_prep_resource_snapshots, case_prep_exports: Strict owner-only RLS (uth.uid() = user_id), MIME/10MB guarded private attachment index, E13 authority version snapshots at export time, and immutable dossier versioning (1 -> v2 -> v3).
+
+## Sprint E15 — Zero-Trust Assisted Clinic Handoff & Offline Sync Schema (20260925000004_e15_assisted_clinic_handoff_tokens_and_offline_sync.sql)
+- case_prep_handoff_snapshots: Frozen, granular read-only snapshot of citizen-selected workspace sections.
+- case_prep_handoff_sessions: Stores SHA-256 	oken_hash (plaintext token is never stored at rest), UTC expires_at, evoked_at, and ccess_count.
+- case_prep_handoff_events: Non-PII security audit log (handoff_created, handoff_opened, handoff_revoked, handoff_expired, invalid_token, ate_limit_triggered, sync_success, sync_conflict).

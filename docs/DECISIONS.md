@@ -267,3 +267,6 @@ ull when absent in official sources and flag multi-source conflicts (conflict_st
 
 ## ADR-014: Private Case Preparation Workspace & Authority Snapshot Traceability (Sprint E14)
 - **Decision**: Preserve exact E13 publishedVersionNumber and erifiedAtSnapshot inside each Citizen Case Preparation Dossier export (case_prep_exports) so printed/offline citizen packs remain auditable even if public directory details later change.
+
+## ADR-015: Frozen Snapshot Handoffs with SHA-256 Hashed Opaque Tokens & Allowlist PWA (Sprint E15)
+- **Decision**: Never expose master workspaces or persist plaintext handoff tokens. Store only SHA-256 hashes pointing to frozen snapshots, and restrict Service Worker caching to an explicit static allowlist.

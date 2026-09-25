@@ -210,3 +210,114 @@ export interface WorkspaceCompletionReport {
   }[];
   missingRequiredForExport: string[];
 }
+
+// ============================================================================
+// SPRINT E15 — ASSISTED PARA-LEGAL CLINIC MODE, EXPIRING HANDOFF & OFFLINE PWA
+// ============================================================================
+
+export type HandoffExpiryDuration = "30m" | "1h" | "4h" | "24h";
+
+export type HandoffSectionKey =
+  | "situationSummary"
+  | "timeline"
+  | "checklist"
+  | "participants"
+  | "verifiedResources"
+  | "lokAdalatPreparation"
+  | "existingDrafts"
+  | "questions"
+  | "notes";
+
+export interface HandoffShareScope {
+  sections: HandoffSectionKey[];
+  includedAttachmentIds: string[]; // Opt-in only (default empty)
+  purpose: string;
+  shareLabel: string;
+  expiryDuration: HandoffExpiryDuration;
+  maxAccesses?: number;
+}
+
+export interface FrozenHandoffSnapshot {
+  id: string;
+  workspaceId: string;
+  snapshotVersion: number;
+  workspaceVersionAtShare: number;
+  authorityVersionAtShare: number;
+  primaryLanguage: DossierLanguage;
+  secondaryLanguage: DossierLanguage | "none";
+  selectedSections: HandoffSectionKey[];
+  purpose: string;
+  shareLabel: string;
+  createdAt: string;
+  // Frozen section payloads (undefined if excluded by citizen)
+  title: string;
+  situationCategory: string;
+  situationSummaryEn?: string;
+  situationSummaryHi?: string;
+  timeline?: CasePrepTimelineEvent[];
+  checklist?: CasePrepChecklistItem[];
+  participants?: CasePrepParticipant[];
+  linkedAuthoritySnapshot?: CasePrepAuthoritySnapshot | null;
+  lokAdalatBridge?: CasePrepLokAdalatBridge;
+  linkedDrafts?: CasePrepLinkedDraft[];
+  questionsToDiscuss?: CasePrepQuestionItem[];
+  userPrivateNotes?: string;
+  includedAttachments: {
+    id: string;
+    filename: string;
+    mimeType: AllowedAttachmentMimeType;
+    fileSizeBytes: number;
+    description: string;
+  }[];
+}
+
+export interface CasePrepHandoffSession {
+  id: string;
+  workspaceId: string;
+  createdByUserId: string;
+  snapshotId: string;
+  tokenHash: string; // SHA-256 hash at rest (plaintext never persisted)
+  tokenPrefix: string; // Safe display prefix e.g. "nyh_8f2a..."
+  purpose: string;
+  shareLabel: string;
+  expiresAt: string; // UTC ISO
+  revokedAt: string | null;
+  maxAccesses: number;
+  accessCount: number;
+  lastAccessedAt: string | null;
+  createdAt: string;
+  selectedCountsSummary: {
+    hasSituationSummary: boolean;
+    timelineCount: number;
+    checklistCount: number;
+    participantsCount: number;
+    hasVerifiedAuthority: boolean;
+    attachmentsCount: number;
+    draftsCount: number;
+  };
+}
+
+export interface CasePrepHandoffAuditEvent {
+  id: string;
+  sessionId?: string;
+  workspaceId: string;
+  eventType:
+    | "handoff_created"
+    | "handoff_opened"
+    | "handoff_revoked"
+    | "handoff_expired"
+    | "invalid_token"
+    | "rate_limit_triggered"
+    | "sync_success"
+    | "sync_conflict";
+  safeSummary: string;
+  createdAt: string;
+}
+
+export type OfflineSyncConnectionStatus =
+  | "online_synced"
+  | "offline_local_only"
+  | "saved_on_device"
+  | "syncing"
+  | "conflict_detected";
+

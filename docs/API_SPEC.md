@@ -239,3 +239,6 @@ Creates 4-option practice scenarios. Automatically marked as `governanceStatus: 
 
 ## Sprint E14 — Case Prep Server Actions (src/actions/case-prep.actions.ts)
 - etchCasePrepWorkspaceAction, saveCasePrepSummaryAction, ddCasePrepTimelineEventAction, uploadCasePrepAttachmentMetadataAction, linkCasePrepAuthorityAction, pplyCasePrepPiiDecisionAction, exportVerifiedCasePrepDossierAction: Enforces owner-only anti-IDOR protection (ssertWorkspaceOwner) and mandatory 6-point Review Gate confirmation before generating versioned exports.
+
+## Sprint E15 — Handoff & Offline Sync Server Actions (src/actions/case-prep.actions.ts)
+- createCasePrepHandoffAction, evokeCasePrepHandoffAction, listCasePrepHandoffsAction, syncOfflineCasePrepDraftAction: Enforces owner verification, creates immutable frozen snapshots, revokes tokens immediately, and resolves multi-device sync conflicts (keep_local vs keep_server).

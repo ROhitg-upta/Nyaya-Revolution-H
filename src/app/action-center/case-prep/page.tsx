@@ -8,17 +8,22 @@ import {
   DEFAULT_AUTHORIZED_CITIZEN_ID,
   getWorkspaceForUser,
 } from "@/services/action/case-prep-workspace.service";
+import { listWorkspaceHandoffs } from "@/services/action/case-prep-handoff.service";
 import { getGovernedPublishedAuthorities } from "@/services/governance/authority-governance.service";
 
 export const metadata: Metadata = {
   title:
-    "Citizen Case Preparation Workspace & Bilingual Dossier · Nyaya Revolution",
+    "Citizen Case Preparation Workspace, Assisted Clinic Handoff & Bilingual Dossier · Nyaya Revolution",
   description:
-    "Private Citizen Case Preparation Workspace. Organize chronology, documents checklist, verified DLSA authority snapshots, Lok Adalat notes, and generate a printable A4 Bilingual Preparation Dossier.",
+    "Private Citizen Case Preparation Workspace with Assisted Para-Legal Clinic Mode, expiring SHA-256 hashed read-only handoff tokens, offline IndexedDB drafting, and bilingual A4 preparation dossiers.",
 };
 
 export default async function CitizenCasePrepPage() {
   const { workspace, completion, piiDetections } = getWorkspaceForUser({
+    requestingUserId: DEFAULT_AUTHORIZED_CITIZEN_ID,
+  });
+  const { sessions, events } = listWorkspaceHandoffs({
+    workspaceId: workspace.id,
     requestingUserId: DEFAULT_AUTHORIZED_CITIZEN_ID,
   });
   const availableAuthorities = getGovernedPublishedAuthorities();
@@ -45,6 +50,8 @@ export default async function CitizenCasePrepPage() {
           initialCompletion={completion}
           initialPiiDetections={piiDetections}
           availableAuthorities={availableAuthorities}
+          initialHandoffSessions={sessions}
+          initialHandoffEvents={events}
         />
       </main>
 
