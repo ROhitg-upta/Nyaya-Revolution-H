@@ -270,3 +270,13 @@ ull when absent in official sources and flag multi-source conflicts (conflict_st
 
 ## ADR-015: Frozen Snapshot Handoffs with SHA-256 Hashed Opaque Tokens & Allowlist PWA (Sprint E15)
 - **Decision**: Never expose master workspaces or persist plaintext handoff tokens. Store only SHA-256 hashes pointing to frozen snapshots, and restrict Service Worker caching to an explicit static allowlist.
+
+## ADR-016: Denominator-Transparent Outcome Feedback & Small-Cell Cohort Suppression (Sprint E16)
+- **Status**: Accepted (2026-09-28)
+- **Context**: Measuring whether Nyaya Revolution helps citizens progress from confusion to preparation, verified assistance contact, and longitudinal follow-up requires strict separation between automated platform events (`PLATFORM_EVENT`) and voluntary citizen self-reports (`SELF_REPORTED`), while preventing re-identification in small cohorts or false causal claims.
+- **Decision**:
+  1. Enforce explicit numerator, denominator, respondent population definition, and observation window (`7d`, `30d`, `90d`, `6m`, `12m`, `all`) on every percentage metric.
+  2. Enforce a minimum cohort threshold (`MIN_PUBLIC_COHORT = 10`) that automatically suppresses small cells (`n < 10`) with `"Not enough data to display safely"`.
+  3. Support both Private Workspace Timeline Mode (for longitudinal updates across `Prepared -> Contacted -> Received Response -> Resolved` and user-controlled deletion) and Strict Anonymous Mode (zero user ID or case ID linkage).
+  4. Restrict authority reachability analytics to descriptive operational signals (`found_resource`, `could_not_reach`, `received_response`) that trigger E13 Moderator Freshness Verification without ranking authorities as "best/worst".
+

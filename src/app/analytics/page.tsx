@@ -1,19 +1,29 @@
-import type { Metadata } from "next";
-import { AppHeader } from "@/components/common/app-header";
-import { LandingFooter } from "@/components/landing/landing-footer";
-import { AnalyticsDashboard } from "@/components/analytics/analytics-dashboard";
+import type { Metadata } from 'next';
+import { AppHeader } from '@/components/common/app-header';
+import { LandingFooter } from '@/components/landing/landing-footer';
+import { AnalyticsDashboard } from '@/components/analytics/analytics-dashboard';
+import { InstitutionalImpactConsole } from '@/components/analytics/institutional-impact-console';
+import { fetchInternalImpactAnalyticsAction } from '@/actions/outcome-analytics.actions';
 
 export const metadata: Metadata = {
-  title: "Realtime Learning Velocity Analytics · Nyaya Revolution",
+  title: 'Institutional Impact & Outcome Intelligence · Nyaya Revolution',
   description:
-    "Live platform analytics tracking citizen learning velocity, pass rates, and statutory grounding across 7 Indian legal domains.",
+    'Privacy-preserving citizen outcome feedback loop, 7-stage funnel intelligence, small-cell cohort suppression, and learning velocity analytics.',
 };
 
-export default function AnalyticsPage() {
+export default async function AnalyticsPage() {
+  const { snapshot, role } = await fetchInternalImpactAnalyticsAction('90d');
+
   return (
     <>
       <AppHeader />
       <main className="min-h-screen py-10">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-10">
+          <InstitutionalImpactConsole
+            initialSnapshot={snapshot}
+            viewerRole={role}
+          />
+        </div>
         <AnalyticsDashboard />
       </main>
       <LandingFooter />

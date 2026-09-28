@@ -33,6 +33,7 @@ import {
 } from "@/actions/case-prep.actions";
 import { DEFAULT_AUTHORIZED_CITIZEN_ID } from "@/services/action/case-prep-workspace.service";
 import { ClinicHandoffAndPwaPanel } from "@/components/action/clinic-handoff-and-pwa-panel";
+import { CitizenOutcomeCheckinCard } from "@/components/action/citizen-outcome-checkin-card";
 import type { LegalServiceAuthorityRecord } from "@/types/action-engine";
 import type {
   CasePrepHandoffAuditEvent,
@@ -1802,6 +1803,19 @@ export function CasePrepWorkspaceClient({
           </div>
         </div>
       )}
+
+      {/* SPRINT E16 — Voluntary Citizen Outcome & Experience Check-In */}
+      <div className="mt-6 print:hidden">
+        <CitizenOutcomeCheckinCard
+          caseId={workspace.id}
+          issueCategory={workspace.situationCategory}
+          stateCode={workspace.linkedAuthoritySnapshot?.state ?? "DL"}
+          districtName={workspace.linkedAuthoritySnapshot?.district ?? null}
+          languageCode={primaryLang}
+          verifiedResourceId={workspace.linkedAuthoritySnapshot?.authorityId ?? null}
+          verifiedResourceType={workspace.linkedAuthoritySnapshot?.authorityType ?? null}
+        />
+      </div>
     </div>
   );
 }
