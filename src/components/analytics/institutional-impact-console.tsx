@@ -29,6 +29,7 @@ import {
   exportAggregateAnalyticsAction,
   fetchInternalImpactAnalyticsAction,
 } from '@/actions/outcome-analytics.actions';
+import { ClosedLoopFreshnessQueue } from '@/components/analytics/closed-loop-freshness-queue';
 import type {
   AnalyticsTimeWindow,
   InstitutionalImpactDashboardSnapshot,
@@ -578,6 +579,9 @@ export function InstitutionalImpactConsole({
           </div>
         </div>
       </div>
+
+      {/* SPRINT E17 — Closed-Loop Authority Self-Healing Queue */}
+      <ClosedLoopFreshnessQueue />
 
       {/* Aggregate Export Preview Drawer (if triggered) */}
       {exportPreview && (

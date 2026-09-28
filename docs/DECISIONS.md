@@ -280,3 +280,12 @@ ull when absent in official sources and flag multi-source conflicts (conflict_st
   3. Support both Private Workspace Timeline Mode (for longitudinal updates across `Prepared -> Contacted -> Received Response -> Resolved` and user-controlled deletion) and Strict Anonymous Mode (zero user ID or case ID linkage).
   4. Restrict authority reachability analytics to descriptive operational signals (`found_resource`, `could_not_reach`, `received_response`) that trigger E13 Moderator Freshness Verification without ranking authorities as "best/worst".
 
+## ADR-017: Closed-Loop Directory Self-Healing & Non-Advisory Procedural Window Tracking (Sprint E17)
+- **Status**: Accepted (2026-09-28)
+- **Context**: Citizens who encounter unreachable helplines (`could_not_reach` in E16) or who are awaiting a response after filing (`Contacted` / `Awaiting Response`) need verified fallback channels, transparent statutory/procedural waiting-window guidance, and a structured Follow-Up Addendum without risking directory poisoning or unauthorized legal advice.
+- **Decision**:
+  1. **Anti-Poisoning Self-Healing Pipeline (`E16 -> E13 -> E14`)**: When a verified resource accumulates `>= 3` non-contradictory `could_not_reach` citizen reports within 30 days, automatically open a `HIGH_PRIORITY_CITIZEN_SIGNAL` ticket (`authority_freshness_alerts`) and surface a verified official fallback channel to citizens, while requiring human moderator approval before publishing an immutable authority version bump (`vN -> vN+1`).
+  2. **Non-Advisory Statutory Reference Windows**: Frame all elapsed-day calculations (`Section 7(1) RTI Act 30-day window`, `1930 NCRP 14-day nodal follow-up`, `NCH 1915 30-day docket window`, `SAMADHAN 21-day conciliation window`, `DLSA 15-day diary window`) strictly as educational statutory/administrative reference timelines.
+  3. **Zero-PII `.ics` Reminders & Bilingual Follow-Up Addendum**: Generate `.ics` calendar reminders with generic titles (`"Nyaya Case Prep: Review Procedural Follow-Up Window"`) and provide a 1-page Bilingual (English + Hindi) Follow-Up Addendum that pairs with the original Case Preparation Dossier (`v1`).
+
+

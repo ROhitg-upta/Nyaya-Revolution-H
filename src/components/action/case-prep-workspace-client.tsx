@@ -34,6 +34,7 @@ import {
 import { DEFAULT_AUTHORIZED_CITIZEN_ID } from "@/services/action/case-prep-workspace.service";
 import { ClinicHandoffAndPwaPanel } from "@/components/action/clinic-handoff-and-pwa-panel";
 import { CitizenOutcomeCheckinCard } from "@/components/action/citizen-outcome-checkin-card";
+import { ProceduralFollowupTrackerCard } from "@/components/action/procedural-followup-tracker-card";
 import type { LegalServiceAuthorityRecord } from "@/types/action-engine";
 import type {
   CasePrepHandoffAuditEvent,
@@ -1803,6 +1804,17 @@ export function CasePrepWorkspaceClient({
           </div>
         </div>
       )}
+
+      {/* SPRINT E17 — Closed-Loop Authority Self-Healing & Procedural Follow-Up Engine */}
+      <div className="mt-6 print:hidden">
+        <ProceduralFollowupTrackerCard
+          caseId={workspace.id}
+          initialAuthorityName={
+            workspace.linkedAuthoritySnapshot?.authorityName ??
+            "National Cyber Crime Reporting Portal (1930 / cybercrime.gov.in)"
+          }
+        />
+      </div>
 
       {/* SPRINT E16 — Voluntary Citizen Outcome & Experience Check-In */}
       <div className="mt-6 print:hidden">
