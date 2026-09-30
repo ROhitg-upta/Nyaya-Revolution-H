@@ -24,10 +24,13 @@ export const routes = {
   moderation: "/moderation",
   analytics: "/analytics",
   submitSituation: "/situations/submit",
+  situationsSubmit: "/situations/submit",
   community: "/community",
   communityShare: "/community/share",
   communityMyStories: "/community/my-stories",
   actionCenter: "/action-center",
+  casePrep: "/action-center/case-prep",
+  caseBinder: "/action-center/binder",
 } as const;
 
 export type RouteKey = keyof typeof routes;

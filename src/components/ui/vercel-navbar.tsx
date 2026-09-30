@@ -27,6 +27,7 @@ import {
   Moon,
   Phone,
   Scale,
+  Search,
   Shield,
   ShieldAlert,
   ShieldCheck,
@@ -37,6 +38,7 @@ import {
   Users,
 } from "lucide-react";
 
+import { CommandSearchModal } from "@/components/navigation/command-search-modal";
 import { MobileBottomNav } from "@/components/navigation/mobile-bottom-nav";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -269,8 +271,21 @@ export function Header() {
 
   const [scrolled, setScrolled] = useState(false);
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
 
   const routeBadge = getContextualRouteBadge(pathname);
+
+  // Global Ctrl+K / Cmd+K shortcut listener for universal search modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setSearchModalOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -579,8 +594,32 @@ export function Header() {
             </NavigationMenu>
           </div>
 
-          {/* Right Cluster: Action Studio + Auth Avatar Dropdown with ThemeSwitcher */}
+          {/* Right Cluster: Universal Search Trigger + Action Studio + Auth Avatar */}
           <div className="flex items-center gap-2">
+            {/* Desktop / Tablet Search Trigger (Cmd+K) */}
+            <button
+              type="button"
+              onClick={() => setSearchModalOpen(true)}
+              aria-label="Universal search across situations, laws, and stories (Ctrl+K)"
+              className="hover:border-brand/50 bg-muted/40 hover:bg-muted/70 text-muted-foreground hover:text-foreground hidden items-center gap-2 rounded-full border border-border/70 px-3 py-1.5 text-xs transition-all sm:flex"
+            >
+              <Search className="size-3.5 text-amber-500" />
+              <span className="hidden md:inline">Search...</span>
+              <kbd className="bg-background text-muted-foreground rounded border border-border/80 px-1.5 py-0.5 font-mono text-[10px]">
+                ⌘K
+              </kbd>
+            </button>
+
+            {/* Mobile Search Trigger Icon */}
+            <button
+              type="button"
+              onClick={() => setSearchModalOpen(true)}
+              aria-label="Universal search"
+              className="hover:bg-muted inline-flex size-8 items-center justify-center rounded-lg sm:hidden"
+            >
+              <Search className="size-4" />
+            </button>
+
             {/* Quick Voice & Draft Action Button */}
             <Button
               variant="outline"
@@ -736,6 +775,22 @@ export function Header() {
                 </SheetHeader>
 
                 <div className="mt-4 space-y-5">
+                  {/* Mobile Drawer Search Button */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileSheetOpen(false);
+                      setSearchModalOpen(true);
+                    }}
+                    className="flex w-full items-center gap-2.5 rounded-xl border border-border/80 bg-muted/40 px-3.5 py-2.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  >
+                    <Search className="size-4 text-amber-500" />
+                    <span>Search situations, laws, stories...</span>
+                    <kbd className="ml-auto rounded border border-border/80 bg-background px-1.5 py-0.5 font-mono text-[10px]">
+                      ⌘K
+                    </kbd>
+                  </button>
+
                   <div className="space-y-1">
                     <p className="text-muted-foreground px-2 text-[11px] font-bold uppercase">
                       Core Citizen Paths
@@ -797,6 +852,12 @@ export function Header() {
           </div>
         </div>
       </header>
+
+      {/* Global Universal Search & Command Palette Modal */}
+      <CommandSearchModal
+        open={searchModalOpen}
+        onClose={() => setSearchModalOpen(false)}
+      />
 
       {/* Mobile Bottom Dock */}
       <MobileBottomNav />

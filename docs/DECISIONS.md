@@ -299,5 +299,17 @@ ull when absent in official sources and flag multi-source conflicts (conflict_st
   5. **Bilingual Procedural Document Packs & Mandatory Review Gate**: Allow generation of multi-annexure procedural representation drafts (First Appeal / Escalation / Conciliation) clearly labeled "Educational Draft / User Review Required" and gated behind a 6-point mandatory factual confirmation gate.
   6. **Expiring Frozen Handoff (E15 Extension)**: Support temporary read-only binder sharing via SHA-256 token snapshots, ensuring live binder contents are never exposed.
 
+## ADR-019: Universal Multi-Entity Search Architecture & Product-Led Landing Experience (Sprint E19)
+- **Status**: Accepted (2026-09-30)
+- **Context**: The landing page and search surfaces suffered from disconnected search inputs (some decorative), inconsistent result schemas, missing query synchronization, lack of Hindi/Hinglish phrase expansion, and outdated landing mockups (placeholder stats, demo testimonials, "coming soon" badges) that failed to represent the production-grade depth of the platform.
+- **Decision**:
+  1. **Single Universal Search Engine (`unifiedSearch`)**: Unify all search surfaces (Landing Hero, Header Search, Mobile Navigation, Command Palette `Ctrl+K`, `/search` page, and contextual filters) around a shared, scored, multi-entity search engine in `src/lib/search.ts` powered by `src/types/search.ts`.
+  2. **Bilingual Hindi/Hinglish Query Normalization**: Expand conversational inputs (`"mera landlord deposit nahi de raha"`, `"upi fraud ho gaya"`, `"police fir nahi likh rahi"`) into canonical legal terms (`tenant security deposit`, `cyber upi fraud 1930`, `Section 173 BNSS Zero FIR`) without destroying user intent.
+  3. **Search Intent Classification**: Automatically detect intent (`situation`, `legal_knowledge`, `learning`, `community`, `resource`, `case_study`, `glossary`, `mixed`) to prioritize relevant entity categories without requiring citizens to know statutory schemas.
+  4. **Strict Public Isolation & Privacy Boundaries**: Search indexes ONLY public, verified, and published entities (e.g. published community stories with public visibility; verified DLSA offices; statutory provisions). Private case prep workspaces, drafts, unverified stories, and moderation queues are strictly excluded.
+  5. **URL Synchronization & Instant Keyboard Navigation**: Provide full `?q=` and `?type=` synchronization with Next.js App Router, complete keyboard traversal (`↑`, `↓`, `↵`, `Esc`), debounced execution with AbortController cancellation, and loading skeletons.
+  6. **Product-Led, Situation-First Landing Architecture**: Replace fabricated demo stats and mock testimonials with genuine platform assets: 8 real legal categories, 60+ real situation checklists, 6-step citizen journey, live interactive product previews (Situation, Grounded AI, Action Center, Scenarios, Community Stories), real learning journeys, and authoritative FAQs.
+
+
 
 
