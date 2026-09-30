@@ -288,4 +288,16 @@ ull when absent in official sources and flag multi-source conflicts (conflict_st
   2. **Non-Advisory Statutory Reference Windows**: Frame all elapsed-day calculations (`Section 7(1) RTI Act 30-day window`, `1930 NCRP 14-day nodal follow-up`, `NCH 1915 30-day docket window`, `SAMADHAN 21-day conciliation window`, `DLSA 15-day diary window`) strictly as educational statutory/administrative reference timelines.
   3. **Zero-PII `.ics` Reminders & Bilingual Follow-Up Addendum**: Generate `.ics` calendar reminders with generic titles (`"Nyaya Case Prep: Review Procedural Follow-Up Window"`) and provide a 1-page Bilingual (English + Hindi) Follow-Up Addendum that pairs with the original Case Preparation Dossier (`v1`).
 
+## ADR-018: Multi-Workspace Case Binder, Non-Merging Isolation & Procedural Document Pack (Sprint E18)
+- **Status**: Accepted (2026-09-30)
+- **Context**: Citizens and authorized helpers frequently handle multiple related preparation records arising from one situation (e.g., shared rental issues involving deposit withholding, RWA maintenance disputes, and defective furnishings, or group wage claims). Silently merging workspaces into a single record causes factual corruption, privacy leaks, and inaccurate legal representations.
+- **Decision**:
+  1. **Linked != Merged Architectural Principle**: Provide a higher-level `citizen_case_binders` organization layer that links multiple workspaces (`binder_workspaces`) with explicit relationship types (`primary`, `related`, `followup`, `group_member`, `supporting`) while strictly preserving independent facts, checklists, notes, attachments, and ownership boundaries per workspace.
+  2. **Anti-IDOR Ownership Validation**: Validate workspace ownership server-side; arbitrary client-provided workspace IDs cannot be linked to another citizen's binder without verified authorization.
+  3. **Master Chronology & Conflict Detection**: Aggregate cross-workspace timeline events into a unified master chronology where every milestone displays its source workspace badge and any events sharing identical dates are flagged for user review.
+  4. **Multi-Docket & Status Matrix**: Maintain a dedicated docket reference ledger (`binder_docket_references`) and a per-workspace status matrix integrating E16 self-reported outcomes and E17 procedural waiting windows without collapsing them into an artificial single legal conclusion.
+  5. **Bilingual Procedural Document Packs & Mandatory Review Gate**: Allow generation of multi-annexure procedural representation drafts (First Appeal / Escalation / Conciliation) clearly labeled "Educational Draft / User Review Required" and gated behind a 6-point mandatory factual confirmation gate.
+  6. **Expiring Frozen Handoff (E15 Extension)**: Support temporary read-only binder sharing via SHA-256 token snapshots, ensuring live binder contents are never exposed.
+
+
 

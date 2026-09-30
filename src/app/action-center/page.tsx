@@ -4,6 +4,7 @@ import { ActionCenterHub } from "@/components/action/action-center-hub";
 import {
   Building2,
   FileText,
+  FolderKanban,
   Languages,
   Mic,
   ShieldCheck,
@@ -119,13 +120,22 @@ export default async function ActionCenterPage({
                 Ready to organize your chronology, evidence checklist, and DLSA snapshot into an A4 Bilingual Preparation Pack?
               </div>
             </div>
-            <a
-              href="/action-center/case-prep"
-              className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2.5 text-xs font-extrabold text-slate-950 shadow-lg hover:bg-emerald-400"
-            >
-              <FileText className="size-4" />
-              Open Citizen Case Prep Workspace
-            </a>
+            <div className="flex flex-wrap items-center gap-2.5">
+              <a
+                href="/action-center/case-prep"
+                className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2.5 text-xs font-extrabold text-slate-950 shadow-lg hover:bg-emerald-400"
+              >
+                <FileText className="size-4" />
+                Case Prep Workspace
+              </a>
+              <a
+                href="/action-center/binder"
+                className="inline-flex shrink-0 items-center gap-2 rounded-xl border border-indigo-400 bg-indigo-600 px-4 py-2.5 text-xs font-extrabold text-white shadow-lg hover:bg-indigo-500"
+              >
+                <FolderKanban className="size-4" />
+                Case Binder (E18)
+              </a>
+            </div>
           </div>
         </section>
 

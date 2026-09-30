@@ -649,6 +649,13 @@ export function CasePrepWorkspaceClient({
                   ?.versionNumber ?? 0) + 1}
                 )
               </button>
+              <Link
+                href="/action-center/binder"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-500/40 bg-indigo-950/40 px-3.5 py-1.5 text-xs font-bold text-indigo-300 hover:bg-indigo-900/50 transition-colors"
+              >
+                <FolderKanban className="h-3.5 w-3.5" />
+                Case Binder (E18)
+              </Link>
             </div>
           </div>
 
